@@ -17,8 +17,9 @@ rule all:
         # Alignment outputs
         expand("alignment/{sample}.sorted.bam", sample=SAMPLES + [INPUT_SAMPLE]),
         expand("alignment/{sample}.sorted.bam.bai", sample=SAMPLES + [INPUT_SAMPLE]),
-        # Peak calling outputs
-        expand("peaks/{sample}_peaks.narrowPeak", sample=SAMPLES),
+        # Peak calling outputs - both narrow and broad
+        expand("peaks/{sample}_narrow_peaks.narrowPeak", sample=SAMPLES),
+        expand("peaks/{sample}_broad_peaks.broadPeak", sample=SAMPLES),
         # BigWig files for visualization
         expand("bigwig/{sample}.bw", sample=SAMPLES + [INPUT_SAMPLE])
 
@@ -87,23 +88,67 @@ rule align:
         rm -rf {params.tmp_dir}
         """
 
-rule call_peaks:
+rule call_narrow_peaks:
     input:
         treatment="alignment/{sample}.sorted.bam",
         control=f"alignment/{INPUT_SAMPLE}.sorted.bam"
     output:
-        "peaks/{sample}_peaks.narrowPeak"
+        "peaks/{sample}_narrow_peaks.narrowPeak"
     params:
-        genome_size=config["genome_size"]
+        genome_size=config["genome_size"],
+        prefix="{sample}_narrow"
     threads: 8
     resources:
         mem_mb=32000
     shell:
         """
         mkdir -p peaks
-        macs2 callpeak -t {input.treatment} -c {input.control} \
-            -f BAMPE -g {params.genome_size} -n {wildcards.sample} \
-            --outdir peaks
+        macs2 callpeak \
+            -t {input.treatment} \
+            -c {input.control} \
+            -f BAMPE \
+            -g {params.genome_size} \
+            -n {params.prefix} \
+            --outdir peaks \
+            -q 0.05 \
+            --nomodel \
+            --keep-dup all \
+            --call-summits
+
+        # Move the output file to match Snakemake's expected name
+        mv peaks/{params.prefix}_peaks.narrowPeak {output}
+        """
+
+rule call_broad_peaks:
+    input:
+        treatment="alignment/{sample}.sorted.bam",
+        control=f"alignment/{INPUT_SAMPLE}.sorted.bam"
+    output:
+        "peaks/{sample}_broad_peaks.broadPeak"
+    params:
+        genome_size=config["genome_size"],
+        prefix="{sample}_broad"
+    threads: 8
+    resources:
+        mem_mb=32000
+    shell:
+        """
+        mkdir -p peaks
+        macs2 callpeak \
+            -t {input.treatment} \
+            -c {input.control} \
+            -f BAMPE \
+            -g {params.genome_size} \
+            -n {params.prefix} \
+            --outdir peaks \
+            -q 0.05 \
+            --broad \
+            --broad-cutoff 0.1 \
+            --nomodel \
+            --keep-dup all
+
+        # Move the output file to match Snakemake's expected name
+        mv peaks/{params.prefix}_peaks.broadPeak {output}
         """
 
 rule create_bigwig:

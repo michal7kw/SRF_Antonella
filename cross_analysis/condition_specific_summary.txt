@@ -1,6 +1,0 @@
-Condition-specific Summary Statistics:
- Total YAF peaks: 138651 
- Total GFP peaks: 114752 
- Total V5 peaks: 81 
- YAF regions overlapping with V5: 60 
- GFP regions overlapping with V5: 49 

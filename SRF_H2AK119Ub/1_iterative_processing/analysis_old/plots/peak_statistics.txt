@@ -1,0 +1,5 @@
+Metric	Count
+Total Peaks	32188
+Significant Peaks	32188
+YAF-enriched	18178
+GFP-enriched	14010

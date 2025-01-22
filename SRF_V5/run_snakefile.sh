@@ -13,7 +13,7 @@
 # Create necessary directories
 mkdir -p logs/cluster_logs
 
-cd /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_V5
+cd /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_V5
 
 # Activate conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate

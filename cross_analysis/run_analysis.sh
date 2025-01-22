@@ -33,18 +33,27 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 # Check for required input files
 log_message "Checking required input files..."
 
-# V5 peaks
+# V5 peaks and bigwig files
 V5_PEAKS="../SRF_V5/peaks/SES-V5ChIP-Seq2_S6_peaks.narrowPeak"
-if [[ ! -f "$V5_PEAKS" ]]; then
-    log_message "ERROR: V5 peaks file not found: $V5_PEAKS"
-    exit 1
-fi
+V5_BIGWIG="../SRF_V5/bigwig/SES-V5ChIP-Seq2_S6.bw"
+V5_INPUT_BIGWIG="../SRF_V5/bigwig/InputSES-V5ChIP-Seq_S2.bw"
 
-# H2AK119Ub analysis files
+# H2AK119Ub analysis files and bigwig files
 H2A_BASE="../SRF_H2AK119Ub/1_iterative_processing/analysis"
+H2A_BIGWIG_DIR="${H2A_BASE}/visualization"
+
 required_files=(
+    "$V5_PEAKS"
+    "$V5_BIGWIG"
+    "$V5_INPUT_BIGWIG"
     "${H2A_BASE}/diffbind_narrow/differential_peaks.csv"
     "${H2A_BASE}/diffbind_broad/differential_peaks.csv"
+    "${H2A_BIGWIG_DIR}/GFP_1.bw"
+    "${H2A_BIGWIG_DIR}/GFP_2.bw"
+    "${H2A_BIGWIG_DIR}/GFP_3.bw"
+    "${H2A_BIGWIG_DIR}/YAF_1.bw"
+    "${H2A_BIGWIG_DIR}/YAF_2.bw"
+    "${H2A_BIGWIG_DIR}/YAF_3.bw"
 )
 
 for file in "${required_files[@]}"; do
@@ -68,6 +77,11 @@ required_outputs=(
     "results/plots/venn_diagram_narrow.png"
     "results/plots/venn_diagram_broad.png"
     "results/plots/gene_overlap_venn.png"
+    "results/plots/narrow_peak_distances.pdf"
+    "results/plots/broad_peak_distances.pdf"
+    "results/plots/genomic_context.pdf"
+    "results/plots/qc_metrics.pdf"
+    "results/plots/pathway_analysis.pdf"
     "results/analysis_summary.txt"
 )
 
