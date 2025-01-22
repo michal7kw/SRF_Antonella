@@ -100,7 +100,7 @@ R --quiet -e '
 
 # Run visualization script
 log_message "Starting visualization for both narrow and broad peaks..."
-Rscript scripts/plot_YAF_vs_GFP.R
+Rscript scripts/8_plot_YAF_vs_GFP.R
 
 # Check output files for narrow peaks
 log_message "Checking output files for narrow peaks..."

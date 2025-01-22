@@ -94,7 +94,7 @@ R --quiet -e '
 
 # Run YAF-enriched genes analysis
 log_message "Starting YAF-enriched genes analysis for both narrow and broad peaks..."
-Rscript scripts/get_YAF_enriched_genes.R
+Rscript scripts/7_get_YAF_enriched_genes.R
 
 # Check output files for narrow peaks
 log_message "Checking output files for narrow peaks..."

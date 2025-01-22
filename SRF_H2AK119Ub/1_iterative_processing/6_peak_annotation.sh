@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=6_peak_annotation
 #SBATCH --account=kubacki.michal
-#SBATCH --mem=128GB
-#SBATCH --time=INFINITE
+#SBATCH --mem=64GB
+#SBATCH --time=2:00:00
 #SBATCH --nodes=1
-#SBATCH --ntasks=32
+#SBATCH --ntasks=4
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
 #SBATCH --error="logs/6_peak_annotation.err"
@@ -53,7 +53,7 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/{annotation_narrow,annotation_broad}/{figures,tables} logs || { log_message "ERROR: Failed to create directories"; exit 1; }
+mkdir -p analysis/{annotation_narrow,annotation_broad,annotation_combined}/{figures,tables} logs || { log_message "ERROR: Failed to create directories"; exit 1; }
 
 # Check for required input files for narrow peaks
 log_message "Checking required input files for narrow peaks..."
@@ -83,7 +83,7 @@ log_message "Checking R package dependencies..."
 R --quiet -e '
     packages <- c("ChIPseeker", "TxDb.Hsapiens.UCSC.hg38.knownGene", "org.Hs.eg.db", 
                  "GenomicFeatures", "rtracklayer", "ggplot2", "clusterProfiler", 
-                 "DOSE", "enrichplot")
+                 "DOSE", "enrichplot", "DiffBind")
     missing <- packages[!packages %in% installed.packages()[,"Package"]]
     if (length(missing) > 0) {
         message("Installing missing packages: ", paste(missing, collapse=", "))
@@ -105,6 +105,7 @@ output_files_narrow=(
     "analysis/annotation_narrow/peak_annotation.rds"
     "analysis/annotation_narrow/tables/peak_annotation.csv"
     "analysis/annotation_narrow/figures/annotation_plots.pdf"
+    "analysis/annotation_narrow/tables/go_enrichment.csv"
     "analysis/annotation_narrow/figures/go_enrichment_plots.pdf"
 )
 
@@ -114,11 +115,18 @@ output_files_broad=(
     "analysis/annotation_broad/peak_annotation.rds"
     "analysis/annotation_broad/tables/peak_annotation.csv"
     "analysis/annotation_broad/figures/annotation_plots.pdf"
+    "analysis/annotation_broad/tables/go_enrichment.csv"
     "analysis/annotation_broad/figures/go_enrichment_plots.pdf"
 )
 
+# Check combined analysis files
+log_message "Checking combined analysis files..."
+output_files_combined=(
+    "analysis/annotation_combined/combined_annotation_summary.csv"
+)
+
 # Check all output files
-for file in "${output_files_narrow[@]}" "${output_files_broad[@]}"; do
+for file in "${output_files_narrow[@]}" "${output_files_broad[@]}" "${output_files_combined[@]}"; do
     check_output "$file"
 done
 

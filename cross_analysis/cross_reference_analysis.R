@@ -1,29 +1,48 @@
 #!/usr/bin/env Rscript
 
 # Load required libraries
-library(GenomicRanges)
-library(rtracklayer)
-library(ggplot2)
-library(ChIPseeker)
-library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-library(org.Hs.eg.db)
+suppressPackageStartupMessages({
+    library(GenomicRanges)
+    library(rtracklayer)
+    library(ggplot2)
+    library(ChIPseeker)
+    library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+    library(org.Hs.eg.db)
+    library(DiffBind)
+    library(VennDiagram)
+    library(RColorBrewer)
+    library(dplyr)
+    library(gridExtra)
+})
 
 # Set paths
-h2a_peaks_dir <- "../SRF_H2AK119Ub/1_iterative_processing/analysis/peaks/"
+h2a_base_dir <- "../SRF_H2AK119Ub/1_iterative_processing/analysis"
 v5_peaks_file <- "../SRF_V5/peaks/SES-V5ChIP-Seq2_S6_peaks.narrowPeak"
-diffbind_file <- "../SRF_H2AK119Ub/1_iterative_processing/analysis/diffbind/all_differential_peaks.txt"
-output_dir <- "."
+output_dir <- "results"
+
+# Create output directories
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(file.path(output_dir, "plots"), recursive = TRUE, showWarnings = FALSE)
+dir.create(file.path(output_dir, "tables"), recursive = TRUE, showWarnings = FALSE)
 
 # Function to standardize chromosome names
 standardize_chromosomes <- function(gr) {
     # Get current seqlevels
     current_levels <- seqlevels(gr)
     
-    # Add 'chr' prefix if missing
+    # Add 'chr' prefix if missing and handle special cases
     new_levels <- current_levels
     for(i in seq_along(current_levels)) {
-        if(!grepl("^chr", current_levels[i]) && !grepl("^GL|^KI|^MT", current_levels[i])) {
-            new_levels[i] <- paste0("chr", current_levels[i])
+        if(!grepl("^chr", current_levels[i])) {
+            if(current_levels[i] == "MT") {
+                new_levels[i] <- "chrM"
+            } else if(current_levels[i] == "23") {
+                new_levels[i] <- "chrX"
+            } else if(current_levels[i] == "24") {
+                new_levels[i] <- "chrY"
+            } else {
+                new_levels[i] <- paste0("chr", current_levels[i])
+            }
         }
     }
     
@@ -42,153 +61,171 @@ standardize_chromosomes <- function(gr) {
     }
     
     gr <- keepSeqlevels(gr, existing_chroms, pruning.mode="coarse")
-    
     return(gr)
 }
 
-# Function to merge peaks from replicates
-merge_peaks <- function(peak_files) {
-    peaks_list <- lapply(peak_files, function(f) {
-        message("Processing file: ", basename(f))
-        peaks <- import(f)
-        message("Original seqlevels: ", paste(seqlevels(peaks), collapse=", "))
-        peaks <- standardize_chromosomes(peaks)
-        message("Standardized seqlevels: ", paste(seqlevels(peaks), collapse=", "))
-        return(peaks)
-    })
+# Function to analyze peak overlaps
+analyze_overlaps <- function(peak_type) {
+    message(paste("\nAnalyzing", peak_type, "peaks..."))
     
-    # Combine all peaks
-    message("Combining peaks from all replicates")
-    all_peaks <- unlist(GRangesList(peaks_list))
+    # Read differential binding results
+    diffbind_file <- file.path(h2a_base_dir, paste0("diffbind_", peak_type), "differential_peaks.csv")
+    diff_peaks <- read.csv(diffbind_file)
     
-    # Reduce overlapping peaks
-    message("Reducing overlapping peaks")
-    reduced_peaks <- reduce(all_peaks)
-    return(reduced_peaks)
+    # Convert to GRanges
+    diff_gr <- GRanges(
+        seqnames = diff_peaks$seqnames,
+        ranges = IRanges(start = diff_peaks$start, end = diff_peaks$end),
+        strand = "*",
+        score = diff_peaks$Fold,
+        FDR = diff_peaks$FDR,
+        Conc = diff_peaks$Conc
+    )
+    
+    # Standardize chromosomes
+    diff_gr <- standardize_chromosomes(diff_gr)
+    
+    # Read and standardize V5 peaks if not already done
+    if(!exists("v5_peaks")) {
+        message("Processing V5 peaks...")
+        v5_peaks <<- import(v5_peaks_file)
+        v5_peaks <<- standardize_chromosomes(v5_peaks)
+    }
+    
+    # Ensure common chromosomes
+    common_chroms <- intersect(seqlevels(diff_gr), seqlevels(v5_peaks))
+    diff_gr <- keepSeqlevels(diff_gr, common_chroms, pruning.mode="coarse")
+    v5_peaks_subset <- keepSeqlevels(v5_peaks, common_chroms, pruning.mode="coarse")
+    
+    # Find overlaps
+    overlaps <- findOverlaps(diff_gr, v5_peaks_subset)
+    
+    # Create overlap statistics
+    overlap_stats <- data.frame(
+        Peak_Type = peak_type,
+        Total_H2AK119Ub_Peaks = length(diff_gr),
+        Total_V5_Peaks = length(v5_peaks_subset),
+        Overlapping_Peaks = length(unique(queryHits(overlaps))),
+        Overlap_Percentage = round(length(unique(queryHits(overlaps))) / length(diff_gr) * 100, 2)
+    )
+    
+    # Analyze overlaps for significant peaks
+    sig_peaks <- diff_gr[diff_gr$FDR < 0.05]
+    sig_overlaps <- findOverlaps(sig_peaks, v5_peaks_subset)
+    
+    sig_stats <- data.frame(
+        Peak_Type = paste(peak_type, "significant"),
+        Total_H2AK119Ub_Peaks = length(sig_peaks),
+        Total_V5_Peaks = length(v5_peaks_subset),
+        Overlapping_Peaks = length(unique(queryHits(sig_overlaps))),
+        Overlap_Percentage = round(length(unique(queryHits(sig_overlaps))) / length(sig_peaks) * 100, 2)
+    )
+    
+    # Combine statistics
+    stats <- rbind(overlap_stats, sig_stats)
+    
+    # Create Venn diagram
+    venn_colors <- brewer.pal(3, "Set1")
+    venn.plot <- venn.diagram(
+        x = list(
+            H2AK119Ub = 1:length(diff_gr),
+            V5 = (length(diff_gr) + 1):(length(diff_gr) + length(v5_peaks_subset))
+        ),
+        category.names = c(paste0("H2AK119Ub\n(", peak_type, ")"), "V5"),
+        filename = file.path(output_dir, "plots", paste0("venn_diagram_", peak_type, ".png")),
+        output = TRUE,
+        col = venn_colors[1:2],
+        fill = alpha(venn_colors[1:2], 0.5),
+        main = paste("Peak Overlap -", peak_type)
+    )
+    
+    # Return statistics and overlapping peaks
+    return(list(
+        stats = stats,
+        overlapping_peaks = diff_gr[queryHits(overlaps)],
+        significant_overlapping_peaks = sig_peaks[queryHits(sig_overlaps)]
+    ))
 }
 
-# Read and standardize V5 peaks
-message("Processing V5 peaks")
-v5_peaks <- import(v5_peaks_file)
-message("V5 original seqlevels: ", paste(seqlevels(v5_peaks), collapse=", "))
-v5_peaks <- standardize_chromosomes(v5_peaks)
-message("V5 standardized seqlevels: ", paste(seqlevels(v5_peaks), collapse=", "))
-
-# Read YAF and GFP peaks separately
-yaf_files <- list.files(h2a_peaks_dir, pattern="YAF_.*broadPeak$", full.names=TRUE)
-gfp_files <- list.files(h2a_peaks_dir, pattern="GFP_.*broadPeak$", full.names=TRUE)
-
-message("Processing YAF peaks")
-yaf_peaks <- merge_peaks(yaf_files)
-message("Processing GFP peaks")
-gfp_peaks <- merge_peaks(gfp_files)
-
-# Ensure all peak sets use the same chromosome set
-common_chroms <- Reduce(intersect, list(
-    seqlevels(v5_peaks),
-    seqlevels(yaf_peaks),
-    seqlevels(gfp_peaks)
-))
-
-message("Common chromosomes: ", paste(common_chroms, collapse=", "))
-
-v5_peaks <- keepSeqlevels(v5_peaks, common_chroms, pruning.mode="coarse")
-yaf_peaks <- keepSeqlevels(yaf_peaks, common_chroms, pruning.mode="coarse")
-gfp_peaks <- keepSeqlevels(gfp_peaks, common_chroms, pruning.mode="coarse")
-
-# Find overlaps for YAF and GFP separately
-yaf_v5_overlaps <- findOverlaps(yaf_peaks, v5_peaks)
-gfp_v5_overlaps <- findOverlaps(gfp_peaks, v5_peaks)
-
-# Create overlap statistics for YAF
-yaf_overlap_stats <- data.frame(
-    condition = "YAF",
-    h2a_peak = queryHits(yaf_v5_overlaps),
-    v5_peak = subjectHits(yaf_v5_overlaps),
-    v5_score = v5_peaks$score[subjectHits(yaf_v5_overlaps)]
-)
-
-# Create overlap statistics for GFP
-gfp_overlap_stats <- data.frame(
-    condition = "GFP",
-    h2a_peak = queryHits(gfp_v5_overlaps),
-    v5_peak = subjectHits(gfp_v5_overlaps),
-    v5_score = v5_peaks$score[subjectHits(gfp_v5_overlaps)]
-)
+# Analyze both narrow and broad peaks
+narrow_results <- analyze_overlaps("narrow")
+broad_results <- analyze_overlaps("broad")
 
 # Combine statistics
-condition_overlap_stats <- rbind(yaf_overlap_stats, gfp_overlap_stats)
+all_stats <- rbind(narrow_results$stats, broad_results$stats)
+write.csv(all_stats, 
+          file.path(output_dir, "tables", "overlap_statistics.csv"), 
+          row.names = FALSE)
 
-# Save condition-specific overlap statistics
-write.csv(condition_overlap_stats, 
-         file.path(output_dir, "condition_specific_overlaps.csv"), 
-         row.names = FALSE)
+# Create comparison plot
+ggplot(all_stats, aes(x = Peak_Type, y = Overlap_Percentage, fill = Peak_Type)) +
+    geom_bar(stat = "identity") +
+    theme_bw() +
+    labs(title = "H2AK119Ub and V5 Peak Overlap Comparison",
+         y = "Overlap Percentage",
+         x = "Peak Type") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    scale_fill_brewer(palette = "Set1")
+ggsave(file.path(output_dir, "plots", "overlap_comparison.pdf"), width = 8, height = 6)
 
-# Create condition-specific overlap plots
-pdf(file.path(output_dir, "condition_specific_overlaps.pdf"))
-# Plot number of overlapping peaks per condition
-ggplot(condition_overlap_stats, aes(x = condition)) +
-    geom_bar() +
-    theme_minimal() +
-    labs(title = "Number of V5 overlapping peaks per condition",
-         y = "Number of overlapping peaks")
-
-# Plot V5 scores distribution by condition
-ggplot(condition_overlap_stats, aes(x = condition, y = v5_score)) +
-    geom_boxplot() +
-    theme_minimal() +
-    labs(title = "V5 peak scores in overlapping regions",
-         y = "V5 peak score")
-dev.off()
-
-# Annotate condition-specific overlapping regions
-yaf_overlapping_peaks <- yaf_peaks[queryHits(yaf_v5_overlaps)]
-gfp_overlapping_peaks <- gfp_peaks[queryHits(gfp_v5_overlaps)]
-
-# Add condition information
-mcols(yaf_overlapping_peaks)$condition <- "YAF"
-mcols(gfp_overlapping_peaks)$condition <- "GFP"
-
-# Combine peaks for annotation
-all_condition_peaks <- c(yaf_overlapping_peaks, gfp_overlapping_peaks)
-
-# Prepare TxDb object with matching chromosome naming
+# Analyze overlapping genes
 txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
-seqlevels(txdb) <- seqlevels(all_condition_peaks)
 
-# Annotate peaks
-condition_peak_anno <- annotatePeak(all_condition_peaks, 
-                                  TxDb = txdb,
-                                  tssRegion = c(-3000, 3000),
-                                  annoDb = "org.Hs.eg.db")
+# Function to get gene annotations
+get_gene_annotations <- function(peaks, type) {
+    peak_anno <- annotatePeak(peaks, 
+                            TxDb = txdb,
+                            tssRegion = c(-3000, 3000),
+                            verbose = FALSE)
+    
+    genes_df <- as.data.frame(peak_anno)
+    genes_df$peak_type <- type
+    return(genes_df)
+}
 
-# Save condition-specific annotation results
-write.csv(as.data.frame(condition_peak_anno),
-         file.path(output_dir, "condition_specific_peak_annotation.csv"),
-         row.names = FALSE)
+# Get annotations for all overlapping peaks
+narrow_genes <- get_gene_annotations(narrow_results$overlapping_peaks, "narrow")
+broad_genes <- get_gene_annotations(broad_results$overlapping_peaks, "broad")
 
-# Create condition-specific annotation visualization
-pdf(file.path(output_dir, "condition_specific_annotation_plots.pdf"))
-plotAnnoPie(condition_peak_anno)
-plotDistToTSS(condition_peak_anno, facet = "condition")
-dev.off()
+# Combine gene annotations
+all_genes <- rbind(narrow_genes, broad_genes)
+write.csv(all_genes, 
+          file.path(output_dir, "tables", "overlapping_genes.csv"), 
+          row.names = FALSE)
 
-# Generate condition-specific summary statistics
-cat("Condition-specific Summary Statistics:\n",
-    "Total YAF peaks:", length(yaf_peaks), "\n",
-    "Total GFP peaks:", length(gfp_peaks), "\n",
-    "Total V5 peaks:", length(v5_peaks), "\n",
-    "YAF regions overlapping with V5:", length(unique(queryHits(yaf_v5_overlaps))), "\n",
-    "GFP regions overlapping with V5:", length(unique(queryHits(gfp_v5_overlaps))), "\n",
-    file = file.path(output_dir, "condition_specific_summary.txt"))
+# Create gene overlap Venn diagram
+narrow_gene_symbols <- unique(narrow_genes$geneId)
+broad_gene_symbols <- unique(broad_genes$geneId)
 
-# Export overlapping regions as BED files for visualization
-export(yaf_peaks[queryHits(yaf_v5_overlaps)], 
-       file.path(output_dir, "yaf_v5_overlapping.bed"))
-export(gfp_peaks[queryHits(gfp_v5_overlaps)], 
-       file.path(output_dir, "gfp_v5_overlapping.bed"))
+venn.diagram(
+    x = list(Narrow = narrow_gene_symbols, Broad = broad_gene_symbols),
+    filename = file.path(output_dir, "plots", "gene_overlap_venn.png"),
+    category.names = c("Narrow Peaks", "Broad Peaks"),
+    col = brewer.pal(3, "Set1")[1:2],
+    fill = alpha(brewer.pal(3, "Set1")[1:2], 0.5),
+    main = "Overlapping Genes Between Narrow and Broad Peaks"
+)
 
-# Export all peaks for reference
-export(yaf_peaks, file.path(output_dir, "yaf_all_peaks.bed"))
-export(gfp_peaks, file.path(output_dir, "gfp_all_peaks.bed"))
-export(v5_peaks, file.path(output_dir, "v5_all_peaks.bed"))
+# Create summary of results
+summary_text <- c(
+    "Cross-reference Analysis Summary",
+    "==============================",
+    "",
+    "Peak Overlap Statistics:",
+    paste("- Narrow peaks total:", narrow_results$stats$Total_H2AK119Ub_Peaks[1]),
+    paste("- Narrow peaks overlapping with V5:", narrow_results$stats$Overlapping_Peaks[1], 
+          sprintf("(%.1f%%)", narrow_results$stats$Overlap_Percentage[1])),
+    paste("- Broad peaks total:", broad_results$stats$Total_H2AK119Ub_Peaks[1]),
+    paste("- Broad peaks overlapping with V5:", broad_results$stats$Overlapping_Peaks[1],
+          sprintf("(%.1f%%)", broad_results$stats$Overlap_Percentage[1])),
+    "",
+    "Gene Statistics:",
+    paste("- Unique genes from narrow peaks:", length(narrow_gene_symbols)),
+    paste("- Unique genes from broad peaks:", length(broad_gene_symbols)),
+    paste("- Common genes between narrow and broad:", 
+          length(intersect(narrow_gene_symbols, broad_gene_symbols)))
+)
+
+writeLines(summary_text, file.path(output_dir, "analysis_summary.txt"))
+
+message("\nAnalysis completed successfully. Results are saved in the 'results' directory.")
