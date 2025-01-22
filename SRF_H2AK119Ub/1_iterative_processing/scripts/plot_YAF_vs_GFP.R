@@ -8,135 +8,103 @@ suppressPackageStartupMessages({
   library(DiffBind)
 })
 
-# Create output directories
-dir.create("analysis/plots", recursive = TRUE, showWarnings = FALSE)
-
-# Read the DiffBind results with error handling
-tryCatch({
-  # Read the tab-delimited file instead of RDS
-  diff_peaks <- read.table("analysis/diffbind/all_differential_peaks.txt", 
-                          header = TRUE, sep = "\t")
+# Function to create plots for a specific peak type
+create_plots <- function(peak_type) {
+  # Create output directories
+  plots_dir <- file.path("analysis", paste0("plots_", peak_type))
+  dir.create(plots_dir, recursive = TRUE, showWarnings = FALSE)
   
-  # Standardize chromosome names
-  diff_peaks$Chr <- ifelse(!grepl("^chr", diff_peaks$Chr, ignore.case = TRUE),
-                          paste0("chr", diff_peaks$Chr),
-                          diff_peaks$Chr)
-  diff_peaks$Chr <- sub("chrMT", "chrM", diff_peaks$Chr)
-  diff_peaks$Chr <- sub("chr23", "chrX", diff_peaks$Chr)
-  diff_peaks$Chr <- sub("chr24", "chrY", diff_peaks$Chr)
+  # Read the DiffBind results with error handling
+  diff_peaks_file <- file.path("analysis", paste0("diffbind_", peak_type), "differential_peaks.csv")
   
-  message("Unique chromosome names: ", paste(unique(diff_peaks$Chr), collapse = ", "))
-  message("Total peaks loaded: ", nrow(diff_peaks))
-  
-}, error = function(e) {
-  stop("Error reading DiffBind results: ", e$message)
-})
-
-# Create MA plot with enhanced styling
-ma_plot <- ggplot(diff_peaks, aes(x = log2(Conc), y = Fold)) +
-  geom_point(aes(color = FDR < 0.05, size = abs(Fold)), alpha = 0.6) +
-  scale_color_manual(values = c("grey50", "red3")) +
-  scale_size_continuous(range = c(0.5, 2)) +
-  labs(x = "log2 Mean Concentration",
-       y = "log2 Fold Change (YAF/GFP)",
-       title = "MA Plot: YAF vs GFP H2AK119Ub Peaks",
-       subtitle = paste0("Significant peaks: ", sum(diff_peaks$FDR < 0.05))) +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    plot.title = element_text(size = 12, face = "bold"),
-    plot.subtitle = element_text(size = 10)
-  )
-
-# Save MA plot with error handling
-tryCatch({
-  ggsave("analysis/plots/MA_plot_YAF_vs_GFP.pdf", ma_plot, width = 8, height = 6)
-  message("MA plot saved successfully")
-}, error = function(e) {
-  warning("Error saving MA plot: ", e$message)
-})
-
-# Create enhanced volcano plot with better filtering
-volcano_plot <- ggplot(diff_peaks, 
-                      aes(x = Fold, y = -log10(FDR))) +
-  geom_point(aes(color = FDR < 0.05 & abs(Fold) > 1,
-                 size = abs(Fold)), alpha = 0.6) +
-  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "grey50") +
-  geom_vline(xintercept = c(-1, 1), linetype = "dashed", color = "grey50") +
-  scale_color_manual(values = c("grey50", "red3")) +
-  scale_size_continuous(range = c(0.5, 2)) +
-  labs(x = "log2 Fold Change (YAF/GFP)",
-       y = "-log10(FDR)",
-       title = "Volcano Plot: YAF vs GFP H2AK119Ub Peaks",
-       subtitle = paste0("Up: ", sum(diff_peaks$Fold > 1 & diff_peaks$FDR < 0.05),
-                        " Down: ", sum(diff_peaks$Fold < -1 & diff_peaks$FDR < 0.05))) +
-  theme_bw() +
-  theme(
-    legend.position = "none",
-    plot.title = element_text(size = 12, face = "bold"),
-    plot.subtitle = element_text(size = 10)
-  )
-
-# Save volcano plot with error handling
-tryCatch({
-  ggsave("analysis/plots/volcano_plot_YAF_vs_GFP.pdf", volcano_plot, width = 8, height = 6)
-  message("Volcano plot saved successfully")
-}, error = function(e) {
-  warning("Error saving volcano plot: ", e$message)
-})
-
-# Create profile plot if deepTools output exists
-profile_file <- "analysis/visualization_merged/YAF_vs_GFP_matrix.gz"
-if(file.exists(profile_file)) {
   tryCatch({
-    profile_data <- read.table(profile_file, header = TRUE)
+    # Read the CSV file
+    diff_peaks <- read.csv(diff_peaks_file)
     
-    if(nrow(profile_data) == 0) {
-      warning("Profile data is empty")
-    } else {
-      profile_plot <- ggplot(profile_data, aes(x = Position, y = Signal, color = Condition)) +
-        geom_line(size = 1) +
-        geom_ribbon(aes(ymin = Signal - SEM, ymax = Signal + SEM, fill = Condition), 
-                    alpha = 0.2) +
-        scale_color_brewer(palette = "Set1") +
-        scale_fill_brewer(palette = "Set1") +
-        labs(x = "Distance from peak center (bp)",
-             y = "Average H2AK119Ub signal",
-             title = "H2AK119Ub Signal Profile",
-             subtitle = "Averaged signal around peak centers") +
-        theme_bw() +
-        theme(
-          legend.position = "bottom",
-          plot.title = element_text(size = 12, face = "bold"),
-          plot.subtitle = element_text(size = 10)
-        )
-      
-      ggsave("analysis/plots/profile_plot_YAF_vs_GFP.pdf", profile_plot, width = 8, height = 6)
-      message("Profile plot saved successfully")
-    }
+    # Add debugging information
+    message(paste0("Processing ", peak_type, " peaks"))
+    message("Total peaks loaded: ", nrow(diff_peaks))
+    
+    # Create MA plot with enhanced styling
+    ma_plot <- ggplot(diff_peaks, aes(x = log2(Conc), y = Fold)) +
+      geom_point(aes(color = FDR < 0.05, size = abs(Fold)), alpha = 0.6) +
+      scale_color_manual(values = c("grey50", "red3")) +
+      scale_size_continuous(range = c(0.5, 2)) +
+      labs(x = "log2 Mean Concentration",
+           y = "log2 Fold Change (YAF/GFP)",
+           title = paste("MA Plot: YAF vs GFP H2AK119Ub", peak_type, "Peaks"),
+           subtitle = paste0("Significant peaks: ", sum(diff_peaks$FDR < 0.05))) +
+      theme_bw() +
+      theme(
+        legend.position = "none",
+        plot.title = element_text(size = 12, face = "bold"),
+        plot.subtitle = element_text(size = 10)
+      )
+    
+    # Save MA plot
+    ma_plot_file <- file.path(plots_dir, paste0("MA_plot_", peak_type, ".pdf"))
+    ggsave(ma_plot_file, ma_plot, width = 8, height = 6)
+    message("Created MA plot: ", ma_plot_file)
+    
+    # Create volcano plot
+    volcano_plot <- ggplot(diff_peaks, aes(x = Fold, y = -log10(FDR))) +
+      geom_point(aes(color = FDR < 0.05, size = abs(Fold)), alpha = 0.6) +
+      scale_color_manual(values = c("grey50", "red3")) +
+      scale_size_continuous(range = c(0.5, 2)) +
+      labs(x = "log2 Fold Change (YAF/GFP)",
+           y = "-log10(FDR)",
+           title = paste("Volcano Plot: YAF vs GFP H2AK119Ub", peak_type, "Peaks"),
+           subtitle = paste0("Significant peaks: ", sum(diff_peaks$FDR < 0.05))) +
+      theme_bw() +
+      theme(
+        legend.position = "none",
+        plot.title = element_text(size = 12, face = "bold"),
+        plot.subtitle = element_text(size = 10)
+      )
+    
+    # Save volcano plot
+    volcano_plot_file <- file.path(plots_dir, paste0("volcano_plot_", peak_type, ".pdf"))
+    ggsave(volcano_plot_file, volcano_plot, width = 8, height = 6)
+    message("Created volcano plot: ", volcano_plot_file)
+    
+    # Calculate summary statistics
+    summary_stats <- data.frame(
+      Metric = c("Total Peaks", "Significant Peaks", "YAF-enriched", "GFP-enriched"),
+      Count = c(
+        nrow(diff_peaks),
+        sum(diff_peaks$FDR < 0.05),
+        sum(diff_peaks$FDR < 0.05 & diff_peaks$Fold > 0),
+        sum(diff_peaks$FDR < 0.05 & diff_peaks$Fold < 0)
+      )
+    )
+    
+    # Save summary statistics
+    summary_file <- file.path(plots_dir, paste0("summary_stats_", peak_type, ".txt"))
+    write.table(summary_stats, summary_file, sep = "\t", row.names = FALSE, quote = FALSE)
+    message("Created summary statistics: ", summary_file)
+    
+    return(summary_stats)
+    
   }, error = function(e) {
-    warning("Error creating profile plot: ", e$message)
+    stop(paste("Error processing", peak_type, "peaks:", e$message))
   })
-} else {
-  message("Profile data file not found: ", profile_file)
 }
 
-# Save summary statistics
-summary_stats <- data.frame(
-  Metric = c("Total Peaks", "Significant Peaks", "YAF-enriched", "GFP-enriched"),
-  Count = c(
-    nrow(diff_peaks),
-    sum(diff_peaks$FDR < 0.05),
-    sum(diff_peaks$Fold > 0 & diff_peaks$FDR < 0.05),
-    sum(diff_peaks$Fold < 0 & diff_peaks$FDR < 0.05)
-  )
+# Process both narrow and broad peaks
+narrow_stats <- create_plots("narrow")
+broad_stats <- create_plots("broad")
+
+# Create combined summary
+combined_summary <- rbind(
+  data.frame(Peak_Type = "Narrow", narrow_stats),
+  data.frame(Peak_Type = "Broad", broad_stats)
 )
 
-write.table(summary_stats,
-            "analysis/plots/peak_statistics.txt",
-            sep = "\t",
-            quote = FALSE,
-            row.names = FALSE)
+# Save combined summary
+combined_dir <- "analysis/plots_combined"
+dir.create(combined_dir, recursive = TRUE, showWarnings = FALSE)
+write.table(combined_summary, 
+            file.path(combined_dir, "combined_summary_stats.txt"),
+            sep = "\t", row.names = FALSE, quote = FALSE)
 
-message("Summary statistics saved successfully")
-print("Visualization completed successfully")
+message("Analysis completed for both narrow and broad peaks")

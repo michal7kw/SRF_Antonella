@@ -7,137 +7,164 @@ suppressPackageStartupMessages({
   library(dplyr)
 })
 
-# Create output directories if they don't exist
-dir.create("analysis/gene_lists", recursive = TRUE, showWarnings = FALSE)
-dir.create("analysis/plots", recursive = TRUE, showWarnings = FALSE)
-
-# Read the DiffBind results with error checking
-diff_peaks_file <- "analysis/diffbind/all_differential_peaks.txt"
-if (!file.exists(diff_peaks_file)) {
-  stop("Input file not found: ", diff_peaks_file)
-}
-
-# Read the tab-delimited file instead of RDS
-diff_peaks <- read.table(diff_peaks_file, header = TRUE, sep = "\t")
-
-# Add debugging information
-message("Dimensions of input diff_peaks: ", paste(dim(diff_peaks), collapse = " x "))
-
-# Filter for YAF-enriched peaks (positive fold change and significant)
-yaf_enriched <- diff_peaks %>%
-  filter(Fold > 0, FDR < 0.05)
-
-# Add debugging information
-message("Dimensions of yaf_enriched after filtering: ", paste(dim(yaf_enriched), collapse = " x "))
-message("Number of significant peaks: ", nrow(yaf_enriched))
-
-# Standardize chromosome names by adding "chr" prefix if not present
-yaf_enriched$Chr <- ifelse(!grepl("^chr", yaf_enriched$Chr, ignore.case = TRUE),
-                          paste0("chr", yaf_enriched$Chr),
-                          yaf_enriched$Chr)
-
-# Convert chromosome names to standard format
-yaf_enriched$Chr <- sub("chrMT", "chrM", yaf_enriched$Chr)
-yaf_enriched$Chr <- sub("chr23", "chrX", yaf_enriched$Chr)
-yaf_enriched$Chr <- sub("chr24", "chrY", yaf_enriched$Chr)
-
-# Add debugging information for chromosome names
-message("Unique chromosome names: ", paste(unique(yaf_enriched$Chr), collapse = ", "))
-
-# Check if yaf_enriched has rows before proceeding
-if (nrow(yaf_enriched) == 0) {
-  stop("No significant YAF-enriched peaks found")
-}
-
-# Convert to GRanges object with standardized chromosome names
-yaf_peaks_gr <- GRanges(
-  seqnames = yaf_enriched$Chr,
-  ranges = IRanges(start = yaf_enriched$Start, end = yaf_enriched$End),
-  strand = "*",
-  fold_change = yaf_enriched$Fold,
-  FDR = yaf_enriched$FDR
-)
-
-# Add debugging information for GRanges object
-message("GRanges seqnames: ", paste(unique(seqnames(yaf_peaks_gr)), collapse = ", "))
-
-# Annotate peaks with nearby genes
-txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
-peakAnno <- annotatePeak(yaf_peaks_gr, 
-                        TxDb = txdb,
-                        tssRegion = c(-3000, 3000),
-                        annoDb = "org.Hs.eg.db")
-
-# Convert annotation to data frame
-anno_df <- as.data.frame(peakAnno)
-
-# Add gene symbols with error handling
-anno_df$gene_symbol <- tryCatch({
-  mapIds(org.Hs.eg.db,
-         keys = anno_df$geneId,
-         column = "SYMBOL",
-         keytype = "ENTREZID",
-         multiVals = "first")
-}, error = function(e) {
-  message("Error mapping gene symbols: ", e$message)
-  return(NA)
-})
-
-# Create simplified gene list with key information
-simplified_list <- anno_df %>%
-  select(gene_symbol, annotation, fold_change = fold_change, FDR,
-         distance_to_TSS = distanceToTSS) %>%
-  arrange(desc(fold_change)) %>%
-  filter(!is.na(gene_symbol))  # Remove entries without gene symbols
-
-# Save results
-write.table(anno_df,
-            "analysis/gene_lists/YAF_enriched_H2AK119Ub_full_annotation.txt",
-            sep = "\t", quote = FALSE, row.names = FALSE)
-
-write.table(simplified_list,
-            "analysis/gene_lists/YAF_enriched_H2AK119Ub_genes.txt",
-            sep = "\t", quote = FALSE, row.names = FALSE)
-
-# Perform GO enrichment analysis
-gene_list <- unique(na.omit(anno_df$geneId))
-if (length(gene_list) > 0) {
-  tryCatch({
-    go_bp <- enrichGO(gene = gene_list,
-                      OrgDb = org.Hs.eg.db,
-                      ont = "BP",
-                      pAdjustMethod = "BH",
-                      pvalueCutoff = 0.05)
+# Function to process peaks for a given peak type
+process_peaks <- function(peak_type) {
+  # Create output directories if they don't exist
+  base_dir <- file.path("analysis", paste0("gene_lists_", peak_type))
+  plots_dir <- file.path("analysis", paste0("plots_", peak_type))
+  dir.create(base_dir, recursive = TRUE, showWarnings = FALSE)
+  dir.create(plots_dir, recursive = TRUE, showWarnings = FALSE)
+  
+  # Read the DiffBind results with error checking
+  diff_peaks_file <- file.path("analysis", paste0("diffbind_", peak_type), "differential_peaks.csv")
+  if (!file.exists(diff_peaks_file)) {
+    stop("Input file not found: ", diff_peaks_file)
+  }
+  
+  # Read the CSV file
+  diff_peaks <- read.csv(diff_peaks_file)
+  
+  # Add debugging information
+  message(paste0("Processing ", peak_type, " peaks"))
+  message("Dimensions of input diff_peaks: ", paste(dim(diff_peaks), collapse = " x "))
+  
+  # Filter for YAF-enriched peaks (positive fold change and significant)
+  yaf_enriched <- diff_peaks %>%
+    filter(Fold > 0, FDR < 0.05)
+  
+  # Add debugging information
+  message("Dimensions of yaf_enriched after filtering: ", paste(dim(yaf_enriched), collapse = " x "))
+  message("Number of significant peaks: ", nrow(yaf_enriched))
+  
+  # Standardize chromosome names by adding "chr" prefix if not present
+  yaf_enriched$seqnames <- ifelse(!grepl("^chr", yaf_enriched$seqnames, ignore.case = TRUE),
+                            paste0("chr", yaf_enriched$seqnames),
+                            yaf_enriched$seqnames)
+  
+  # Convert chromosome names to standard format
+  yaf_enriched$seqnames <- sub("chrMT", "chrM", yaf_enriched$seqnames)
+  yaf_enriched$seqnames <- sub("chr23", "chrX", yaf_enriched$seqnames)
+  yaf_enriched$seqnames <- sub("chr24", "chrY", yaf_enriched$seqnames)
+  
+  # Add debugging information for chromosome names
+  message("Unique chromosome names: ", paste(unique(yaf_enriched$seqnames), collapse = ", "))
+  
+  # Check if yaf_enriched has rows before proceeding
+  if (nrow(yaf_enriched) == 0) {
+    stop("No significant YAF-enriched peaks found")
+  }
+  
+  # Create GRanges object for annotation
+  peaks_gr <- with(yaf_enriched,
+                   GRanges(seqnames = seqnames,
+                          ranges = IRanges(start = start, end = end),
+                          strand = "*",
+                          score = Fold))
+  
+  # Annotate peaks
+  txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+  peakAnno <- annotatePeak(peaks_gr,
+                          TxDb = txdb,
+                          tssRegion = c(-3000, 3000),
+                          verbose = FALSE)
+  
+  # Extract gene information
+  genes_df <- as.data.frame(peakAnno)
+  
+  # Map ENTREZID to SYMBOL
+  gene_symbols <- mapIds(org.Hs.eg.db,
+                        keys = genes_df$geneId,
+                        column = "SYMBOL",
+                        keytype = "ENTREZID",
+                        multiVals = "first")
+  
+  # Create final gene list with symbols
+  gene_list <- data.frame(
+    ENTREZID = genes_df$geneId,
+    SYMBOL = gene_symbols,
+    distanceToTSS = genes_df$distanceToTSS,
+    annotation = genes_df$annotation,
+    fold_change = genes_df$score,
+    stringsAsFactors = FALSE
+  ) %>%
+    filter(!is.na(SYMBOL)) %>%
+    arrange(desc(fold_change))
+  
+  # Save gene lists
+  write.csv(gene_list,
+            file = file.path(base_dir, paste0("YAF_enriched_genes_", peak_type, "_full.csv")),
+            row.names = FALSE)
+  
+  # Save just the gene symbols
+  writeLines(unique(gene_list$SYMBOL),
+            file.path(base_dir, paste0("YAF_enriched_genes_", peak_type, "_symbols.txt")))
+  
+  # Generate plots
+  pdf(file.path(plots_dir, paste0("peak_annotation_", peak_type, ".pdf")))
+  print(plotAnnoBar(peakAnno))
+  print(plotDistToTSS(peakAnno))
+  print(upsetplot(peakAnno))
+  dev.off()
+  
+  # Perform GO enrichment analysis
+  ego <- enrichGO(gene = unique(gene_list$ENTREZID),
+                  OrgDb = org.Hs.eg.db,
+                  ont = "BP",
+                  pAdjustMethod = "BH",
+                  pvalueCutoff = 0.05,
+                  qvalueCutoff = 0.05)
+  
+  if (nrow(ego) > 0) {
+    write.csv(as.data.frame(ego),
+              file = file.path(base_dir, paste0("GO_enrichment_", peak_type, ".csv")),
+              row.names = FALSE)
     
-    if (nrow(go_bp) > 0) {
-      # Save GO results
-      write.table(as.data.frame(go_bp),
-                  "analysis/gene_lists/YAF_enriched_GO_terms.txt",
-                  sep = "\t", quote = FALSE, row.names = FALSE)
-      
-      # Create GO dotplot
-      pdf("analysis/plots/GO_enrichment_dotplot.pdf", width = 10, height = 8)
-      print(dotplot(go_bp, showCategory = 20))
-      dev.off()
-    } else {
-      message("No significant GO terms found")
-    }
-  }, error = function(e) {
-    message("Error in GO enrichment analysis: ", e$message)
-  })
+    pdf(file.path(plots_dir, paste0("GO_enrichment_", peak_type, ".pdf")))
+    print(dotplot(ego, showCategory = 20))
+    print(enrichMap(ego, n = 30, vertex.label.cex = 0.6))
+    dev.off()
+  }
+  
+  # Create summary
+  summary_text <- c(
+    paste0("YAF-enriched genes analysis summary (", peak_type, " peaks):"),
+    "================================================",
+    paste("Total peaks analyzed:", nrow(diff_peaks)),
+    paste("YAF-enriched significant peaks:", nrow(yaf_enriched)),
+    paste("Unique genes identified:", length(unique(gene_list$SYMBOL))),
+    paste("GO terms enriched:", nrow(ego)),
+    "\nTop 20 genes by fold change:",
+    paste(head(gene_list$SYMBOL, 20), collapse = ", ")
+  )
+  
+  writeLines(summary_text, file.path(base_dir, paste0("analysis_summary_", peak_type, ".txt")))
+  
+  return(list(
+    gene_list = gene_list,
+    peakAnno = peakAnno,
+    ego = ego
+  ))
 }
 
-# Print summary statistics
-summary_text <- sprintf(
-  "Summary of YAF-enriched H2AK119Ub regions:\n
-  Total significant peaks: %d\n
-  Total annotated genes: %d\n
-  Number of significant GO terms: %d\n
-  Analysis completed: %s",
-  nrow(yaf_enriched),
-  length(unique(na.omit(anno_df$gene_symbol))),
-  if(exists("go_bp")) nrow(go_bp) else 0,
-  format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+# Process both narrow and broad peaks
+narrow_results <- process_peaks("narrow")
+broad_results <- process_peaks("broad")
+
+# Create a combined summary
+combined_summary <- c(
+  "Combined Analysis Summary",
+  "======================",
+  "",
+  paste("Narrow peaks unique genes:", length(unique(narrow_results$gene_list$SYMBOL))),
+  paste("Broad peaks unique genes:", length(unique(broad_results$gene_list$SYMBOL))),
+  "",
+  "Common genes between narrow and broad peaks:",
+  "-------------------------------------------",
+  paste(intersect(unique(narrow_results$gene_list$SYMBOL),
+                 unique(broad_results$gene_list$SYMBOL)),
+        collapse = ", ")
 )
 
-writeLines(summary_text, "analysis/gene_lists/analysis_summary.txt")
+writeLines(combined_summary, "analysis/gene_lists_combined/combined_analysis_summary.txt")
+
+message("Analysis completed for both narrow and broad peaks")

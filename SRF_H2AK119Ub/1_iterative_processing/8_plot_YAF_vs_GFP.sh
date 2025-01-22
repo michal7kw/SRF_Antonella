@@ -53,12 +53,12 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/{plots,gene_lists,qc} logs || { log_message "ERROR: Failed to create directories"; exit 1; }
+mkdir -p analysis/{plots_narrow,plots_broad,plots_combined,gene_lists,qc} logs || { log_message "ERROR: Failed to create directories"; exit 1; }
 
-# Check for required input files from previous steps
-log_message "Checking required input files..."
-required_files=(
-    "analysis/diffbind/differential_peaks.csv"
+# Check for required input files for narrow peaks
+log_message "Checking required input files for narrow peaks..."
+required_files_narrow=(
+    "analysis/diffbind_narrow/differential_peaks.csv"
     "analysis/gene_lists/YAF_enriched_genes.txt"
     "analysis/aligned/GFP_1.dedup.bam"
     "analysis/aligned/GFP_2.dedup.bam"
@@ -68,10 +68,16 @@ required_files=(
     "analysis/aligned/YAF_3.dedup.bam"
 )
 
-for file in "${required_files[@]}"; do
+# Check for required input files for broad peaks
+log_message "Checking required input files for broad peaks..."
+required_files_broad=(
+    "analysis/diffbind_broad/differential_peaks.csv"
+)
+
+# Check all required files
+for file in "${required_files_narrow[@]}" "${required_files_broad[@]}"; do
     if [[ ! -f "$file" ]]; then
         log_message "ERROR: Required file not found: $file"
-        log_message "Please run the previous analysis steps first"
         exit 1
     fi
     log_message "Found input file: $file ($(du -h $file | cut -f1))"
@@ -80,8 +86,7 @@ done
 # Check for required R packages
 log_message "Checking R package dependencies..."
 R --quiet -e '
-    packages <- c("DiffBind", "ggplot2", "dplyr", "tidyr", 
-                 "ComplexHeatmap", "circlize", "RColorBrewer")
+    packages <- c("ggplot2", "dplyr", "tidyr", "GenomicRanges", "rtracklayer", "DiffBind", "ComplexHeatmap", "circlize", "RColorBrewer")
     missing <- packages[!packages %in% installed.packages()[,"Package"]]
     if (length(missing) > 0) {
         message("Installing missing packages: ", paste(missing, collapse=", "))
@@ -93,20 +98,35 @@ R --quiet -e '
     sapply(packages, require, character.only=TRUE)
 ' || { log_message "ERROR: Failed to install/load required R packages"; exit 1; }
 
-# Run YAF vs GFP plotting
-log_message "Starting YAF vs GFP plotting..."
+# Run visualization script
+log_message "Starting visualization for both narrow and broad peaks..."
 Rscript scripts/plot_YAF_vs_GFP.R
 
-# Check output files
-log_message "Checking output files..."
-output_files=(
-    "analysis/plots/YAF_vs_GFP_heatmap.pdf"
-    "analysis/plots/YAF_vs_GFP_volcano.pdf"
-    "analysis/plots/YAF_vs_GFP_coverage.pdf"
+# Check output files for narrow peaks
+log_message "Checking output files for narrow peaks..."
+output_files_narrow=(
+    "analysis/plots_narrow/YAF_vs_GFP_heatmap.pdf"
+    "analysis/plots_narrow/YAF_vs_GFP_volcano.pdf"
+    "analysis/plots_narrow/YAF_vs_GFP_coverage.pdf"
 )
 
-for file in "${output_files[@]}"; do
+# Check output files for broad peaks
+log_message "Checking output files for broad peaks..."
+output_files_broad=(
+    "analysis/plots_broad/MA_plot_broad.pdf"
+    "analysis/plots_broad/volcano_plot_broad.pdf"
+    "analysis/plots_broad/summary_stats_broad.txt"
+)
+
+# Check combined analysis files
+log_message "Checking combined analysis files..."
+output_files_combined=(
+    "analysis/plots_combined/combined_summary_stats.txt"
+)
+
+# Check all output files
+for file in "${output_files_narrow[@]}" "${output_files_broad[@]}" "${output_files_combined[@]}"; do
     check_output "$file"
 done
 
-log_message "YAF vs GFP plotting completed successfully"
+log_message "Visualization completed successfully for both narrow and broad peaks"
