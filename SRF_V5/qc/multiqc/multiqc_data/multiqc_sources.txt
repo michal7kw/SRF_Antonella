@@ -1,0 +1,6 @@
+Module	Section	Sample Name	Source
+FastQC	all_sections	InputSES-V5ChIP-Seq_S2_R2_001	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_V5/qc/fastqc/InputSES-V5ChIP-Seq_S2_R2_001_fastqc.zip
+FastQC	all_sections	SES-V5ChIP-Seq1_S5_R2_001	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_V5/qc/fastqc/SES-V5ChIP-Seq1_S5_R2_001_fastqc.zip
+FastQC	all_sections	SES-V5ChIP-Seq2_S6_R1_001	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_V5/qc/fastqc/SES-V5ChIP-Seq2_S6_R1_001_fastqc.zip
+FastQC	all_sections	SES-V5ChIP-Seq2_S6_R2_001	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_V5/qc/fastqc/SES-V5ChIP-Seq2_S6_R2_001_fastqc.zip
+FastQC	all_sections	InputSES-V5ChIP-Seq_S2_R1_001	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_V5/qc/fastqc/InputSES-V5ChIP-Seq_S2_R1_001_fastqc.zip

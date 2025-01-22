@@ -1,0 +1,7 @@
+# Genome configuration
+genome_index: "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub/genome/GRCh38"
+genome_size: "hs"  # human genome size for MACS2
+
+# Analysis parameters
+min_quality: 20
+threads: 8

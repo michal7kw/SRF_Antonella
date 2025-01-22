@@ -1,0 +1,9 @@
+Summary of YAF-enriched H2AK119Ub regions:
+
+  Total significant peaks: 18178
+
+  Total annotated genes: 7894
+
+  Number of significant GO terms: 1191
+
+  Analysis completed: 2024-12-12 13:00:39

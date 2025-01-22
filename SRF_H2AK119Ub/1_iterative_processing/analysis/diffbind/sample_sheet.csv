@@ -1,0 +1,7 @@
+"SampleID","Tissue","Factor","Condition","Treatment","Replicate","bamReads","Peaks","PeakCaller"
+"YAF_1","NA","H2AK119Ub","YAF","NA",1,"analysis/aligned/YAF-1.dedup.bam","analysis/peaks/YAF_vs_GFP_peaks.broadPeak","broad"
+"YAF_2","NA","H2AK119Ub","YAF","NA",2,"analysis/aligned/YAF-2.dedup.bam","analysis/peaks/YAF_vs_GFP_peaks.broadPeak","broad"
+"YAF_3","NA","H2AK119Ub","YAF","NA",3,"analysis/aligned/YAF-3.dedup.bam","analysis/peaks/YAF_vs_GFP_peaks.broadPeak","broad"
+"GFP_1","NA","H2AK119Ub","GFP","NA",1,"analysis/aligned/GFP-1.dedup.bam","analysis/peaks/YAF_vs_GFP_peaks.broadPeak","broad"
+"GFP_2","NA","H2AK119Ub","GFP","NA",2,"analysis/aligned/GFP-2.dedup.bam","analysis/peaks/YAF_vs_GFP_peaks.broadPeak","broad"
+"GFP_3","NA","H2AK119Ub","GFP","NA",3,"analysis/aligned/GFP-3.dedup.bam","analysis/peaks/YAF_vs_GFP_peaks.broadPeak","broad"

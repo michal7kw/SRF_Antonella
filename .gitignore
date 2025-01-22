@@ -1,0 +1,6 @@
+*.bed
+*.bam
+logs/
+
+# exclude large files
+*[._]* > 80M

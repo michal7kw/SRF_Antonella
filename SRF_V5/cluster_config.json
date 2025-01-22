@@ -1,0 +1,37 @@
+{
+    "__default__": {
+        "name": "CUTnTAG.{rule}",
+        "output": "logs/cluster_logs/{rule}.{jobid}.out",
+        "error": "logs/cluster_logs/{rule}.{jobid}.err",
+        "nodes": 1,
+        "ntasks": 1,
+        "cpus": 4,
+        "mem": "16G",
+        "time": "4:00:00"
+    },
+    "fastqc": {
+        "cpus": 4,
+        "mem": "8G",
+        "time": "2:00:00"
+    },
+    "multiqc": {
+        "cpus": 1,
+        "mem": "4G",
+        "time": "1:00:00"
+    },
+    "align": {
+        "cpus": 16,
+        "mem": "32G",
+        "time": "8:00:00"
+    },
+    "call_peaks": {
+        "cpus": 8,
+        "mem": "32G",
+        "time": "4:00:00"
+    },
+    "create_bigwig": {
+        "cpus": 8,
+        "mem": "32G",
+        "time": "4:00:00"
+    }
+}

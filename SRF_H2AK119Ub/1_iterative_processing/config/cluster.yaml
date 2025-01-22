@@ -1,0 +1,37 @@
+__default__:
+  partition: "normal"  # default partition
+  account: "kubacki.michal"  # your cluster account
+  mem_mb: 4000  # default memory in MB
+  time: "04:00:00"  # default time limit
+
+prepare_genome:
+  mem_mb: 16000
+  time: "04:00:00"
+
+quality_control:
+  mem_mb: 8000
+  time: "04:00:00"
+
+multiqc:
+  mem_mb: 4000
+  time: "01:00:00"
+
+alignment:
+  mem_mb: 16000
+  time: "08:00:00"
+
+peak_calling:
+  mem_mb: 8000
+  time: "04:00:00"
+
+differential_binding:
+  mem_mb: 16000
+  time: "04:00:00"
+
+peak_annotation:
+  mem_mb: 8000
+  time: "02:00:00"
+
+motif_analysis:
+  mem_mb: 8000
+  time: "04:00:00" 

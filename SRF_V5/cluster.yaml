@@ -1,0 +1,20 @@
+__default__:
+    partition: "workq"
+    time: "240"
+    mem: "32000"
+    threads: 8
+
+align:
+    time: "1440"
+    mem: "64000"
+    threads: 16
+
+call_peaks:
+    time: "480"
+    mem: "32000"
+    threads: 8
+
+create_bigwig:
+    time: "480"
+    mem: "32000"
+    threads: 8 
