@@ -6,3 +6,4 @@ logs/
 *[._]* > 80M
 
 *.log
+*Peak

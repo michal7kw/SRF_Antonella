@@ -7,8 +7,8 @@
 #SBATCH --ntasks=1
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/2_multiqc.err"
-#SBATCH --output="logs/2_multiqc.out"
+#SBATCH --error="logs/2_multiqc/2_multiqc.err"
+#SBATCH --output="logs/2_multiqc/2_multiqc.out"
 
 set -e
 set -u

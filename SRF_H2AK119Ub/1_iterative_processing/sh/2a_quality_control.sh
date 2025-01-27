@@ -8,8 +8,8 @@
 #SBATCH --exclusive
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/2_quality_control_%a.err"
-#SBATCH --output="logs/2_quality_control_%a.out"
+#SBATCH --error="logs/2_quality_control/2_quality_control_%a.err"
+#SBATCH --output="logs/2_quality_control/2_quality_control_%a.out"
 #SBATCH --array=0-5  # Adjusted for all samples (6 samples total)
 
 set -e

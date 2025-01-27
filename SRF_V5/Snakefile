@@ -41,15 +41,27 @@ rule fastqc:
 
 rule multiqc:
     input:
-        expand("qc/fastqc/{sample}_R{read}_001_fastqc.html", sample=SAMPLES + [INPUT_SAMPLE], read=[1,2])
+        expand("qc/fastqc/{sample}_R{read}_001_fastqc.html",
+               sample=SAMPLES + [INPUT_SAMPLE],
+               read=[1,2])
     output:
-        "qc/multiqc/multiqc_report.html"
+        html="qc/multiqc/multiqc_report.html"
+    log:
+        "logs/multiqc.log"
     resources:
-        mem_mb=4000
+        mem_mb=4000,
+        time="60" # Reduced time since MultiQC is usually quick
+    threads: 1  # MultiQC is single-threaded
     shell:
         """
+        # Ensure directory exists
         mkdir -p qc/multiqc
-        multiqc qc/fastqc -o qc/multiqc
+        
+        # Run MultiQC with explicit output directory and report name
+        multiqc qc/fastqc \
+            --outdir qc/multiqc \
+            --filename multiqc_report.html \
+            2> {log}
         """
 
 rule align:
@@ -108,15 +120,11 @@ rule call_narrow_peaks:
             -c {input.control} \
             -f BAMPE \
             -g {params.genome_size} \
-            -n {params.prefix} \
-            --outdir peaks \
+            -n peaks/{params.prefix} \
             -q 0.05 \
             --nomodel \
             --keep-dup all \
             --call-summits
-
-        # Move the output file to match Snakemake's expected name
-        mv peaks/{params.prefix}_peaks.narrowPeak {output}
         """
 
 rule call_broad_peaks:
@@ -139,16 +147,12 @@ rule call_broad_peaks:
             -c {input.control} \
             -f BAMPE \
             -g {params.genome_size} \
-            -n {params.prefix} \
-            --outdir peaks \
+            -n peaks/{params.prefix} \
             -q 0.05 \
             --broad \
             --broad-cutoff 0.1 \
             --nomodel \
             --keep-dup all
-
-        # Move the output file to match Snakemake's expected name
-        mv peaks/{params.prefix}_peaks.broadPeak {output}
         """
 
 rule create_bigwig:

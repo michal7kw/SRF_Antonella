@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=5_differential_binding
 #SBATCH --account=kubacki.michal
-#SBATCH --mem=128GB
+#SBATCH --mem=64GB
 #SBATCH --time=12:00:00
 #SBATCH --nodes=1
-#SBATCH --ntasks=32
+#SBATCH --ntasks=16
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
 #SBATCH --error="logs/5_differential_binding.err"

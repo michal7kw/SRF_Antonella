@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=6_annotation
+#SBATCH --job-name=6_annotation_and_enrichment
 #SBATCH --account=kubacki.michal
-#SBATCH --mem=128GB
+#SBATCH --mem=64GB
 #SBATCH --time=12:00:00
 #SBATCH --nodes=1
-#SBATCH --ntasks=32
+#SBATCH --ntasks=16
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/6_annotation.err"
-#SBATCH --output="logs/6_annotation.out"
+#SBATCH --error="logs/6_annotation_and_enrichment.err"
+#SBATCH --output="logs/6_annotation_and_enrichment.out"
 
 set -e
 set -u

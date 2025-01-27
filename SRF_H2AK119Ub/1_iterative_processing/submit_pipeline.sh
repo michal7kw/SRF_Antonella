@@ -9,11 +9,11 @@ job2_id=$(sbatch --parsable --dependency=afterok:${job1_id} 6_annotation_and_enr
 echo "Submitted annotation job: $job2_id"
 
 # Submit visualization job dependent on annotation job
-job3_id=$(sbatch --parsable --dependency=afterok:${job2_id} 8_visualization.sh)
+job3_id=$(sbatch --parsable --dependency=afterok:${job2_id} 7_visualization.sh)
 echo "Submitted visualization job: $job3_id"
 
 # Submit advanced analysis job dependent on visualization job
-job4_id=$(sbatch --parsable --dependency=afterok:${job3_id} 9_advanced_analysis.sh)
-echo "Submitted advanced analysis job: $job4_id"
+# job4_id=$(sbatch --parsable --dependency=afterok:${job3_id} 9_advanced_analysis.sh)
+# echo "Submitted advanced analysis job: $job4_id"
 
 echo "All jobs submitted successfully"

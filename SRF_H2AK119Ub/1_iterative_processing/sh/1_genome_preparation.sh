@@ -7,8 +7,8 @@
 #SBATCH --ntasks=32
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/1_genome_preparation.err"
-#SBATCH --output="logs/1_genome_preparation.out"
+#SBATCH --error="logs/1_genome_preparation/1_genome_preparation.err"
+#SBATCH --output="logs/1_genome_preparation/1_genome_preparation.out"
 
 set -e
 set -u

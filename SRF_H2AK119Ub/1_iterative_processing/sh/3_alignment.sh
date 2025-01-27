@@ -8,8 +8,8 @@
 #SBATCH --array=0-5
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/3_alignment_%a.err"
-#SBATCH --output="logs/3_alignment_%a.out"
+#SBATCH --error="logs/3_alignment/3_alignment_%a.err"
+#SBATCH --output="logs/3_alignment/3_alignment_%a.out"
 
 # Exit on error, but we want to see the error message
 set -e

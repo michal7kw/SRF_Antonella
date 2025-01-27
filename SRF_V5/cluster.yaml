@@ -17,4 +17,9 @@ call_peaks:
 create_bigwig:
     time: "480"
     mem: "32000"
-    threads: 8 
+    threads: 8
+
+multiqc:
+    time: "60"
+    mem: "4000"
+    threads: 1 

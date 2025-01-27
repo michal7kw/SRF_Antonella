@@ -35,7 +35,9 @@ perform_diffbind <- function(peak_type = c("broad", "narrow")) {
     
     # Create DiffBind object and analyze
     dba_data <- dba(sampleSheet=samples)
-    dba_data <- dba.count(dba_data)
+    dba_data <- dba.count(dba_data, 
+                         bUseSummarizeOverlaps=TRUE,  # More accurate counting
+                         bParallel=FALSE)             # Better error reporting
     dba_data <- dba.normalize(dba_data)
     dba_data <- dba.contrast(dba_data, categories=DBA_CONDITION)
     dba_data <- dba.analyze(dba_data)
