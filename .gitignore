@@ -7,3 +7,6 @@ logs/
 
 *.log
 *Peak
+
+# R data files
+*.rds
