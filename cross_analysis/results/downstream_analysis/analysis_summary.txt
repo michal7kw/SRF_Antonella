@@ -1,0 +1,31 @@
+Downstream Analysis Summary
+=========================
+
+
+NARROW NARROW Analysis:
+------------------------------
+V5 peaks with H2AK119Ub: 16
+V5-only peaks: 164
+H2AK119Ub peaks with V5: 16
+H2AK119Ub-only peaks: 98007
+
+NARROW BROAD Analysis:
+-----------------------------
+V5 peaks with H2AK119Ub: 13
+V5-only peaks: 167
+H2AK119Ub peaks with V5: 13
+H2AK119Ub-only peaks: 38264
+
+BROAD NARROW Analysis:
+-----------------------------
+V5 peaks with H2AK119Ub: 51
+V5-only peaks: 315
+H2AK119Ub peaks with V5: 53
+H2AK119Ub-only peaks: 97970
+
+BROAD BROAD Analysis:
+----------------------------
+V5 peaks with H2AK119Ub: 45
+V5-only peaks: 321
+H2AK119Ub peaks with V5: 45
+H2AK119Ub-only peaks: 38232

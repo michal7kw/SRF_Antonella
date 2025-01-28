@@ -1,5 +1,9 @@
-"Peak_Type","Total_H2AK119Ub_Peaks","Total_V5_Peaks","Overlapping_Peaks","Overlap_Percentage"
-"narrow",11228,90,6,0.05
-"narrow significant",11228,90,6,0.05
-"broad",13748,90,3,0.02
-"broad significant",13748,90,3,0.02
+"Comparison","Observed"
+"V5_narrow_vs_H2A_narrow_GFP",14
+"V5_narrow_vs_H2A_narrow_YAF",16
+"V5_narrow_vs_H2A_broad_GFP",10
+"V5_narrow_vs_H2A_broad_YAF",13
+"V5_broad_vs_H2A_narrow_GFP",32
+"V5_broad_vs_H2A_narrow_YAF",53
+"V5_broad_vs_H2A_broad_GFP",29
+"V5_broad_vs_H2A_broad_YAF",45

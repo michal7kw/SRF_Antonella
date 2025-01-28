@@ -1,13 +1,16 @@
 Cross-reference Analysis Summary
 ==============================
 
-Peak Overlap Statistics:
-- Narrow peaks total: 11228
-- Narrow peaks overlapping with V5: 6 (0.1%)
-- Broad peaks total: 13748
-- Broad peaks overlapping with V5: 3 (0.0%)
+Analysis completed: 2025-01-27 20:37:48
 
-Gene Statistics:
-- Unique genes from narrow peaks: 1
-- Unique genes from broad peaks: 1
-- Common genes between narrow and broad: 1
+Peak Statistics:
+Total V5 narrow peaks: 180
+Total V5 broad peaks: 366
+H2AK119Ub narrow peaks: 98023
+H2AK119Ub broad peaks: 38277
+
+Overlap Statistics:
+Narrow V5 + Narrow H2AK119Ub: 16 (8.9%)
+Narrow V5 + Broad H2AK119Ub: 13 (7.2%)
+Broad V5 + Narrow H2AK119Ub: 51 (13.9%)
+Broad V5 + Broad H2AK119Ub: 45 (12.3%)
