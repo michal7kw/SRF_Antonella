@@ -195,14 +195,19 @@ main <- function() {
         v5_with_h2a_specific <- setdiff(v5_with_h2a_results@anno$geneId, v5_only_results@anno$geneId)
         v5_only_specific <- setdiff(v5_only_results@anno$geneId, v5_with_h2a_results@anno$geneId)
         
-        # Save gene lists
-        write.table(common_genes,
+        # Convert Entrez IDs to gene symbols
+        common_genes_symbols <- entrez_to_symbol(common_genes)
+        v5_with_h2a_specific_symbols <- entrez_to_symbol(v5_with_h2a_specific)
+        v5_only_specific_symbols <- entrez_to_symbol(v5_only_specific)
+        
+        # Save gene lists with symbols
+        write.table(common_genes_symbols,
                    file = file.path(output_dir, sprintf("%s_common_genes.txt", cat_name)),
                    row.names = FALSE, col.names = FALSE, quote = FALSE)
-        write.table(v5_with_h2a_specific,
+        write.table(v5_with_h2a_specific_symbols,
                    file = file.path(output_dir, sprintf("%s_v5_with_h2a_specific_genes.txt", cat_name)),
                    row.names = FALSE, col.names = FALSE, quote = FALSE)
-        write.table(v5_only_specific,
+        write.table(v5_only_specific_symbols,
                    file = file.path(output_dir, sprintf("%s_v5_only_specific_genes.txt", cat_name)),
                    row.names = FALSE, col.names = FALSE, quote = FALSE)
         
