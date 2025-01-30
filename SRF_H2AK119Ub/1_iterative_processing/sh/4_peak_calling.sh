@@ -1,32 +1,5 @@
 #!/bin/bash
 
-# Peak Calling Pipeline
-# This script performs peak calling and QC analysis on ChIP-seq data
-# 
-# Steps:
-# 1. Set up SLURM job parameters (memory, cores, array jobs for parallel processing)
-# 2. Set up environment and activate conda
-# 3. Create output directories for peaks, visualization files and QC metrics
-# 4. Process each sample in parallel through the job array:
-#    - Each sample is processed twice - once for broad peaks and once for narrow peaks
-#    - Sample and analysis type are determined from array task ID
-# 5. For each sample (first time only):
-#    - Generate normalized bigWig coverage files for visualization
-#    - Calculate library complexity metrics
-# 6. Peak calling with MACS2:
-#    - Broad peak mode: Uses --broad flag with 0.1 broad-cutoff
-#    - Narrow peak mode: Uses --call-summits for higher resolution
-#    Both modes:
-#    - Use paired-end BAM files
-#    - q-value threshold of 0.05
-#    - Keep all duplicate reads
-# 7. Calculate and save QC metrics for each analysis:
-#    - Total read count
-#    - Reads in peaks
-#    - Fraction of reads in peaks (FRiP)
-#    - Peak count
-#    - Mean peak length
-
 #SBATCH --job-name=4_peak_calling
 #SBATCH --account=kubacki.michal
 #SBATCH --mem=64GB
@@ -152,3 +125,31 @@ else
 fi
 
 echo "Completed processing ${sample} for ${analysis_type} peak calling"
+
+
+# Peak Calling Pipeline
+# This script performs peak calling and QC analysis on ChIP-seq data
+# 
+# Steps:
+# 1. Set up SLURM job parameters (memory, cores, array jobs for parallel processing)
+# 2. Set up environment and activate conda
+# 3. Create output directories for peaks, visualization files and QC metrics
+# 4. Process each sample in parallel through the job array:
+#    - Each sample is processed twice - once for broad peaks and once for narrow peaks
+#    - Sample and analysis type are determined from array task ID
+# 5. For each sample (first time only):
+#    - Generate normalized bigWig coverage files for visualization
+#    - Calculate library complexity metrics
+# 6. Peak calling with MACS2:
+#    - Broad peak mode: Uses --broad flag with 0.1 broad-cutoff
+#    - Narrow peak mode: Uses --call-summits for higher resolution
+#    Both modes:
+#    - Use paired-end BAM files
+#    - q-value threshold of 0.05
+#    - Keep all duplicate reads
+# 7. Calculate and save QC metrics for each analysis:
+#    - Total read count
+#    - Reads in peaks
+#    - Fraction of reads in peaks (FRiP)
+#    - Peak count
+#    - Mean peak length

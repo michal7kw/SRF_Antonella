@@ -37,9 +37,15 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
     log_message("Generating annotation plots...")
     plots <- list(
         anno_pie = plotAnnoPie(peak_anno),
-        dist_tss = plotDistToTSS(peak_anno),
-        upset = upsetplot(peak_anno, vennpie=TRUE)
+        dist_tss = plotDistToTSS(peak_anno)
     )
+    
+    # Try to create upset plot if ggupset is available
+    if (requireNamespace("ggupset", quietly = TRUE)) {
+        plots$upset <- upsetplot(peak_anno, vennpie=TRUE)
+    } else {
+        log_message("Package 'ggupset' not available. Skipping upset plot.", level="WARNING")
+    }
     
     pdf_file <- file.path("analysis", paste0("annotation_", peak_type), "figures", "annotation_plots.pdf")
     save_plot(plots$anno_pie, pdf_file, width=10, height=8)
@@ -48,24 +54,28 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
     log_message("Extracting YAF-enriched genes...")
     genes_df <- as.data.frame(peak_anno)
     
-    # Map ENTREZID to SYMBOL
+    # Map ENTREZID to SYMBOL and ensure matching rows
+    gene_ids <- genes_df$geneId[!is.na(genes_df$geneId)]
     gene_symbols <- mapIds(org.Hs.eg.db,
-                          keys = genes_df$geneId,
+                          keys = gene_ids,
                           column = "SYMBOL",
                           keytype = "ENTREZID",
                           multiVals = "first")
     
-    # Create gene list
+    # Create gene list with only valid mappings
+    valid_indices <- which(!is.na(genes_df$geneId))
     gene_list <- data.frame(
-        ENTREZID = genes_df$geneId,
+        ENTREZID = gene_ids,
         SYMBOL = gene_symbols,
-        distanceToTSS = genes_df$distanceToTSS,
-        annotation = genes_df$annotation,
-        fold_change = peaks_gr$Fold,
+        distanceToTSS = genes_df$distanceToTSS[valid_indices],
+        annotation = genes_df$annotation[valid_indices],
+        fold_change = peaks_gr$Fold[valid_indices],
         stringsAsFactors = FALSE
-    ) %>%
-        filter(!is.na(SYMBOL)) %>%
-        arrange(desc(fold_change))
+    )
+    
+    # Remove any rows with NA symbols and sort
+    gene_list <- gene_list[!is.na(gene_list$SYMBOL), ]
+    gene_list <- gene_list[order(-gene_list$fold_change), ]
     
     # Save gene lists
     write.csv(gene_list,
@@ -96,9 +106,21 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
         # Create GO plots
         pdf(file.path("analysis", paste0("annotation_", peak_type), 
                      "figures", "go_enrichment_plots.pdf"))
+        
+        # Create and print dotplot
         print(dotplot(ego, showCategory = 20))
-        print(emapplot(ego, showCategory = 50))
+        
+        # Try to create emapplot with term similarity
+        tryCatch({
+            ego <- pairwise_termsim(ego)
+            print(emapplot(ego, showCategory = 50))
+        }, error = function(e) {
+            log_message("Could not create emapplot. Skipping...", level="WARNING")
+        })
+        
+        # Create and print cnetplot
         print(cnetplot(ego, showCategory = 10))
+        
         dev.off()
     }
     
@@ -118,22 +140,22 @@ broad_peaks <- readRDS("analysis/diffbind_broad/significant_peaks.rds")
 broad_results <- annotate_and_enrich("broad", broad_peaks)
 
 # Process narrow peaks
-narrow_peaks <- readRDS("analysis/diffbind_narrow/significant_peaks.rds")
-narrow_results <- annotate_and_enrich("narrow", narrow_peaks)
+# narrow_peaks <- readRDS("analysis/diffbind_narrow/significant_peaks.rds")
+# narrow_results <- annotate_and_enrich("narrow", narrow_peaks)
 
 # Create combined analysis summary
-log_message("Creating combined analysis summary...")
-combined_summary <- data.frame(
-    Analysis_Type = c("Broad", "Narrow"),
-    Total_Peaks = c(length(broad_peaks), length(narrow_peaks)),
-    Unique_Genes = c(length(unique(broad_results$gene_list$SYMBOL)),
-                    length(unique(narrow_results$gene_list$SYMBOL))),
-    GO_Terms = c(nrow(broad_results$go_enrichment), 
-                nrow(narrow_results$go_enrichment))
-)
+# log_message("Creating combined analysis summary...")
+# combined_summary <- data.frame(
+#     Analysis_Type = c("Broad", "Narrow"),
+#     Total_Peaks = c(length(broad_peaks), length(narrow_peaks)),
+#     Unique_Genes = c(length(unique(broad_results$gene_list$SYMBOL)),
+#                     length(unique(narrow_results$gene_list$SYMBOL))),
+#     GO_Terms = c(nrow(broad_results$go_enrichment), 
+#                 nrow(narrow_results$go_enrichment))
+# )
 
-write.csv(combined_summary,
-          "analysis/annotation_combined/combined_summary.csv",
-          row.names = FALSE)
+# write.csv(combined_summary,
+#           "analysis/annotation_combined/combined_summary.csv",
+#           row.names = FALSE)
 
 log_message("Analysis completed successfully") 

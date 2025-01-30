@@ -19,6 +19,37 @@ log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >&2
 }
 
+# Function to print usage
+usage() {
+    echo "Usage: $0 [-t <peak_type>]"
+    echo "Options:"
+    echo "  -t    Peak type (narrow or broad, default: narrow)"
+    exit 1
+}
+
+# Default peak type
+PEAK_TYPE="broad"
+
+# Parse command line options
+while getopts "t:h" opt; do
+    case $opt in
+        t)
+            PEAK_TYPE=$OPTARG
+            if [[ ! "$PEAK_TYPE" =~ ^(narrow|broad)$ ]]; then
+                log_message "ERROR: Peak type must be either 'narrow' or 'broad'"
+                usage
+            fi
+            ;;
+        h)
+            usage
+            ;;
+        \?)
+            log_message "ERROR: Invalid option -$OPTARG"
+            usage
+            ;;
+    esac
+done
+
 # Activate conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
 conda activate snakemake
@@ -29,15 +60,13 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/advanced_analysis/{motifs,clusters,profiles} logs
+mkdir -p analysis/{advanced_analysis_broad,advanced_analysis_narrow}/{motifs,clusters,profiles,plots} logs
 
 # Check for required input files
 log_message "Checking input files..."
 required_files=(
-    "analysis/diffbind_broad/significant_peaks.rds"
-    "analysis/diffbind_narrow/significant_peaks.rds"
-    "analysis/annotation_broad/peak_annotation.rds"
-    "analysis/annotation_narrow/peak_annotation.rds"
+    "analysis/diffbind_${PEAK_TYPE}/significant_peaks.rds"
+    "analysis/annotation_${PEAK_TYPE}/peak_annotation.rds"
 )
 
 for file in "${required_files[@]}"; do
@@ -48,7 +77,7 @@ for file in "${required_files[@]}"; do
 done
 
 # Run R script for advanced analysis
-log_message "Running advanced analysis..."
-Rscript scripts/8_advanced_analysis.R
+log_message "Running advanced analysis for ${PEAK_TYPE} peaks..."
+Rscript scripts/8_advanced_analysis.R "$PEAK_TYPE"
 
 log_message "Advanced analysis completed"

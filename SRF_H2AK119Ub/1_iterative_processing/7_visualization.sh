@@ -29,12 +29,13 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/plots_{broad,narrow}/{peak_analysis,gene_analysis} logs
+mkdir -p analysis/{plots_broad,plots_narrow}/{peak_analysis,gene_analysis} logs
 mkdir -p analysis/plots_combined
+mkdir -p analysis/plots_{broad,narrow}/summary_statistics
 
 # Check for required input files
 log_message "Checking input files..."
-for type in broad narrow; do
+for type in broad; do #in broad narrow;
     files=(
         "analysis/diffbind_${type}/significant_peaks.rds"
         "analysis/gene_lists_${type}/YAF_enriched_genes_${type}_full.csv"

@@ -1,0 +1,3 @@
+is_sox2_target,mean,std,count
+False,0.09,0.984,3146
+True,-0.018,0.991,2015

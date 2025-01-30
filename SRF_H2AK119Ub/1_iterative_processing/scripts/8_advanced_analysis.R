@@ -1,26 +1,54 @@
-# Load required libraries
+# Function to install and load required packages
+install_and_load_packages <- function(packages) {
+    for(package in packages) {
+        if(!requireNamespace(package, quietly = TRUE)) {
+            message(paste("Installing package:", package))
+            if(package %in% c("motifmatchr", "BSgenome.Hsapiens.UCSC.hg38", "TxDb.Hsapiens.UCSC.hg38.knownGene", "JASPAR2020")) {
+                if(!requireNamespace("BiocManager", quietly = TRUE)) {
+                    install.packages("BiocManager")
+                }
+                BiocManager::install(package, quiet = TRUE)
+            } else {
+                install.packages(package, quiet = TRUE)
+            }
+        }
+        library(package, character.only = TRUE)
+    }
+}
+
+# List of required packages
+required_packages <- c(
+    "GenomicRanges",
+    "ComplexHeatmap",
+    "circlize",
+    "ggplot2",
+    "dplyr",
+    "tidyr",
+    "ChIPseeker",
+    "TxDb.Hsapiens.UCSC.hg38.knownGene",
+    "motifmatchr",
+    "JASPAR2020",
+    "BSgenome.Hsapiens.UCSC.hg38",
+    "DiffBind"
+)
+
+# Install and load packages
 suppressPackageStartupMessages({
-    library(GenomicRanges)
-    library(ComplexHeatmap)
-    library(circlize)
-    library(ggplot2)
-    library(dplyr)
-    library(tidyr)
-    library(ChIPseeker)
-    library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-    library(motifmatchr)
-    library(JASPAR2020)
-    library(BSgenome.Hsapiens.UCSC.hg38)
-    library(DiffBind)
+    install_and_load_packages(required_packages)
 })
 
-# Create output directories
-dir.create("analysis/advanced_analysis", recursive = TRUE, showWarnings = FALSE)
-dir.create("analysis/advanced_analysis/plots", recursive = TRUE, showWarnings = FALSE)
+# Get command line arguments
+args <- commandArgs(trailingOnly = TRUE)
+peak_type <- if(length(args) > 0) args[1] else "broad"
 
-# Read data and ensure proper sequence levels
-diff_peaks <- readRDS("analysis/diffbind/significant_peaks.rds")
-all_peaks <- readRDS("analysis/diffbind/all_peaks.rds")
+# Create output directories
+base_dir <- file.path("analysis", paste0("advanced_analysis_", peak_type))
+subdirs <- c("motifs", "clusters", "profiles", "plots")
+sapply(file.path(base_dir, subdirs), dir.create, recursive = TRUE, showWarnings = FALSE)
+
+# Read data
+diff_peaks <- readRDS(file.path("analysis", paste0("diffbind_", peak_type), "significant_peaks.rds"))
+peak_annotation <- readRDS(file.path("analysis", paste0("annotation_", peak_type), "peak_annotation.rds"))
 
 # Ensure chromosome names are consistent
 seqlevelsStyle(diff_peaks) <- "UCSC"
@@ -32,11 +60,11 @@ peak_widths <- data.frame(
     type = ifelse(diff_peaks$Fold > 0, "YAF_enriched", "GFP_enriched")
 )
 
-pdf("analysis/advanced_analysis/plots/peak_width_distribution.pdf", width = 8, height = 6)
+pdf(file.path(base_dir, "plots", "peak_width_distribution.pdf"), width = 8, height = 6)
 ggplot(peak_widths, aes(x = width, fill = type)) +
     geom_density(alpha = 0.5) +
     scale_x_log10() +
-    labs(title = "Peak Width Distribution",
+    labs(title = paste("Peak Width Distribution -", peak_type, "peaks"),
          x = "Peak Width (bp)",
          y = "Density") +
     theme_minimal()
@@ -47,7 +75,7 @@ if(any(grepl("^signal", colnames(mcols(diff_peaks))))) {
     peak_signals <- as.matrix(mcols(diff_peaks)[, grep("^signal", colnames(mcols(diff_peaks)))])
     cor_matrix <- cor(peak_signals, method = "pearson")
     
-    pdf("analysis/advanced_analysis/plots/signal_correlation_heatmap.pdf", width = 8, height = 8)
+    pdf(file.path(base_dir, "plots", "signal_correlation_heatmap.pdf"), width = 8, height = 8)
     Heatmap(cor_matrix,
             name = "Correlation",
             column_title = "Sample Correlation",
@@ -64,7 +92,7 @@ genomic_distribution <- annotatePeak(diff_peaks,
                                    annoDb = "org.Hs.eg.db",
                                    level = "transcript")
 
-pdf("analysis/advanced_analysis/plots/genomic_distribution.pdf", width = 10, height = 8)
+pdf(file.path(base_dir, "plots", "genomic_distribution.pdf"), width = 10, height = 8)
 plotAnnoBar(genomic_distribution)
 plotDistToTSS(genomic_distribution)
 dev.off()
@@ -121,7 +149,7 @@ for(chr in seqlevels(tss)) {
 
 # Calculate and plot average profile
 avg_profile <- rowMeans(coverage_matrix)
-pdf("analysis/advanced_analysis/plots/tss_profile.pdf", width = 8, height = 6)
+pdf(file.path(base_dir, "plots", "tss_profile.pdf"), width = 8, height = 6)
 plot(1:6000, avg_profile,
      type = "l",
      xlab = "Distance from TSS (bp)",
@@ -149,7 +177,7 @@ if(median(width(diff_peaks)) < 1000) {
                                        diff_peaks$Fold > 0)
     
     # Plot top enriched motifs
-    pdf("analysis/advanced_analysis/plots/motif_enrichment.pdf", width = 8, height = 10)
+    pdf(file.path(base_dir, "plots", "motif_enrichment.pdf"), width = 8, height = 10)
     plotMotifEnrichment(motif_enrichment, top_n = 20)
     dev.off()
 }
@@ -164,7 +192,7 @@ cluster_df <- data.frame(
     fdr = diff_peaks$FDR
 )
 
-pdf("analysis/advanced_analysis/plots/peak_clusters.pdf", width = 8, height = 6)
+pdf(file.path(base_dir, "plots", "peak_clusters.pdf"), width = 8, height = 6)
 ggplot(cluster_df, aes(x = fold_change, y = -log10(fdr), color = factor(cluster))) +
     geom_point(alpha = 0.6) +
     theme_minimal() +
@@ -188,10 +216,10 @@ write.table(
                  sum(genomic_distribution@annoStat$Feature == "Promoter"),
                  sum(genomic_distribution@annoStat$Feature == "Enhancer"))
     ),
-    "analysis/advanced_analysis/summary_statistics.txt",
+    file.path(base_dir, "summary_statistics.txt"),
     sep = "\t",
     quote = FALSE,
     row.names = FALSE
 )
 
-print("Advanced analysis completed successfully") 
+print(paste("Advanced analysis completed successfully for", peak_type, "peaks")) 

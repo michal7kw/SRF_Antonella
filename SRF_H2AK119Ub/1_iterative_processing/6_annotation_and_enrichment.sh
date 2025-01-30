@@ -33,7 +33,7 @@ mkdir -p analysis/{annotation_{broad,narrow}/{figures,tables},gene_lists_{broad,
 
 # Check for required input files
 log_message "Checking input files..."
-for type in broad narrow; do
+for type in broad; do #in broad narrow
     files=(
         "analysis/diffbind_${type}/all_peaks.rds"
         "analysis/diffbind_${type}/significant_peaks.rds"

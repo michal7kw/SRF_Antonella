@@ -46,6 +46,17 @@ standardize_chromosomes <- function(gr) {
         seqlevels(gr) <- new_levels
     }
     
+    # Handle mitochondrial chromosome naming
+    current_chroms <- seqlevels(gr)
+    mt_matches <- grep("^chr(M|MT)$", current_chroms, value = TRUE)
+    if (length(mt_matches) > 0) {
+        # Rename to standard chrM
+        new_levels <- current_chroms
+        names(new_levels) <- current_chroms
+        new_levels[mt_matches] <- "chrM"
+        seqlevels(gr) <- new_levels
+    }
+    
     # Keep only standard chromosomes
     standard_chroms <- paste0("chr", c(1:22, "X", "Y", "M"))
     gr <- keepSeqlevels(gr, standard_chroms, pruning.mode = "coarse")

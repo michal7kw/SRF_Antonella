@@ -1,0 +1,5 @@
+pandas>=1.5.0
+gseapy>=1.0.0
+matplotlib>=3.5.0
+matplotlib-venn>=0.11.7
+seaborn>=0.12.0

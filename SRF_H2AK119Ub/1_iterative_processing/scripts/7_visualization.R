@@ -7,13 +7,17 @@ source("scripts/utils.R")
 create_visualizations <- function(peak_type, diff_peaks, gene_list) {
     log_message(sprintf("Creating visualizations for %s peaks", peak_type))
     
-    # Create output directories
+    # Define base output directory
+    base_dir <- file.path("analysis", paste0("plots_", peak_type))
+    
+    # Create output directories with full paths
     dirs <- c(
-        file.path("analysis", paste0("plots_", peak_type)),
-        file.path("analysis", paste0("plots_", peak_type), "peak_analysis"),
-        file.path("analysis", paste0("plots_", peak_type), "gene_analysis")
+        base_dir,
+        file.path(base_dir, "peak_analysis"),
+        file.path(base_dir, "gene_analysis"),
+        file.path(base_dir, "summary_statistics")
     )
-    create_dirs(dirs)
+    sapply(dirs, dir.create, recursive = TRUE, showWarnings = FALSE)
     
     # Convert peaks to data frame if needed
     if (is(diff_peaks, "GRanges")) {
@@ -40,8 +44,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
         theme(axis.text.x = element_text(angle = 45, hjust = 1))
     
     save_plot(peak_dist_plot,
-             file.path("analysis", paste0("plots_", peak_type), 
-                      "peak_analysis", "peak_distribution.pdf"))
+             file.path(base_dir, "peak_analysis", "peak_distribution.pdf"))
     
     # 2. Enhanced MA Plot
     log_message("Creating enhanced MA plot...")
@@ -57,8 +60,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
         theme(legend.position = "right")
     
     save_plot(ma_plot,
-             file.path("analysis", paste0("plots_", peak_type), 
-                      "peak_analysis", "ma_plot_enhanced.pdf"))
+             file.path(base_dir, "peak_analysis", "ma_plot_enhanced.pdf"))
     
     # 3. Enhanced Volcano Plot
     log_message("Creating enhanced volcano plot...")
@@ -74,8 +76,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
         theme_minimal()
     
     save_plot(volcano_plot,
-             file.path("analysis", paste0("plots_", peak_type), 
-                      "peak_analysis", "volcano_plot_enhanced.pdf"))
+             file.path(base_dir, "peak_analysis", "volcano_plot_enhanced.pdf"))
     
     # 4. Gene Distance to TSS Distribution
     log_message("Creating TSS distance distribution plot...")
@@ -88,8 +89,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
         scale_x_continuous(labels = scales::comma)
     
     save_plot(tss_dist_plot,
-             file.path("analysis", paste0("plots_", peak_type), 
-                      "gene_analysis", "tss_distribution.pdf"))
+             file.path(base_dir, "gene_analysis", "tss_distribution.pdf"))
     
     # 5. Create summary statistics
     log_message("Generating summary statistics...")
@@ -113,8 +113,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
     )
     
     write.csv(summary_stats,
-              file.path("analysis", paste0("plots_", peak_type), 
-                       "summary_statistics.csv"),
+              file.path(base_dir, "summary_statistics", "summary_stats.csv"),
               row.names = FALSE)
     
     log_message(sprintf("Completed visualizations for %s peaks", peak_type))
@@ -135,23 +134,23 @@ broad_peaks <- readRDS("analysis/diffbind_broad/significant_peaks.rds")
 broad_genes <- read.csv("analysis/gene_lists_broad/YAF_enriched_genes_broad_full.csv")
 broad_viz <- create_visualizations("broad", broad_peaks, broad_genes)
 
-# Process narrow peaks
-narrow_peaks <- readRDS("analysis/diffbind_narrow/significant_peaks.rds")
-narrow_genes <- read.csv("analysis/gene_lists_narrow/YAF_enriched_genes_narrow_full.csv")
-narrow_viz <- create_visualizations("narrow", narrow_peaks, narrow_genes)
+# # Process narrow peaks
+# narrow_peaks <- readRDS("analysis/diffbind_narrow/significant_peaks.rds")
+# narrow_genes <- read.csv("analysis/gene_lists_narrow/YAF_enriched_genes_narrow_full.csv")
+# narrow_viz <- create_visualizations("narrow", narrow_peaks, narrow_genes)
 
-# Create combined visualization report
-log_message("Creating combined visualization report...")
-pdf("analysis/plots_combined/combined_visualization_report.pdf", width = 12, height = 8)
+# # Create combined visualization report
+# log_message("Creating combined visualization report...")
+# pdf("analysis/plots_combined/combined_visualization_report.pdf", width = 12, height = 8)
 
-# Compare broad vs narrow peaks
-grid.arrange(
-    broad_viz$peak_dist_plot, narrow_viz$peak_dist_plot,
-    broad_viz$volcano_plot, narrow_viz$volcano_plot,
-    ncol = 2,
-    top = "Comparison of Broad and Narrow Peak Analysis"
-)
+# # Compare broad vs narrow peaks
+# grid.arrange(
+#     broad_viz$peak_dist_plot, narrow_viz$peak_dist_plot,
+#     broad_viz$volcano_plot, narrow_viz$volcano_plot,
+#     ncol = 2,
+#     top = "Comparison of Broad and Narrow Peak Analysis"
+# )
 
-dev.off()
+# dev.off()
 
 log_message("Visualization process completed successfully") 

@@ -1,0 +1,7 @@
+"Metric","Value"
+"Total Peaks",15982
+"Significant Peaks (FDR < 0.05)",15982
+"YAF-enriched Peaks",7360
+"GFP-enriched Peaks",8622
+"Unique Genes",8353
+"Median Distance to TSS",8977

@@ -10,3 +10,46 @@ logs/
 
 # R data files
 *.rds
+
+Archive/
+
+
+*.bw
+*.zip
+*.json
+*.fa
+*flagstat.*
+*.flagstat
+*.fastqc
+*.bam
+*.bai
+*.log
+*.gz
+*.gzip
+*.fastq
+*.fq
+*.out
+*.err
+*.log
+*.rds
+*.bed
+*.bedgraph
+*.bw
+*.bigwig
+*.bt2
+
+.snakemake/
+*.tmp
+*.sam
+.snakemake/
+*.tmp*
+*.log
+*.err
+*.zip
+*.gz
+*.bam*
+*.bw
+*.bed
+
+# exclude large files
+*[]._larger_than_80MB

@@ -34,7 +34,7 @@ mkdir -p analysis/{diffbind_{broad,narrow},plots_{broad,narrow}} logs
 # Check for required input files
 log_message "Checking input files..."
 for sample in GFP_{1..3} YAF_{1..3}; do
-    for type in broad narrow; do
+    for type in narrow; do #in broad narrow; do
         files=(
             "analysis/aligned/${sample}.dedup.bam"
             "analysis/peaks/${sample}_${type}_peaks.${type}Peak"
