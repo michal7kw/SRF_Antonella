@@ -29,7 +29,11 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/{annotation_{broad,narrow}/{figures,tables},gene_lists_{broad,narrow}} logs
+mkdir -p logs
+mkdir -p analysis/annotation_broad/{figures,tables}
+# mkdir -p analysis/annotation_narrow/{figures,tables}
+mkdir -p analysis/gene_lists_broad
+# mkdir -p analysis/gene_lists_narrow
 
 # Check for required input files
 log_message "Checking input files..."

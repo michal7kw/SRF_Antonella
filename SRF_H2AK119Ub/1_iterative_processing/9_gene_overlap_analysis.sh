@@ -29,7 +29,8 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/overlap_analysis logs
+mkdir -p analysis/overlap_analysis_broad logs
+# mkdir -p analysis/overlap_analysis_narrow logs
 
 # Run python script for gene overlap analysis
 log_message "Running gene overlap analysis..."

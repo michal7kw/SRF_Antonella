@@ -23,7 +23,7 @@ log_message() {
 usage() {
     echo "Usage: $0 [-t <peak_type>]"
     echo "Options:"
-    echo "  -t    Peak type (narrow or broad, default: narrow)"
+    echo "  -t    Peak type (narrow or broad, default: broad)"
     exit 1
 }
 
@@ -60,7 +60,10 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/{advanced_analysis_broad,advanced_analysis_narrow}/{motifs,clusters,profiles,plots} logs
+mkdir -p logs
+mkdir -p analysis/advanced_analysis_broad/{motifs,clusters,profiles,plots}
+# mkdir -p analysis/advanced_analysis_narrow/{motifs,clusters,profiles,plots}
+
 
 # Check for required input files
 log_message "Checking input files..."

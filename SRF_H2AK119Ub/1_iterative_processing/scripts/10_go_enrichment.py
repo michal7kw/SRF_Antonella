@@ -147,7 +147,6 @@ def main():
     parser.add_argument('--input', required=True, help='Input file containing gene list')
     parser.add_argument('--output-dir', required=True, help='Output directory for results')
     parser.add_argument('--description', required=True, help='Description for the analysis')
-    
     args = parser.parse_args()
     
     # Create output directory if it doesn't exist

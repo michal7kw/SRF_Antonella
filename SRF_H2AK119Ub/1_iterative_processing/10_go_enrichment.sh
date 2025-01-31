@@ -1,4 +1,14 @@
 #!/bin/bash
+#SBATCH --job-name=10_go_enrichment
+#SBATCH --account=kubacki.michal
+#SBATCH --mem=64GB
+#SBATCH --time=12:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=16
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=kubacki.michal@hsr.it
+#SBATCH --error="logs/10_go_enrichment.err"
+#SBATCH --output="logs/10_go_enrichment.out"
 
 # Stop on error
 set -e
@@ -8,12 +18,14 @@ log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
+PEAK_TYPE="broad"
+
 # Create output directory for GO analysis
-output_base="analysis/go_enrichment"
+output_base="analysis/go_enrichment_${PEAK_TYPE}"
 mkdir -p "$output_base"
 
 # Input gene lists directory
-input_dir="analysis/overlap_analysis"
+input_dir="analysis/overlap_analysis_${PEAK_TYPE}"
 
 # List of gene sets to analyze
 gene_sets=(

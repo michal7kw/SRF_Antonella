@@ -6,10 +6,11 @@ import seaborn as sns
 import numpy as np
 
 # File paths
-yaf_genes_file = "./analysis/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt"
-yaf_full_file = "./analysis/gene_lists_broad/YAF_enriched_genes_broad_full.csv"
+peak_type = "broad"
+yaf_genes_file = "./analysis/gene_lists_{peak_type}/YAF_enriched_genes_{peak_type}_symbols.txt"
+yaf_full_file = "./analysis/gene_lists_{peak_type}/YAF_enriched_genes_{peak_type}_full.csv"
 sox2_genes_file = "./sox2_binding.csv"
-output_dir = "analysis/overlap_analysis"
+output_dir = "analysis/overlap_analysis_{peak_type}"
 
 # create output directory
 if not os.path.exists(output_dir):

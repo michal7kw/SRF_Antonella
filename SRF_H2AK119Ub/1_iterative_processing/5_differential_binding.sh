@@ -29,12 +29,17 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/{diffbind_{broad,narrow},plots_{broad,narrow}} logs
+mkdir -p logs
+mkdir -p analysis/diffbind_broad
+# mkdir -p analysis/diffbind_narrow
+mkdir -p analysis/plots_broad
+# mkdir -p analysis/plots_narrow
+
 
 # Check for required input files
 log_message "Checking input files..."
 for sample in GFP_{1..3} YAF_{1..3}; do
-    for type in narrow; do #in broad narrow; do
+    for type in broad; do #in broad narrow; do
         files=(
             "analysis/aligned/${sample}.dedup.bam"
             "analysis/peaks/${sample}_${type}_peaks.${type}Peak"

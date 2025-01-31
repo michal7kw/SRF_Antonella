@@ -29,9 +29,12 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories
 log_message "Creating output directories..."
-mkdir -p analysis/{plots_broad,plots_narrow}/{peak_analysis,gene_analysis} logs
-mkdir -p analysis/plots_combined
-mkdir -p analysis/plots_{broad,narrow}/summary_statistics
+mkdir -p logs
+mkdir -p analysis/plots_broad/{peak_analysis,gene_analysis}
+# mkdir -p analysis/plots_narrow/{peak_analysis,gene_analysis}
+# mkdir -p analysis/plots_combined
+mkdir -p analysis/plots_broad/summary_statistics
+# mkdir -p analysis/plots_narrow/summary_statistics
 
 # Check for required input files
 log_message "Checking input files..."
