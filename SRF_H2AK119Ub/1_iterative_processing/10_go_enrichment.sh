@@ -13,6 +13,10 @@
 # Stop on error
 set -e
 
+# Activate conda environment
+source /opt/common/tools/ric.cosr/miniconda3/bin/activate
+conda activate snakemake
+
 # Function to log messages
 log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"

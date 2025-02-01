@@ -7,10 +7,10 @@ import numpy as np
 
 # File paths
 peak_type = "broad"
-yaf_genes_file = "./analysis/gene_lists_{peak_type}/YAF_enriched_genes_{peak_type}_symbols.txt"
-yaf_full_file = "./analysis/gene_lists_{peak_type}/YAF_enriched_genes_{peak_type}_full.csv"
+yaf_genes_file = f"./analysis/gene_lists_{peak_type}/YAF_enriched_genes_{peak_type}_symbols.txt"
+yaf_full_file = f"./analysis/gene_lists_{peak_type}/YAF_enriched_genes_{peak_type}_full.csv"
 sox2_genes_file = "./sox2_binding.csv"
-output_dir = "analysis/overlap_analysis_{peak_type}"
+output_dir = f"analysis/overlap_analysis_{peak_type}"
 
 # create output directory
 if not os.path.exists(output_dir):

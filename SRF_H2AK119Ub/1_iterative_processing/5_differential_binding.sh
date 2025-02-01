@@ -23,6 +23,7 @@ log_message() {
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
 conda activate snakemake
 
+PEAKS_SUFFIX="peaks_final"
 # Define working directory
 WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
 cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exit 1; }
@@ -42,7 +43,7 @@ for sample in GFP_{1..3} YAF_{1..3}; do
     for type in broad; do #in broad narrow; do
         files=(
             "analysis/aligned/${sample}.dedup.bam"
-            "analysis/peaks/${sample}_${type}_peaks.${type}Peak"
+            "analysis/peaks/${sample}_${type}_${PEAKS_SUFFIX}.${type}Peak"
         )
         for file in "${files[@]}"; do
             if [[ ! -f "$file" ]]; then

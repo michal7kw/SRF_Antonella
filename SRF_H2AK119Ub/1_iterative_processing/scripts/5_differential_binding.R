@@ -10,6 +10,8 @@ suppressPackageStartupMessages({
     library(clusterProfiler)
 })
 
+PEAKS_SUFFIX="peaks_final"
+
 # Utility functions
 log_message <- function(msg, level = "INFO") {
     timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
@@ -35,23 +37,24 @@ standardize_peak_files <- function(peak_files) {
     for (file in peak_files) {
         log_message(sprintf("Standardizing chromosome names in %s", file))
         
-        # Read peak file with exact MACS2 peak format specifications
-        peaks <- try({
-            read.table(file, header=FALSE, 
-                      colClasses=c("character", "numeric", "numeric", "character",
-                                 "numeric", "character", "numeric", "numeric", 
-                                 "numeric", "numeric"),
-                      col.names=c("chr", "start", "end", "name", "score", 
-                                "strand", "signalValue", "pValue", "qValue", "peak"))
-        })
+        # Read peak file based on file extension
+        is_broad_peak <- grepl("\\.broadPeak$", file)
         
-        # If 10 columns fail (narrowPeak), try 9 columns (broadPeak)
-        if (inherits(peaks, "try-error")) {
+        if (is_broad_peak) {
+            # BroadPeak format has 9 columns
             peaks <- read.table(file, header=FALSE,
                               colClasses=c("character", "numeric", "numeric", "character",
                                          "numeric", "character", "numeric", "numeric", "numeric"),
                               col.names=c("chr", "start", "end", "name", "score",
                                         "strand", "signalValue", "pValue", "qValue"))
+        } else {
+            # NarrowPeak format has 10 columns
+            peaks <- read.table(file, header=FALSE, 
+                              colClasses=c("character", "numeric", "numeric", "character",
+                                         "numeric", "character", "numeric", "numeric", 
+                                         "numeric", "numeric"),
+                              col.names=c("chr", "start", "end", "name", "score", 
+                                        "strand", "signalValue", "pValue", "qValue", "peak"))
         }
         
         # Add 'chr' prefix if missing
@@ -98,7 +101,7 @@ perform_diffbind <- function(peak_type = c("broad", "narrow")) {
                               paste0("GFP_", 1:3, ".dedup.bam"))),
         Peaks = file.path("analysis/peaks",
                          paste0(c(paste0("YAF_", 1:3), paste0("GFP_", 1:3)),
-                               "_", peak_type, "_peaks.", 
+                               "_", peak_type, "_", PEAKS_SUFFIX, ".", 
                                ifelse(peak_type == "broad", "broadPeak", "narrowPeak"))),
         PeakCaller = rep(peak_type, 6)
     )
@@ -109,26 +112,34 @@ perform_diffbind <- function(peak_type = c("broad", "narrow")) {
     # Standardize chromosome names in peak files
     standardize_peak_files(samples$Peaks)
     
-    # Create DiffBind object with specific configuration
+    # Check peak files content before processing
+    log_message("Checking peak file contents...")
+    for (peak_file in samples$Peaks) {
+        peaks <- read.table(peak_file, header=FALSE)
+        log_message(sprintf("%s contains %d peaks", basename(peak_file), nrow(peaks)))
+    }
+
+    # Create DiffBind object with more lenient configuration
     log_message("Creating DiffBind object...")
     dba_data <- dba(sampleSheet=samples,
-                    minOverlap=1,  # Reduced from 2 to be less stringent
+                    minOverlap=1,
                     peakFormat="bed",
                     peakCaller=peak_type,
                     config=data.frame(AnalysisMethod="max",
                                     fragmentSize=150,
-                                    doBlacklist=TRUE,
+                                    doBlacklist=FALSE,  # Disable blacklist filtering initially
                                     RunParallel=FALSE))
     
     # Print diagnostic information
     log_message(sprintf("Number of binding sites before counting: %d", 
                        length(dba.show(dba_data)$Intervals)))
     
-    # Count reads with less stringent parameters
+    # Count reads with very lenient parameters for diagnostic purposes
     log_message("Counting reads...")
     dba_data <- dba.count(dba_data, 
                          bUseSummarizeOverlaps=TRUE,
-                         minCount=1,       # Minimum read count
+                         minCount=0,       # No minimum read count for initial testing
+                         bRemoveDuplicates=FALSE,  # Include duplicates for testing
                          score=DBA_SCORE_READS)  # Use raw read counts
     
     # Print diagnostic information after counting
@@ -199,29 +210,11 @@ perform_diffbind <- function(peak_type = c("broad", "narrow")) {
     plotAnnoPie(peakAnno)
     plotDistToTSS(peakAnno)
     dev.off()
-    
-    # # Perform GO enrichment analysis
-    # log_message("Performing GO enrichment analysis...")
-    # genes <- unique(peakAnno@anno$geneId)
-    # ego <- enrichGO(gene = genes,
-    #                OrgDb = org.Hs.eg.db,
-    #                keyType = "ENTREZID",
-    #                ont = "BP",
-    #                pAdjustMethod = "BH",
-    #                pvalueCutoff = 0.05,
-    #                qvalueCutoff = 0.2)
-    
-    # # Save GO analysis results
-    # saveRDS(ego, file.path("analysis", paste0("annotation_", peak_type), "go_enrichment.rds"))
-    # write.csv(as.data.frame(ego),
-    #          file.path("analysis", paste0("annotation_", peak_type), "go_enrichment.csv"),
-    #          row.names=FALSE)
-    
     gc()
     
     return(dba_results)
 }
 
 # Run analysis for both peak types
-# broad_results <- perform_diffbind("broad")
-narrow_results <- perform_diffbind("narrow")
+broad_results <- perform_diffbind("broad")
+# narrow_results <- perform_diffbind("narrow")

@@ -16,6 +16,7 @@ def perform_enrichr(gene_list, description, output_dir):
         print(f"Warning: Too few genes ({len(genes)}) for reliable enrichment analysis. Need at least 10 genes.")
         return None
     
+    # Define the gene set libraries to use
     databases = [
         'GO_Biological_Process_2021',
         'GO_Molecular_Function_2021',
@@ -25,23 +26,46 @@ def perform_enrichr(gene_list, description, output_dir):
         'Reactome_2022'
     ]
     
+    # If none of the above work, fall back to these simpler versions
+    fallback_databases = [
+        'GO_Biological_Process_2018',
+        'GO_Molecular_Function_2018',
+        'GO_Cellular_Component_2018',
+        'KEGG_2019_Human',
+        'WikiPathways_2019_Human',
+        'Reactome_2016'
+    ]
+    
     results_dict = {}
-    for db in databases:
-        enr = gp.enrichr(gene_list=genes,
-                        gene_sets=[db],
-                        organism='Human',
-                        outdir=None,
-                        cutoff=0.05)
+    # Try each database
+    for db in databases + fallback_databases:
+        if db in results_dict:  # Skip if we already have results for this database type
+            continue
+            
+        try:
+            print(f"Trying enrichment with {db}...")
+            enr = gp.enrichr(gene_list=genes,
+                            gene_sets=db,
+                            organism='Human',
+                            outdir=None,
+                            cutoff=0.05,
+                            no_plot=True)
         
-        # Filter results to only include terms with at least 5 genes
-        if not enr.results.empty:
-            enr.results['Gene_Count'] = enr.results['Genes'].str.count(',') + 1
-            enr.results = enr.results[enr.results['Gene_Count'] >= 5]
-        
-        results_dict[db] = enr.results
-        
-        # Save filtered results
-        enr.results.to_csv(os.path.join(output_dir, f'enrichment_{description.lower()}_{db.lower()}.csv'))
+            # Filter results to only include terms with at least 5 genes
+            if not enr.results.empty:
+                enr.results['Gene_Count'] = enr.results['Genes'].str.count(',') + 1
+                enr.results = enr.results[enr.results['Gene_Count'] >= 5]
+            
+                if not enr.results.empty:  # Only save if we have results after filtering
+                    results_dict[db] = enr.results
+                    
+                    # Save filtered results
+                    safe_db_name = db.replace('/', '_').replace(' ', '_')
+                    enr.results.to_csv(os.path.join(output_dir, f'enrichment_{description.lower()}_{safe_db_name.lower()}.csv'))
+                    print(f"Successfully processed {db} with {len(enr.results)} enriched terms")
+        except Exception as e:
+            print(f"Error processing {db}: {str(e)}")
+            continue
 
     def plot_top_terms(results, title, output_file):
         if len(results) == 0:

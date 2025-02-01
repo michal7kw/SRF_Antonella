@@ -53,3 +53,4 @@ Archive/
 
 # exclude large files
 *[]._larger_than_80MB
+*.bdg
