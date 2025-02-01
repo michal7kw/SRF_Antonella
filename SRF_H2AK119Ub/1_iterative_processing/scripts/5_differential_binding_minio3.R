@@ -13,8 +13,8 @@ suppressPackageStartupMessages({
 # Constants
 PEAKS_DIR <- "analysis/peaks2_improved"
 PEAKS_SUFFIX <- "peaks_final"
-OUTPUT_DIR <- "analysis/diffbind_broad_new"
-ANNOTATION_DIR <- "analysis/annotation_broad_new"
+OUTPUT_DIR <- "analysis/diffbind_broad"
+ANNOTATION_DIR <- "analysis/annotation_broad"
 
 # Utility functions
 log_message <- function(msg, level = "INFO") {
@@ -41,26 +41,36 @@ standardize_peak_files <- function(peak_files) {
     for (file in peak_files) {
         log_message(sprintf("Standardizing chromosome names in %s", file))
         
-        # Read broadPeak format
-        peaks <- read.table(file, header=FALSE,
-                          colClasses=c("character", "numeric", "numeric", "character",
-                                     "numeric", "character", "numeric", "numeric", "numeric"),
-                          col.names=c("chr", "start", "end", "name", "score",
-                                    "strand", "signalValue", "pValue", "qValue"))
+        # Read peak file with improved error handling and type specifications.
+        peaks <- tryCatch({
+            read.table(file, header = FALSE, stringsAsFactors = FALSE,
+                       colClasses = c("character", "numeric", "numeric", "character",
+                                      "numeric", "character", "numeric", "numeric", "numeric"),
+                       col.names = c("chr", "start", "end", "name", "score",
+                                     "strand", "foldChange", "pValue", "qValue"))
+        }, error = function(e) {
+            log_message(sprintf("Error reading file %s: %s", file, e$message), level = "ERROR")
+            stop(e)
+        })
         
-        # Add 'chr' prefix if missing
-        if (!all(grepl("^chr", peaks$chr))) {
-            peaks$chr <- paste0("chr", peaks$chr)
-            peaks$chr <- gsub("^chrchr", "chr", peaks$chr)
+        if (nrow(peaks) == 0) {
+            log_message(sprintf("No peaks found in %s, skipping standardization.", file), level = "WARNING")
+            next
         }
+        
+        # Add 'chr' prefix if missing and remove duplicate prefixes.
+        peaks$chr <- ifelse(grepl("^chr", peaks$chr), peaks$chr, paste0("chr", peaks$chr))
+        peaks$chr <- gsub("^chr+", "chr", peaks$chr)
         
         # Keep only standard chromosomes
         standard_chroms <- paste0("chr", c(1:22, "X", "Y", "M"))
-        peaks <- peaks[peaks$chr %in% standard_chroms,]
+        peaks <- peaks[peaks$chr %in% standard_chroms, ]
         
-        # Write back
-        write.table(peaks, file, sep="\t", quote=FALSE, 
-                   row.names=FALSE, col.names=FALSE)
+        # Reset row names
+        rownames(peaks) <- NULL
+        
+        # Write back the standardized data to the same file
+        write.table(peaks, file, sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
         
         log_message(sprintf("Processed %d peaks in %s", nrow(peaks), file))
     }
