@@ -1,5 +1,27 @@
 #!/bin/bash
 
+# This script performs peak calling and filtering on CUT&Tag data using MACS2
+# It processes multiple samples in parallel using a SLURM array job
+# For each sample, it:
+# 1. Calls broad peaks using MACS2 with optimized parameters for CUT&Tag data
+# 2. Filters peaks based on quality metrics and size
+# 3. Removes blacklisted regions
+# 4. Generates visualization-friendly peak files
+# 5. Calculates and outputs comprehensive QC metrics
+
+# Input files (per sample):
+# - analysis/aligned/{sample}.dedup.bam - Deduplicated BAM file
+# - analysis/aligned/{sample}.dedup.bam.bai - BAM index
+# - hg38-blacklist.v2.bed - ENCODE blacklist regions
+
+# Output files (per sample):
+# - analysis/peaks2_improved/{sample}_broad_peaks.broadPeak - Raw MACS2 peaks
+# - analysis/peaks2_improved/{sample}_broad_peaks_filtered.broadPeak - Quality filtered peaks
+# - analysis/peaks2_improved/{sample}_broad_peaks_final.broadPeak - Blacklist filtered peaks
+# - analysis/peaks2_improved/{sample}_broad_peaks_viz.broadPeak - Visualization-optimized peaks
+# - analysis/qc2_improved/{sample}_metrics.csv - Peak calling QC metrics
+# - analysis/peak_stats_improved/{sample}_peak_stats.txt - Peak statistics
+
 #SBATCH --job-name=4_peak_calling2_improved
 #SBATCH --account=kubacki.michal
 #SBATCH --mem=64GB
@@ -15,6 +37,7 @@
 set -e  # Exit on error
 set -u  # Exit on undefined variable
 
+# Activate conda environment with required tools
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
 conda activate snakemake
 
@@ -22,14 +45,14 @@ conda activate snakemake
 WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
 cd $WORKDIR
 
-# Create necessary directories
+# Create output directories
 mkdir -p analysis/{peaks2_improved,qc2_improved,peak_stats_improved}
 
-# Define samples
+# Define sample names
 samples=(GFP_1 GFP_2 GFP_3 YAF_1 YAF_2 YAF_3)
 sample=${samples[$SLURM_ARRAY_TASK_ID]}
 
-# Check input files
+# Verify input files exist
 if [[ ! -f analysis/aligned/${sample}.dedup.bam ]] || [[ ! -f analysis/aligned/${sample}.dedup.bam.bai ]]; then
     echo "Error: Input BAM or index not found for ${sample}"
     exit 1
@@ -37,7 +60,11 @@ fi
 
 echo "Processing ${sample} for broad peak calling..."
 
-# Step 1: Initial MACS2 peak calling with modified parameters
+# Step 1: Initial MACS2 peak calling with parameters optimized for CUT&Tag
+# --broad: Call broad peaks appropriate for histone modifications
+# -q 0.05: Use FDR threshold of 5%
+# --min-length 500: Minimum peak size of 500bp
+# --buffer-size 10000: Increase buffer for large datasets
 macs2 callpeak \
     -t analysis/aligned/${sample}.dedup.bam \
     -f BAMPE \
@@ -53,19 +80,23 @@ macs2 callpeak \
     --buffer-size 10000 \
     --verbose 3
 
-# Check MACS2 output
+# Verify MACS2 output
 if [ ! -s analysis/peaks2_improved/${sample}_broad_peaks.broadPeak ]; then
     echo "Error: MACS2 failed to produce output for ${sample}"
     exit 1
 fi
 
-# Step 2: Create temporary files for processing stages
+# Step 2: Define file paths for processing stages
 raw_peaks="analysis/peaks2_improved/${sample}_broad_peaks.broadPeak"
 filtered_peaks="analysis/peaks2_improved/${sample}_broad_peaks_filtered.broadPeak"
 final_peaks="analysis/peaks2_improved/${sample}_broad_peaks_final.broadPeak"
 viz_peaks="analysis/peaks2_improved/${sample}_broad_peaks_viz.broadPeak"
 
-# Step 3: Initial filtering with fixed naming convention
+# Step 3: Initial filtering and standardization of peak format
+# Filters peaks based on:
+# - Fold enrichment >= 3
+# - Length between 500bp and 10kb
+# - Standardizes peak names and scores for IGV compatibility
 awk -v sample="$sample" 'BEGIN{OFS="\t"} {
     len = $3 - $2;
     # Store original values
@@ -92,7 +123,7 @@ awk -v sample="$sample" 'BEGIN{OFS="\t"} {
     }
 }' $raw_peaks > $filtered_peaks
 
-# Add validation step
+# Add validation step to ensure BED format compliance
 awk -v sample="$sample" '
 BEGIN {
     valid=1;
@@ -126,13 +157,13 @@ BEGIN {
 }' $filtered_peaks > ${filtered_peaks}.tmp && \
 mv ${filtered_peaks}.tmp $filtered_peaks
 
-# Step 4: Blacklist filtering
+# Step 4: Remove peaks overlapping with blacklisted regions
 bedtools intersect -v \
     -a $filtered_peaks \
     -b hg38-blacklist.v2.bed \
     > $final_peaks
 
-# Step 5: Create visualization-friendly version with normalized scores
+# Step 5: Create IGV-friendly peak file with normalized scores
 awk 'BEGIN{OFS="\t"} {
     # Create normalized score for visualization (0-1000 range)
     viz_score = int($7 * 100);
@@ -142,7 +173,11 @@ awk 'BEGIN{OFS="\t"} {
     print $1, $2, $3, $4, viz_score, $6, $7, $8, $9;
 }' $final_peaks > $viz_peaks
 
-# Step 6: Generate QC metrics
+# Step 6: Calculate and output QC metrics
+# - Total reads in sample
+# - Reads in peaks
+# - Fraction of reads in peaks (FRiP)
+# - Peak count and characteristics
 total_reads=$(samtools view -c analysis/aligned/${sample}.dedup.bam)
 reads_in_peaks=$(bedtools intersect -a analysis/aligned/${sample}.dedup.bam \
     -b $final_peaks -u | samtools view -c)
@@ -151,7 +186,7 @@ peak_count=$(wc -l < $final_peaks)
 mean_length=$(awk '{sum += $3-$2} END {print sum/NR}' $final_peaks)
 mean_fold=$(awk '{sum += $7} END {print sum/NR}' $final_peaks)
 
-# Save detailed QC metrics
+# Save detailed QC metrics to CSV
 cat << EOF > analysis/qc2_improved/${sample}_metrics.csv
 Metric,Value
 Sample,${sample}
@@ -163,7 +198,7 @@ Mean_Length,${mean_length}
 Mean_Fold_Enrichment,${mean_fold}
 EOF
 
-# Step 7: Generate peak statistics
+# Step 7: Generate detailed peak statistics for downstream analysis
 awk -v sample=$sample '
 BEGIN {OFS="\t"}
 {

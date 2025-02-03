@@ -34,9 +34,7 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 log_message "Checking required input files..."
 required_inputs=(
     "results/processed_peaks.rds"
-    "results/narrow_narrow_categorized_peaks.rds"
     "results/narrow_broad_categorized_peaks.rds"
-    "results/broad_narrow_categorized_peaks.rds"
     "results/broad_broad_categorized_peaks.rds"
     "results/normalized_v5_signal.rds"
 )
@@ -93,8 +91,6 @@ check_directory_contents "results/downstream_analysis" ""
 # Check for specific important output files
 important_outputs=(
     "results/downstream_analysis/analysis_summary.txt"
-    "results/downstream_analysis/narrow_narrow_v5_with_h2a_genomic_annotation.pdf"
-    "results/downstream_analysis/narrow_narrow_v5_only_genomic_annotation.pdf"
     "results/downstream_analysis/broad_broad_v5_with_h2a_genomic_annotation.pdf"
     "results/downstream_analysis/broad_broad_v5_only_genomic_annotation.pdf"
 )

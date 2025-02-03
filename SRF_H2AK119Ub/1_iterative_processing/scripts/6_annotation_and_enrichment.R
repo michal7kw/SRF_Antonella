@@ -1,3 +1,32 @@
+#' This script performs annotation and enrichment analysis on peaks identified from
+#' differential binding analysis. It takes the peaks, annotates them relative to genes,
+#' performs GO enrichment analysis, and generates various visualizations.
+#'
+#' Input files:
+#' - analysis/diffbind_broad/significant_peaks.rds: GRanges object with differential peaks
+#' - analysis/diffbind_narrow/significant_peaks.rds (optional): Narrow peaks if analyzing both types
+#'
+#' Output files:
+#' In analysis/annotation_{peak_type}/:
+#'   figures/
+#'     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
+#'     - go_enrichment_plots.pdf: GO term enrichment plots (dotplot, emap, cnet)
+#'   tables/
+#'     - peak_annotation.csv: Detailed peak annotations
+#'     - go_enrichment.csv: GO enrichment analysis results
+#'   peak_annotation.rds: R object with full annotation data
+#'
+#' In analysis/gene_lists_{peak_type}/:
+#'   - YAF_enriched_genes_{peak_type}_full.csv: All enriched genes with details
+#'   - YAF_enriched_genes_{peak_type}_symbols.txt: List of gene symbols only
+#'
+#' Dependencies:
+#' - ChIPseeker for peak annotation
+#' - clusterProfiler for GO enrichment
+#' - org.Hs.eg.db for gene ID mapping
+#' - TxDb.Hsapiens.UCSC.hg38.knownGene for genome annotations
+#' - ggupset (optional) for upset plots
+
 source("scripts/utils.R")
 
 #' Perform peak annotation and enrichment analysis
@@ -15,15 +44,15 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
     )
     create_dirs(dirs)
     
-    # Standardize chromosome names
+    # Standardize chromosome names to UCSC style (e.g., chr1 instead of 1)
     peaks_gr <- standardize_chromosomes(peaks)
     
-    # Annotate peaks
+    # Annotate peaks relative to genomic features (promoters, UTRs, exons, etc)
     log_message("Performing peak annotation...")
     txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
     peak_anno <- annotatePeak(peaks_gr,
                             TxDb = txdb,
-                            tssRegion = c(-3000, 3000),
+                            tssRegion = c(-3000, 3000),  # Define promoter region
                             verbose = FALSE)
     
     # Save annotation results
@@ -33,14 +62,14 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
              file.path("analysis", paste0("annotation_", peak_type), "tables", "peak_annotation.csv"),
              row.names = FALSE)
     
-    # Create annotation plots
+    # Generate visualization plots for peak annotations
     log_message("Generating annotation plots...")
     plots <- list(
-        anno_pie = plotAnnoPie(peak_anno),
-        dist_tss = plotDistToTSS(peak_anno)
+        anno_pie = plotAnnoPie(peak_anno),  # Distribution of peak locations
+        dist_tss = plotDistToTSS(peak_anno) # Distance of peaks to nearest TSS
     )
     
-    # Try to create upset plot if ggupset is available
+    # Create upset plot if package is available
     if (requireNamespace("ggupset", quietly = TRUE)) {
         plots$upset <- upsetplot(peak_anno, vennpie=TRUE)
     } else {
@@ -50,11 +79,11 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
     pdf_file <- file.path("analysis", paste0("annotation_", peak_type), "figures", "annotation_plots.pdf")
     save_plot(plots$anno_pie, pdf_file, width=10, height=8)
     
-    # Extract YAF-enriched genes
+    # Extract genes associated with YAF-enriched peaks
     log_message("Extracting YAF-enriched genes...")
     genes_df <- as.data.frame(peak_anno)
     
-    # Map ENTREZID to SYMBOL and ensure matching rows
+    # Convert Entrez IDs to gene symbols for better readability
     gene_ids <- genes_df$geneId[!is.na(genes_df$geneId)]
     gene_symbols <- mapIds(org.Hs.eg.db,
                           keys = gene_ids,
@@ -62,7 +91,7 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
                           keytype = "ENTREZID",
                           multiVals = "first")
     
-    # Create gene list with only valid mappings
+    # Create comprehensive gene list with annotations
     valid_indices <- which(!is.na(genes_df$geneId))
     gene_list <- data.frame(
         ENTREZID = gene_ids,
@@ -73,11 +102,11 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
         stringsAsFactors = FALSE
     )
     
-    # Remove any rows with NA symbols and sort
+    # Clean up and sort gene list by fold change
     gene_list <- gene_list[!is.na(gene_list$SYMBOL), ]
     gene_list <- gene_list[order(-gene_list$fold_change), ]
     
-    # Save gene lists
+    # Save gene lists in different formats
     write.csv(gene_list,
               file.path("analysis", paste0("gene_lists_", peak_type), 
                        paste0("YAF_enriched_genes_", peak_type, "_full.csv")),
@@ -87,30 +116,30 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
               file.path("analysis", paste0("gene_lists_", peak_type),
                        paste0("YAF_enriched_genes_", peak_type, "_symbols.txt")))
     
-    # Perform GO enrichment analysis
+    # Perform GO enrichment analysis on YAF-enriched genes
     log_message("Performing GO enrichment analysis...")
     ego <- enrichGO(gene = unique(gene_list$ENTREZID),
                     OrgDb = org.Hs.eg.db,
-                    ont = "BP",
+                    ont = "BP",  # Biological Process ontology
                     pAdjustMethod = "BH",
                     pvalueCutoff = 0.05,
                     qvalueCutoff = 0.2)
     
     if (!is.null(ego) && nrow(ego) > 0) {
-        # Save GO results
+        # Save GO enrichment results
         write.csv(as.data.frame(ego),
                  file.path("analysis", paste0("annotation_", peak_type), 
                           "tables", "go_enrichment.csv"),
                  row.names = FALSE)
         
-        # Create GO plots
+        # Generate various GO enrichment visualizations
         pdf(file.path("analysis", paste0("annotation_", peak_type), 
                      "figures", "go_enrichment_plots.pdf"))
         
-        # Create and print dotplot
+        # Dotplot showing enriched terms
         print(dotplot(ego, showCategory = 20))
         
-        # Try to create emapplot with term similarity
+        # Network plot showing term similarity
         tryCatch({
             ego <- pairwise_termsim(ego)
             print(emapplot(ego, showCategory = 50))
@@ -118,7 +147,7 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
             log_message("Could not create emapplot. Skipping...", level="WARNING")
         })
         
-        # Create and print cnetplot
+        # Gene-concept network plot
         print(cnetplot(ego, showCategory = 10))
         
         dev.off()
@@ -132,18 +161,18 @@ annotate_and_enrich <- function(peak_type = c("broad", "narrow"), peaks) {
     ))
 }
 
-# Process both peak types
+# Process both peak types if available
 log_message("Loading differential binding results...")
 
 # Process broad peaks
 broad_peaks <- readRDS("analysis/diffbind_broad/significant_peaks.rds")
 broad_results <- annotate_and_enrich("broad", broad_peaks)
 
-# Process narrow peaks
+# Process narrow peaks (commented out as not currently used)
 # narrow_peaks <- readRDS("analysis/diffbind_narrow/significant_peaks.rds")
 # narrow_results <- annotate_and_enrich("narrow", narrow_peaks)
 
-# Create combined analysis summary
+# Create summary comparing broad vs narrow peaks (commented out)
 # log_message("Creating combined analysis summary...")
 # combined_summary <- data.frame(
 #     Analysis_Type = c("Broad", "Narrow"),

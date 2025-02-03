@@ -1,0 +1,2 @@
+"SampleID","Factor","Condition","Replicate","bamReads","Peaks","PeakCaller"
+"YAF_2","H2AK119Ub","YAF",2,"analysis/aligned/YAF_2.dedup.bam","analysis/peaks2_improved/YAF_2_broad_peaks_final.broadPeak","broad"

@@ -1,0 +1,2 @@
+"SampleID","Factor","Condition","Replicate","bamReads","Peaks","PeakCaller"
+"GFP_3","H2AK119Ub","GFP",3,"analysis/aligned/GFP_3.dedup.bam","analysis/peaks2_improved/GFP_3_broad_peaks_final.broadPeak","broad"

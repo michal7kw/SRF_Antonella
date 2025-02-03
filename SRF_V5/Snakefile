@@ -17,6 +17,9 @@ rule all:
         # Alignment outputs
         expand("alignment/{sample}.sorted.bam", sample=SAMPLES + [INPUT_SAMPLE]),
         expand("alignment/{sample}.sorted.bam.bai", sample=SAMPLES + [INPUT_SAMPLE]),
+        # Deduplicated BAM files
+        expand("alignment/{sample}.dedup.bam", sample=SAMPLES + [INPUT_SAMPLE]),
+        expand("alignment/{sample}.dedup.bam.bai", sample=SAMPLES + [INPUT_SAMPLE]),
         # Peak calling outputs - both narrow and broad
         expand("peaks/{sample}_narrow_peaks.narrowPeak", sample=SAMPLES),
         expand("peaks/{sample}_broad_peaks.broadPeak", sample=SAMPLES),
@@ -100,10 +103,30 @@ rule align:
         rm -rf {params.tmp_dir}
         """
 
+rule deduplicate_bam:
+    input:
+        bam="alignment/{sample}.sorted.bam"
+    output:
+        bam="alignment/{sample}.dedup.bam",
+        metrics="alignment/{sample}.dedup.metrics.txt"
+    threads: 8
+    resources:
+        mem_mb=32000
+    shell:
+        """
+        picard MarkDuplicates \
+            I={input.bam} \
+            O={output.bam} \
+            M={output.metrics} \
+            REMOVE_DUPLICATES=true \
+            VALIDATION_STRINGENCY=LENIENT \
+            && samtools index {output.bam}
+        """
+
 rule call_narrow_peaks:
     input:
-        treatment="alignment/{sample}.sorted.bam",
-        control=f"alignment/{INPUT_SAMPLE}.sorted.bam"
+        treatment="alignment/{sample}.dedup.bam",
+        control=f"alignment/{INPUT_SAMPLE}.dedup.bam"
     output:
         "peaks/{sample}_narrow_peaks.narrowPeak"
     params:
@@ -123,14 +146,15 @@ rule call_narrow_peaks:
             -n peaks/{params.prefix} \
             -q 0.05 \
             --nomodel \
+            --extsize 200 \
             --keep-dup all \
             --call-summits
         """
 
 rule call_broad_peaks:
     input:
-        treatment="alignment/{sample}.sorted.bam",
-        control=f"alignment/{INPUT_SAMPLE}.sorted.bam"
+        treatment="alignment/{sample}.dedup.bam",
+        control=f"alignment/{INPUT_SAMPLE}.dedup.bam"
     output:
         "peaks/{sample}_broad_peaks.broadPeak"
     params:
@@ -152,13 +176,14 @@ rule call_broad_peaks:
             --broad \
             --broad-cutoff 0.1 \
             --nomodel \
+            --extsize 200 \
             --keep-dup all
         """
 
 rule create_bigwig:
     input:
-        bam="alignment/{sample}.sorted.bam",
-        bai="alignment/{sample}.sorted.bam.bai"
+        bam="alignment/{sample}.dedup.bam",
+        bai="alignment/{sample}.dedup.bam.bai"
     output:
         "bigwig/{sample}.bw"
     threads: 8
@@ -168,6 +193,10 @@ rule create_bigwig:
         """
         mkdir -p bigwig
         bamCoverage -b {input.bam} -o {output} \
-            --binSize 10 --normalizeUsing RPKM \
+            --binSize 50 \
+            --smoothLength 150 \
+            --normalizeUsing RPGC \
+            --effectiveGenomeSize 2864785220 \
+            --extendReads \
             --numberOfProcessors {threads}
         """

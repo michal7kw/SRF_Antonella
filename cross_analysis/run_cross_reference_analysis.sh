@@ -43,22 +43,17 @@ H2A_BASE="../SRF_H2AK119Ub/1_iterative_processing/analysis"
 H2A_PEAKS_DIR="${H2A_BASE}/peaks"
 H2A_BIGWIG_DIR="${H2A_BASE}/visualization"
 
+# Update required files to only include broad peaks
 required_files=(
     "$V5_PEAKS"
     "$V5_BIGWIG"
     "$V5_INPUT_BIGWIG"
-    "${H2A_PEAKS_DIR}/GFP_1_narrow_peaks.narrowPeak"
-    "${H2A_PEAKS_DIR}/GFP_2_narrow_peaks.narrowPeak"
-    "${H2A_PEAKS_DIR}/GFP_3_narrow_peaks.narrowPeak"
-    "${H2A_PEAKS_DIR}/YAF_1_narrow_peaks.narrowPeak"
-    "${H2A_PEAKS_DIR}/YAF_2_narrow_peaks.narrowPeak"
-    "${H2A_PEAKS_DIR}/YAF_3_narrow_peaks.narrowPeak"
-    "${H2A_PEAKS_DIR}/GFP_1_broad_peaks.broadPeak"
-    "${H2A_PEAKS_DIR}/GFP_2_broad_peaks.broadPeak"
-    "${H2A_PEAKS_DIR}/GFP_3_broad_peaks.broadPeak"
-    "${H2A_PEAKS_DIR}/YAF_1_broad_peaks.broadPeak"
-    "${H2A_PEAKS_DIR}/YAF_2_broad_peaks.broadPeak"
-    "${H2A_PEAKS_DIR}/YAF_3_broad_peaks.broadPeak"
+    "${H2A_PEAKS_DIR}/GFP_1_broad_peaks_final.broadPeak"
+    "${H2A_PEAKS_DIR}/GFP_2_broad_peaks_final.broadPeak"
+    "${H2A_PEAKS_DIR}/GFP_3_broad_peaks_final.broadPeak"
+    "${H2A_PEAKS_DIR}/YAF_1_broad_peaks_final.broadPeak"
+    "${H2A_PEAKS_DIR}/YAF_2_broad_peaks_final.broadPeak"
+    "${H2A_PEAKS_DIR}/YAF_3_broad_peaks_final.broadPeak"
     "${H2A_BIGWIG_DIR}/GFP_1.bw"
     "${H2A_BIGWIG_DIR}/GFP_2.bw"
     "${H2A_BIGWIG_DIR}/GFP_3.bw"
@@ -86,30 +81,5 @@ EOF
 # Run the analysis
 log_message "Starting cross-reference analysis..."
 Rscript cross_reference_analysis.R
-
-# Check output files
-log_message "Checking output files..."
-required_outputs=(
-    "results/tables/overlap_statistics.csv"
-    "results/tables/overlapping_genes.csv"
-    "results/plots/overlap_comparison.pdf"
-    "results/plots/venn_diagram_narrow.png"
-    "results/plots/venn_diagram_broad.png"
-    "results/plots/gene_overlap_venn.png"
-    "results/plots/narrow_peak_distances.pdf"
-    "results/plots/broad_peak_distances.pdf"
-    "results/plots/genomic_context.pdf"
-    "results/plots/qc_metrics.pdf"
-    "results/plots/pathway_analysis.pdf"
-    "results/analysis_summary.txt"
-)
-
-for file in "${required_outputs[@]}"; do
-    if [[ ! -f "$file" ]]; then
-        log_message "WARNING: Expected output file not found: $file"
-    else
-        log_message "Generated output file: $file ($(du -h "$file" | cut -f1))"
-    fi
-done
 
 log_message "Analysis completed successfully"

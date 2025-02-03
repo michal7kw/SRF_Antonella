@@ -161,11 +161,9 @@ analyze_peak_regions <- function(peaks, name, title_prefix) {
 
 # Main analysis function
 main <- function() {
-    # Load processed data
+    # Load processed data - only consider broad peak categories
     categories <- list(
-        narrow_narrow = readRDS(file.path(input_dir, "narrow_narrow_categorized_peaks.rds")),
         narrow_broad = readRDS(file.path(input_dir, "narrow_broad_categorized_peaks.rds")),
-        broad_narrow = readRDS(file.path(input_dir, "broad_narrow_categorized_peaks.rds")),
         broad_broad = readRDS(file.path(input_dir, "broad_broad_categorized_peaks.rds"))
     )
     
