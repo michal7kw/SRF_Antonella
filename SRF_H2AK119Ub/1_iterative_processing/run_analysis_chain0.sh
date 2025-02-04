@@ -1,4 +1,14 @@
 #!/bin/bash
+#SBATCH --job-name=run_all_analysis
+#SBATCH --account=kubacki.michal
+#SBATCH --mem=8GB
+#SBATCH --time=12:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=kubacki.michal@hsr.it
+#SBATCH --error="logs/run_all_analysis.err"
+#SBATCH --output="logs/run_all_analysis.out"
 
 # Submit first job and capture its ID
 job1_id=$(sbatch --parsable ./sh/2a_quality_control.sh)

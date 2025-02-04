@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=V5
-#SBATCH --output=logs/V5.out
-#SBATCH --error=logs/V5.err
+#SBATCH --output=logs/V52.out
+#SBATCH --error=logs/V52.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1

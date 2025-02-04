@@ -50,8 +50,8 @@ def read_annotated_peaks() -> pd.DataFrame:
         # Filter for YAF peaks only
         df = df[df['sample'].str.startswith('YAF_')]
         
-        # Extract gene IDs as symbols (since actual gene symbols are not in the file)
-        df['SYMBOL'] = df['geneId']
+        # Extract gene IDs as symbols and convert to string
+        df['SYMBOL'] = df['geneId'].astype(str)
         
         # Calculate fold change from signal value (if not present)
         if 'fold_change' not in df.columns:
@@ -98,10 +98,10 @@ if not os.path.exists(SOX2_GENES_FILE):
 # Read pre-annotated peaks
 annotated_peaks_df = read_annotated_peaks()
 
-# Get gene sets
-yaf_genes = set(annotated_peaks_df['SYMBOL'].unique())
-yaf_regulatory_genes = get_regulatory_region_genes(annotated_peaks_df)
-sox2_genes = read_gene_list(SOX2_GENES_FILE)
+# Get gene sets (convert to strings when creating sets)
+yaf_genes = set(str(gene) for gene in annotated_peaks_df['SYMBOL'].unique())
+yaf_regulatory_genes = set(str(gene) for gene in get_regulatory_region_genes(annotated_peaks_df))
+sox2_genes = set(str(gene) for gene in read_gene_list(SOX2_GENES_FILE))
 
 # Find overlapping and unique genes
 overlapping_genes = yaf_genes.intersection(sox2_genes)
@@ -125,8 +125,8 @@ print(f"Number of overlapping regulatory genes: {len(regulatory_overlapping_gene
 print(f"Number of YAF-only regulatory genes: {len(regulatory_yaf_only_genes)}")
 
 # Create and save Venn diagrams
-# Set style for better visualization
-plt.style.use('seaborn')
+# Use a built-in style instead of seaborn
+plt.style.use('default')  # Changed from 'seaborn' to 'default'
 plt.figure(figsize=(15, 7))
 
 # Create Venn diagrams with improved styling
@@ -180,17 +180,24 @@ def calculate_enrichment_scores(df: pd.DataFrame):
     print("\nEnrichment statistics for regulatory regions:")
     print(enrichment_stats)
     
-    # Create visualization
-    plt.style.use('seaborn')
+    # Use default style instead of seaborn
+    plt.style.use('default')
     plt.figure(figsize=(8, 6))
     
-    # Create enhanced boxplot
-    sns.boxplot(data=regulatory_df, x='is_sox2_target', y='signalValue',
-                palette=['lightgray', 'lightgreen'])
+    # Create enhanced boxplot with corrected parameters
+    sns.boxplot(data=regulatory_df, 
+                x='is_sox2_target', 
+                y='signalValue',
+                color='lightgray')  # Use single color instead of palette
     
     # Add individual points
-    sns.stripplot(data=regulatory_df, x='is_sox2_target', y='signalValue',
-                  color='darkblue', alpha=0.3, size=4, jitter=0.2)
+    sns.stripplot(data=regulatory_df, 
+                 x='is_sox2_target', 
+                 y='signalValue',
+                 color='darkblue', 
+                 alpha=0.3, 
+                 size=4, 
+                 jitter=0.2)
     
     # Customize appearance
     plt.title('Peak Signal Values in Regulatory Regions\nSOX2 Targets vs Non-targets',

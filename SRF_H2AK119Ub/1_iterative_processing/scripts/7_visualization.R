@@ -1,9 +1,36 @@
+#' This script creates comprehensive visualizations for ChIP-seq peak analysis results.
+#' It generates plots and statistics to help interpret the differential binding analysis
+#' between YAF and GFP samples.
+#'
+#' Input files:
+#' - analysis/diffbind_broad/significant_peaks.rds: GRanges object with differential peaks
+#' - analysis/gene_lists_broad/YAF_enriched_genes_broad_full.csv: Annotated gene list
+#' - analysis/diffbind_narrow/significant_peaks.rds (optional): Narrow peaks data
+#' - analysis/gene_lists_narrow/YAF_enriched_genes_narrow_full.csv (optional): Narrow peaks genes
+#'
+#' Output files in analysis/plots_{peak_type}/:
+#'   peak_analysis/
+#'     - peak_distribution.pdf: Bar plot showing distribution of peak categories
+#'     - ma_plot_enhanced.pdf: MA plot with fold change vs concentration
+#'     - volcano_plot_enhanced.pdf: Volcano plot of significance vs fold change
+#'   gene_analysis/
+#'     - tss_distribution.pdf: Histogram of peak distances to TSS
+#'   summary_statistics/
+#'     - summary_stats.csv: Table with key analysis metrics
+#'
+#' Dependencies:
+#' - ggplot2 for plotting
+#' - gridExtra for plot arrangement
+#' - scales for axis formatting
+#' - utils.R for helper functions
+
 source("scripts/utils.R")
 
 #' Create comprehensive visualizations for peak analysis
 #' @param peak_type Character, either "broad" or "narrow"
-#' @param diff_peaks DiffBind results
-#' @param gene_list Gene list from annotation
+#' @param diff_peaks DiffBind results as GRanges or data.frame
+#' @param gene_list Data frame with gene annotations including distance to TSS
+#' @return List containing all generated plots and summary statistics
 create_visualizations <- function(peak_type, diff_peaks, gene_list) {
     log_message(sprintf("Creating visualizations for %s peaks", peak_type))
     
@@ -24,7 +51,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
         diff_peaks <- as.data.frame(diff_peaks)
     }
     
-    # 1. Peak Distribution Plot
+    # 1. Peak Distribution Plot - Shows counts of total, YAF-enriched and GFP-enriched peaks
     log_message("Creating peak distribution plot...")
     peak_dist <- data.frame(
         Category = c("Total", "YAF-enriched", "GFP-enriched"),
@@ -46,7 +73,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
     save_plot(peak_dist_plot,
              file.path(base_dir, "peak_analysis", "peak_distribution.pdf"))
     
-    # 2. Enhanced MA Plot
+    # 2. Enhanced MA Plot - Shows relationship between fold change and mean concentration
     log_message("Creating enhanced MA plot...")
     ma_plot <- ggplot(diff_peaks, aes(x = log2(Conc), y = Fold)) +
         geom_point(aes(color = FDR < 0.05, size = abs(Fold)), alpha = 0.6) +
@@ -62,7 +89,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
     save_plot(ma_plot,
              file.path(base_dir, "peak_analysis", "ma_plot_enhanced.pdf"))
     
-    # 3. Enhanced Volcano Plot
+    # 3. Enhanced Volcano Plot - Shows significance vs fold change
     log_message("Creating enhanced volcano plot...")
     volcano_plot <- ggplot(diff_peaks, aes(x = Fold, y = -log10(FDR))) +
         geom_point(aes(color = FDR < 0.05 & abs(Fold) > 1,
@@ -78,7 +105,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
     save_plot(volcano_plot,
              file.path(base_dir, "peak_analysis", "volcano_plot_enhanced.pdf"))
     
-    # 4. Gene Distance to TSS Distribution
+    # 4. Gene Distance to TSS Distribution - Shows peak locations relative to genes
     log_message("Creating TSS distance distribution plot...")
     tss_dist_plot <- ggplot(gene_list, aes(x = distanceToTSS)) +
         geom_histogram(bins = 50, fill = "darkred", color = "black", alpha = 0.7) +
@@ -91,7 +118,7 @@ create_visualizations <- function(peak_type, diff_peaks, gene_list) {
     save_plot(tss_dist_plot,
              file.path(base_dir, "gene_analysis", "tss_distribution.pdf"))
     
-    # 5. Create summary statistics
+    # 5. Create summary statistics - Key metrics about the analysis
     log_message("Generating summary statistics...")
     summary_stats <- data.frame(
         Metric = c(
@@ -134,12 +161,12 @@ broad_peaks <- readRDS("analysis/diffbind_broad/significant_peaks.rds")
 broad_genes <- read.csv("analysis/gene_lists_broad/YAF_enriched_genes_broad_full.csv")
 broad_viz <- create_visualizations("broad", broad_peaks, broad_genes)
 
-# # Process narrow peaks
+# # Process narrow peaks (commented out as optional)
 # narrow_peaks <- readRDS("analysis/diffbind_narrow/significant_peaks.rds")
 # narrow_genes <- read.csv("analysis/gene_lists_narrow/YAF_enriched_genes_narrow_full.csv")
 # narrow_viz <- create_visualizations("narrow", narrow_peaks, narrow_genes)
 
-# # Create combined visualization report
+# # Create combined visualization report (commented out as optional)
 # log_message("Creating combined visualization report...")
 # pdf("analysis/plots_combined/combined_visualization_report.pdf", width = 12, height = 8)
 

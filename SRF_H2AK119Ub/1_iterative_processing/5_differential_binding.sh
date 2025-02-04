@@ -87,7 +87,7 @@ log_message "Using selected samples with similar peak counts:"
 log_message "Validating input files for all samples..."
 for sample in "${samples[@]}"; do
     peak_file="analysis/peaks2_improved/${sample}_${type}_${PEAKS_SUFFIX}.${type}Peak"
-    bam_file="analysis/aligned/${sample}.dedup.bam"
+    bam_file="analysis/aligned_old/${sample}.dedup.bam"
     
     if [[ ! -f "$bam_file" ]]; then
         log_message "ERROR: BAM file not found: $bam_file"

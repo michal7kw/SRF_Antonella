@@ -1,3 +1,36 @@
+#' Advanced Analysis of ChIP-seq Peaks
+#' 
+#' This script performs advanced analysis of ChIP-seq peaks including:
+#' - Peak width distribution analysis
+#' - Signal intensity correlation between samples
+#' - Genomic distribution of peaks relative to genes
+#' - Signal profile analysis around TSS regions
+#' - Motif enrichment analysis (for narrow peaks)
+#' - Peak clustering based on signal patterns
+#'
+#' Input files:
+#' - analysis/diffbind_{peak_type}/significant_peaks.rds: GRanges object with differential peaks
+#' - analysis/annotation_{peak_type}/peak_annotation.rds: ChIPseeker annotation object
+#'
+#' Output files in analysis/advanced_analysis_{peak_type}/:
+#'   plots/
+#'     - peak_width_distribution.pdf: Distribution of peak widths
+#'     - signal_correlation_heatmap.pdf: Correlation between sample signals
+#'     - genomic_distribution.pdf: Peak distribution relative to genomic features
+#'     - tss_profile.pdf: Average signal profile around TSS
+#'     - motif_enrichment.pdf: Enriched sequence motifs (narrow peaks only)
+#'     - peak_clusters.pdf: Clustering of peaks by signal patterns
+#'   summary_statistics.txt: Key metrics from the analysis
+#'
+#' Dependencies:
+#' - GenomicRanges for genomic interval operations
+#' - ComplexHeatmap and circlize for heatmap visualization
+#' - ggplot2 for plotting
+#' - ChIPseeker for genomic feature annotation
+#' - motifmatchr and JASPAR2020 for motif analysis
+#' - BSgenome.Hsapiens.UCSC.hg38 for genome sequence
+#' - DiffBind for peak analysis
+
 # Function to install and load required packages
 install_and_load_packages <- function(packages) {
     for(package in packages) {
@@ -37,24 +70,24 @@ suppressPackageStartupMessages({
     install_and_load_packages(required_packages)
 })
 
-# Get command line arguments
+# Get command line arguments - peak type (broad/narrow)
 args <- commandArgs(trailingOnly = TRUE)
 peak_type <- if(length(args) > 0) args[1] else "broad"
 
-# Create output directories
+# Create output directory structure
 base_dir <- file.path("analysis", paste0("advanced_analysis_", peak_type))
 subdirs <- c("motifs", "clusters", "profiles", "plots")
 sapply(file.path(base_dir, subdirs), dir.create, recursive = TRUE, showWarnings = FALSE)
 
-# Read data
+# Read input data
 diff_peaks <- readRDS(file.path("analysis", paste0("diffbind_", peak_type), "significant_peaks.rds"))
 peak_annotation <- readRDS(file.path("analysis", paste0("annotation_", peak_type), "peak_annotation.rds"))
 
-# Ensure chromosome names are consistent
+# Standardize chromosome naming to UCSC style
 seqlevelsStyle(diff_peaks) <- "UCSC"
 genome(diff_peaks) <- "hg38"
 
-# 1. Peak Width Analysis
+# 1. Peak Width Analysis - Examine distribution of peak sizes
 peak_widths <- data.frame(
     width = width(diff_peaks),
     type = ifelse(diff_peaks$Fold > 0, "YAF_enriched", "GFP_enriched")
@@ -70,7 +103,7 @@ ggplot(peak_widths, aes(x = width, fill = type)) +
     theme_minimal()
 dev.off()
 
-# 2. Signal Intensity Correlation - Skip if no signal columns
+# 2. Signal Intensity Correlation - Analyze sample-to-sample correlation
 if(any(grepl("^signal", colnames(mcols(diff_peaks))))) {
     peak_signals <- as.matrix(mcols(diff_peaks)[, grep("^signal", colnames(mcols(diff_peaks)))])
     cor_matrix <- cor(peak_signals, method = "pearson")
@@ -83,7 +116,7 @@ if(any(grepl("^signal", colnames(mcols(diff_peaks))))) {
     dev.off()
 }
 
-# 3. Genomic Distribution Analysis
+# 3. Genomic Distribution Analysis - Where peaks occur relative to genes
 txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
 seqlevelsStyle(txdb) <- "UCSC"
 
@@ -97,7 +130,7 @@ plotAnnoBar(genomic_distribution)
 plotDistToTSS(genomic_distribution)
 dev.off()
 
-# 4. Signal Profile Analysis
+# 4. Signal Profile Analysis - Average signal around TSS
 # Get TSS regions with consistent chromosome naming
 genes_txdb <- genes(txdb)
 seqlevelsStyle(genes_txdb) <- "UCSC"
@@ -107,7 +140,7 @@ standard_chroms <- paste0("chr", c(1:22, "X", "Y"))
 genes_txdb <- keepSeqlevels(genes_txdb, standard_chroms, pruning.mode = "coarse")
 diff_peaks <- keepSeqlevels(diff_peaks, standard_chroms, pruning.mode = "coarse")
 
-# Create TSS regions
+# Create TSS regions (+/- 3kb)
 tss <- promoters(genes_txdb, upstream = 3000, downstream = 3000)
 
 # Initialize coverage matrix
@@ -160,19 +193,19 @@ axis(1, at = c(1, 1500, 3000, 4500, 6000),
      labels = c("-3000", "-1500", "TSS", "+1500", "+3000"))
 dev.off()
 
-# 5. Motif Analysis (if peaks are narrow enough)
+# 5. Motif Analysis - Only for narrow peaks (<1kb)
 if(median(width(diff_peaks)) < 1000) {
-    # Get JASPAR motifs
+    # Get JASPAR motifs for human
     pfm <- getMatrixSet(JASPAR2020,
                         opts = list(species = "Homo sapiens",
                                   collection = "CORE"))
     
-    # Scan for motifs
+    # Scan peaks for motifs
     motif_ix <- matchMotifs(pfm,
                            diff_peaks,
                            genome = BSgenome.Hsapiens.UCSC.hg38)
     
-    # Calculate enrichment
+    # Calculate motif enrichment
     motif_enrichment <- motifEnrichment(motif_ix,
                                        diff_peaks$Fold > 0)
     
@@ -182,7 +215,7 @@ if(median(width(diff_peaks)) < 1000) {
     dev.off()
 }
 
-# 6. Peak Clustering Analysis
+# 6. Peak Clustering Analysis - Group peaks by signal patterns
 peak_signals <- assay(diff_peaks)
 peak_clusters <- kmeans(peak_signals, centers = 3)
 

@@ -1,4 +1,15 @@
 #!/bin/bash
+#SBATCH --job-name=3_alignment
+#SBATCH --account=kubacki.michal
+#SBATCH --mem=64GB
+#SBATCH --time=INFINITE
+#SBATCH --nodes=1
+#SBATCH --ntasks=32
+#SBATCH --array=0-5  # Process 6 samples in parallel (GFP_1-3 and YAF_1-3)
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=kubacki.michal@hsr.it
+#SBATCH --error="logs/3_alignment_%a.err"
+#SBATCH --output="logs/3_alignment_%a.out"
 
 # This script performs alignment of paired-end CUT&Tag sequencing data to a reference genome
 # It processes multiple samples in parallel using a SLURM array job
@@ -27,19 +38,6 @@
 # - analysis/qc/{sample}_insert_size_metrics.txt - Fragment size metrics
 # - analysis/qc/{sample}_insert_size_histogram.pdf - Fragment size distribution plot
 # - logs/aligned/{sample}.align.log - Bowtie2 alignment log
-
-# SLURM job configuration
-#SBATCH --job-name=3_alignment
-#SBATCH --account=kubacki.michal
-#SBATCH --mem=64GB
-#SBATCH --time=INFINITE
-#SBATCH --nodes=1
-#SBATCH --ntasks=32
-#SBATCH --array=0-5  # Process 6 samples in parallel (GFP_1-3 and YAF_1-3)
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/3_alignment/3_alignment_%a.err"
-#SBATCH --output="logs/3_alignment/3_alignment_%a.out"
 
 # Exit script on error, undefined variables, and pipe failures
 set -e
