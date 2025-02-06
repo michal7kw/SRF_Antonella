@@ -1,6 +1,0 @@
-Sample: YAF_2
-Total Peaks: 68702
-Min Length: 500
-Max Length: 9186
-Mean Length: 947.802
-Mean Fold Enrichment: 3.10724

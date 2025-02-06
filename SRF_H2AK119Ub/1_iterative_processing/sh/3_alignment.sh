@@ -236,15 +236,28 @@ log_message "  - Lost in MAPQ filter: $((mapped_reads - final_reads)) reads ($(e
 
 check_output analysis/aligned_new/${sample}.sorted.bam
 
+# Add Read Group information before marking duplicates
+log_message "Adding Read Group information..."
+picard -Xmx16g AddOrReplaceReadGroups \
+    I=analysis/aligned_new/${sample}.sorted.bam \
+    O=analysis/aligned_new/${sample}.sorted.rg.bam \
+    RGID=RG_${sample} \
+    RGLB=lib1 \
+    RGPL=ILLUMINA \
+    RGPU=unit1 \
+    RGSM=${sample} \
+    VALIDATION_STRINGENCY=LENIENT
+
+check_output analysis/aligned_new/${sample}.sorted.rg.bam
+
 # Collect pre-deduplication statistics
 log_message "Collecting pre-duplicate marking statistics..."
-samtools flagstat -@ 32 analysis/aligned_new/${sample}.sorted.bam > analysis/qc/${sample}_prededup_flagstat.txt
+samtools flagstat -@ 32 analysis/aligned_new/${sample}.sorted.rg.bam > analysis/qc/${sample}_prededup_flagstat.txt
 
 # Mark duplicates with Picard
-# Uses more memory and removes optical duplicates
 log_message "Marking duplicates..."
 picard -Xmx48g MarkDuplicates \
-    I=analysis/aligned_new/${sample}.sorted.bam \
+    I=analysis/aligned_new/${sample}.sorted.rg.bam \
     O=analysis/aligned_new/${sample}.dedup.bam \
     M=analysis/qc/${sample}_dup_metrics.txt \
     REMOVE_DUPLICATES=false \

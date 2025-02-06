@@ -29,6 +29,25 @@
 
 source("scripts/utils.R")
 
+#' Standardize chromosome names to UCSC style and filter valid chromosomes
+#' @param gr GRanges object to standardize
+#' @return GRanges object with standardized chromosome names
+standardize_chromosomes <- function(gr) {
+    # Define standard chromosomes (1-22, X, Y)
+    standard_chroms <- paste0("chr", c(1:22, "X", "Y"))
+    
+    # Add chr prefix if missing
+    seqlevels(gr) <- paste0("chr", sub("^chr", "", seqlevels(gr)))
+    
+    # Keep only standard chromosomes
+    gr_filtered <- gr[seqnames(gr) %in% standard_chroms]
+    
+    # Update sequence levels
+    seqlevels(gr_filtered) <- standard_chroms[standard_chroms %in% seqlevels(gr_filtered)]
+    
+    return(gr_filtered)
+}
+
 #' Perform peak annotation and enrichment analysis
 #' @param peak_type Character, either "broad" or "narrow"
 #' @param peaks GRanges object from differential binding analysis

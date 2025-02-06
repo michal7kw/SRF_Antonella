@@ -47,25 +47,27 @@ def read_annotated_peaks() -> pd.DataFrame:
         # Read the existing peak annotation file
         df = pd.read_csv(ANNOTATION_FILE)
         
-        # Filter for YAF peaks only
-        df = df[df['sample'].str.startswith('YAF_')]
-        
         # Extract gene IDs as symbols and convert to string
         df['SYMBOL'] = df['geneId'].astype(str)
         
-        # Calculate fold change from signal value (if not present)
-        if 'fold_change' not in df.columns:
-            df['fold_change'] = df['signalValue']
+        # Use Conc_YAF as the signal value
+        df['signalValue'] = df['Conc_YAF']
+        
+        # Calculate fold change from the existing Fold column
+        df['fold_change'] = df['Fold']
         
         # Ensure we have all required columns
-        required_columns = ['annotation', 'SYMBOL', 'fold_change']
+        required_columns = ['annotation', 'SYMBOL', 'Conc_YAF', 'Fold']
         missing_columns = [col for col in required_columns if col not in df.columns]
         
         if missing_columns:
             raise ValueError(f"Missing required columns in annotation file: {missing_columns}")
         
-        # Add regulatory region flag
-        df['is_regulatory'] = df['annotation'].str.contains('Promoter|5\'|UTR|exon 1', case=False)
+        # Add regulatory region flag - include promoter regions up to 3kb
+        df['is_regulatory'] = df['annotation'].str.contains(
+            'Promoter|5\'|UTR|exon 1|Exon.*1 of', 
+            case=False
+        )
             
         return df
     
@@ -168,8 +170,8 @@ def calculate_enrichment_scores(df: pd.DataFrame):
     regulatory_df = df[df['is_regulatory']].copy()
     regulatory_df['is_sox2_target'] = regulatory_df['SYMBOL'].isin(sox2_genes)
     
-    # Calculate statistics using signal values
-    enrichment_stats = regulatory_df.groupby('is_sox2_target')['signalValue'].agg([
+    # Calculate statistics using Conc_YAF values
+    enrichment_stats = regulatory_df.groupby('is_sox2_target')['Conc_YAF'].agg([
         ('mean', 'mean'),
         ('median', 'median'),
         ('std', 'std'),
@@ -187,23 +189,23 @@ def calculate_enrichment_scores(df: pd.DataFrame):
     # Create enhanced boxplot with corrected parameters
     sns.boxplot(data=regulatory_df, 
                 x='is_sox2_target', 
-                y='signalValue',
-                color='lightgray')  # Use single color instead of palette
+                y='Conc_YAF',
+                color='lightgray')
     
     # Add individual points
     sns.stripplot(data=regulatory_df, 
                  x='is_sox2_target', 
-                 y='signalValue',
+                 y='Conc_YAF',
                  color='darkblue', 
                  alpha=0.3, 
                  size=4, 
                  jitter=0.2)
     
     # Customize appearance
-    plt.title('Peak Signal Values in Regulatory Regions\nSOX2 Targets vs Non-targets',
+    plt.title('YAF Peak Concentration in Regulatory Regions\nSOX2 Targets vs Non-targets',
               fontsize=12, pad=15)
     plt.xlabel('SOX2 Target Status', fontsize=10)
-    plt.ylabel('Signal Value', fontsize=10)
+    plt.ylabel('YAF Concentration', fontsize=10)
     
     # Set x-axis labels
     plt.xticks([0, 1], ['Non-target', 'SOX2 Target'])

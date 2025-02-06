@@ -216,24 +216,31 @@ if(median(width(diff_peaks)) < 1000) {
 }
 
 # 6. Peak Clustering Analysis - Group peaks by signal patterns
-peak_signals <- assay(diff_peaks)
-peak_clusters <- kmeans(peak_signals, centers = 3)
+if(any(grepl("^signal", colnames(mcols(diff_peaks))))) {
+    # Extract signal columns from the GRanges object
+    peak_signals <- as.matrix(mcols(diff_peaks)[, grep("^signal", colnames(mcols(diff_peaks)))])
+    
+    # Perform clustering only if we have signal data
+    peak_clusters <- kmeans(peak_signals, centers = 3)
 
-cluster_df <- data.frame(
-    cluster = peak_clusters$cluster,
-    fold_change = diff_peaks$Fold,
-    fdr = diff_peaks$FDR
-)
+    cluster_df <- data.frame(
+        cluster = peak_clusters$cluster,
+        fold_change = diff_peaks$Fold,
+        fdr = diff_peaks$FDR
+    )
 
-pdf(file.path(base_dir, "plots", "peak_clusters.pdf"), width = 8, height = 6)
-ggplot(cluster_df, aes(x = fold_change, y = -log10(fdr), color = factor(cluster))) +
-    geom_point(alpha = 0.6) +
-    theme_minimal() +
-    labs(title = "Peak Clusters",
-         x = "Fold Change",
-         y = "-log10(FDR)",
-         color = "Cluster")
-dev.off()
+    pdf(file.path(base_dir, "plots", "peak_clusters.pdf"), width = 8, height = 6)
+    ggplot(cluster_df, aes(x = fold_change, y = -log10(fdr), color = factor(cluster))) +
+        geom_point(alpha = 0.6) +
+        theme_minimal() +
+        labs(title = "Peak Clusters",
+             x = "Fold Change",
+             y = "-log10(FDR)",
+             color = "Cluster")
+    dev.off()
+} else {
+    message("No signal columns found for clustering analysis")
+}
 
 # Save summary statistics
 write.table(
