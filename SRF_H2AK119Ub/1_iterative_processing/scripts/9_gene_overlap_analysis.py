@@ -120,7 +120,7 @@ def calculate_enrichment_scores():
     
     Outputs:
     - CSV file with mean, std, and count statistics
-    - Boxplot visualization of fold changes
+    - Two boxplots visualization of fold changes (with and without outliers)
     """
     df = pd.read_csv(yaf_full_file)
     regulatory_regions = ['Promoter (<=1kb)', 'Promoter (1-2kb)', 'Promoter (2-3kb)', '5\' UTR']
@@ -136,13 +136,29 @@ def calculate_enrichment_scores():
     print("\nEnrichment statistics for regulatory regions:")
     print(enrichment_stats)
     
-    # Create visualization
-    plt.figure(figsize=(8, 6))
-    sns.boxplot(data=regulatory_df, x='is_sox2_target', y='fold_change')
-    plt.title('H2AK119Ub enrichment in regulatory regions\nSOX2 targets vs non-targets')
-    plt.xlabel('Is SOX2 target')
-    plt.ylabel('Fold change')
-    plt.savefig(os.path.join(output_dir, 'regulatory_regions_enrichment_boxplot.png'))
+    # Create visualization with two subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    
+    # First plot - with outliers
+    sns.boxplot(data=regulatory_df, x='is_sox2_target', y='fold_change', ax=ax1)
+    ax1.set_title('With outliers')
+    ax1.set_xlabel('Is SOX2 target')
+    ax1.set_ylabel('Fold change')
+    
+    # Second plot - without outliers
+    sns.boxplot(data=regulatory_df, x='is_sox2_target', y='fold_change', 
+                showfliers=False, ax=ax2)
+    ax2.set_title('Without outliers')
+    ax2.set_xlabel('Is SOX2 target')
+    ax2.set_ylabel('Fold change')
+    
+    # Add overall title
+    plt.suptitle('H2AK119Ub enrichment in regulatory regions\nSOX2 targets vs non-targets', 
+                 y=1.05)
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'regulatory_regions_enrichment_boxplot.png'), 
+                bbox_inches='tight')
     plt.close()
 
 calculate_enrichment_scores()
