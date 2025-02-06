@@ -1,0 +1,10 @@
+=== Pipeline Summary for YAF_3 ===
+Initial reads from trimming: 93388546
+Final reads before deduplication: 129580782
+Final reads after duplicate marking: 129580782
+
+=== Duplication Summary ===
+Duplicate reads: 0 (0%)
+
+=== Final statistics ===
+Overall retention rate: 138.75%

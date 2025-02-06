@@ -39,8 +39,8 @@ suppressPackageStartupMessages({
 # Base directories for different datasets
 h2a_base_dir <- "../SRF_H2AK119Ub/1_iterative_processing/analysis"
 h2a_peaks_dir <- file.path(h2a_base_dir, "peaks")
-v5_narrow_peaks_file <- "../SRF_V5/peaks/SES-V5ChIP-Seq2_S6_narrow_peaks.narrowPeak"
-v5_broad_peaks_file <- "../SRF_V5/peaks/SES-V5ChIP-Seq2_S6_broad_peaks.broadPeak"
+v5_narrow_peaks_file <- "../SRF_V5/results/peaks/SES-V5ChIP-Seq2_S6_narrow_peaks.narrowPeak"
+v5_broad_peaks_file <- "../SRF_V5/results/peaks/SES-V5ChIP-Seq2_S6_broad_peaks.broadPeak"
 output_dir <- "results"
 
 # Define peak file paths for H2AK119Ub data

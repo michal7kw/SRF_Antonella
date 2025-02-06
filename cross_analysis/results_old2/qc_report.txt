@@ -1,0 +1,19 @@
+Quality Control Report
+====================
+
+
+Narrow Peaks Analysis:
+---------------------
+
+Broad Peaks Analysis:
+--------------------
+
+GFP condition:
+Background metrics:
+
+Overlap with V5:
+
+YAF condition:
+Background metrics:
+
+Overlap with V5:

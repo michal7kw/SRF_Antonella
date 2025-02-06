@@ -84,7 +84,7 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Create necessary directories for output files
 log_message "Creating output directories..."
-mkdir -p analysis/{aligned,qc} logs/aligned || { log_message "ERROR: Failed to create directories"; exit 1; }
+mkdir -p analysis/{aligned_new,qc} logs/aligned_new || { log_message "ERROR: Failed to create directories"; exit 1; }
 
 # Function to check if output exists and is not empty
 # Used to verify successful generation of output files
@@ -141,9 +141,6 @@ if [[ ! -f analysis/qc/${sample}_trimming_metrics.json ]]; then
 fi
 
 # Define genome directory and check index
-# GENOME_DIR="${WORKDIR}/genome"
-# GENOME_INDEX="${GENOME_DIR}/GRCh38"
-
 GENOME_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/genome"
 GENOME_INDEX="${GENOME_DIR}/GRCh38"
 
@@ -169,7 +166,7 @@ if [[ ! -f "${GENOME_INDEX}.1.bt2" ]]; then
 fi
 
 # Create temporary directory for intermediate files
-tmp_dir="analysis/aligned/tmp_${sample}"
+tmp_dir="analysis/aligned_new/tmp_${sample}"
 log_message "Creating temporary directory: ${tmp_dir}"
 mkdir -p ${tmp_dir} || { log_message "ERROR: Failed to create temporary directory"; exit 1; }
 
@@ -195,7 +192,7 @@ bowtie2 -p 32 \
     -1 analysis/trimmed/${sample}_R1_paired.fastq.gz \
     -2 analysis/trimmed/${sample}_R2_paired.fastq.gz \
     -S ${tmp_dir}/${sample}.sam \
-    2> logs/aligned/${sample}.align.log
+    2> logs/aligned_new/${sample}.align.log
 
 check_output ${tmp_dir}/${sample}.sam
 log_message "Alignment completed successfully"
@@ -224,10 +221,11 @@ log_message "Total reads before filtering: ${total_reads}"
 # Filter and count reads in steps
 samtools view -@ 32 -bh -F 4 ${tmp_dir}/${sample}.sam | \
     tee >(samtools view -c > ${tmp_dir}/mapped_count.txt) | \
-    samtools view -@ 32 -bh -q 20 - > ${tmp_dir}/${sample}.bam
+    samtools view -@ 32 -bh -q 20 - | \
+    samtools sort -@ 32 -m 2G - -o analysis/aligned_new/${sample}.sorted.bam
 
 mapped_reads=$(cat ${tmp_dir}/mapped_count.txt)
-final_reads=$(samtools view -c ${tmp_dir}/${sample}.bam)
+final_reads=$(samtools view -c analysis/aligned_new/${sample}.sorted.bam)
 
 # Log filtering statistics
 log_message "Reads after removing unmapped: ${mapped_reads}"
@@ -236,16 +234,28 @@ log_message "Filtering summary:"
 log_message "  - Lost in mapping: $((total_reads - mapped_reads)) reads ($(echo "scale=2; 100 * (1 - ${mapped_reads}/${total_reads})" | bc)%)"
 log_message "  - Lost in MAPQ filter: $((mapped_reads - final_reads)) reads ($(echo "scale=2; 100 * (1 - ${final_reads}/${mapped_reads})" | bc)%)"
 
-check_output ${tmp_dir}/${sample}.bam
+check_output analysis/aligned_new/${sample}.sorted.bam
 
 # Collect pre-deduplication statistics
 log_message "Collecting pre-duplicate marking statistics..."
-samtools flagstat -@ 32 analysis/aligned/${sample}.sorted.bam > \
-    analysis/qc/${sample}_prededup_flagstat.txt
+samtools flagstat -@ 32 analysis/aligned_new/${sample}.sorted.bam > analysis/qc/${sample}_prededup_flagstat.txt
 
-# Mark duplicates and analyze results
-log_message "Analyzing duplicate marking results..."
-marked_reads=$(samtools view -c analysis/aligned/${sample}.dedup.bam)
+# Mark duplicates with Picard
+# Uses more memory and removes optical duplicates
+log_message "Marking duplicates..."
+picard -Xmx48g MarkDuplicates \
+    I=analysis/aligned_new/${sample}.sorted.bam \
+    O=analysis/aligned_new/${sample}.dedup.bam \
+    M=analysis/qc/${sample}_dup_metrics.txt \
+    REMOVE_DUPLICATES=false \
+    OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
+    VALIDATION_STRINGENCY=LENIENT
+
+check_output analysis/aligned_new/${sample}.dedup.bam
+check_output analysis/qc/${sample}_dup_metrics.txt
+
+# Now analyze duplicate marking results
+marked_reads=$(samtools view -c analysis/aligned_new/${sample}.dedup.bam)
 dup_reads=$((final_reads - marked_reads))
 dup_percent=$(echo "scale=2; 100 * ${dup_reads}/${final_reads}" | bc)
 
@@ -274,61 +284,39 @@ EOF
 
 log_message "Detailed alignment summary saved to analysis/qc/${sample}_alignment_summary.txt"
 
-# Sort BAM file
-log_message "Sorting BAM..."
-samtools sort -@ 32 -m 2G ${tmp_dir}/${sample}.bam -o analysis/aligned/${sample}.sorted.bam
-check_output analysis/aligned/${sample}.sorted.bam
-
-# Clean up temporary files
-log_message "Cleaning up temporary files..."
-rm -rf ${tmp_dir}
-
 # Calculate mapping statistics for raw alignments
-get_mapping_stats analysis/aligned/${sample}.sorted.bam "raw"
+get_mapping_stats analysis/aligned_new/${sample}.sorted.bam "raw"
 
 # Index sorted BAM
-log_message "Indexing BAM file..."
-samtools index -@ 32 analysis/aligned/${sample}.sorted.bam
-
-# Mark duplicates with Picard
-# Uses more memory and removes optical duplicates
-log_message "Marking duplicates..."
-picard -Xmx48g MarkDuplicates \
-    I=analysis/aligned/${sample}.sorted.bam \
-    O=analysis/aligned/${sample}.dedup.bam \
-    M=analysis/qc/${sample}_dup_metrics.txt \
-    REMOVE_DUPLICATES=false \
-    OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
-    VALIDATION_STRINGENCY=LENIENT
-
-check_output analysis/aligned/${sample}.dedup.bam
-check_output analysis/qc/${sample}_dup_metrics.txt
+log_message "Indexing sorted BAM file..."
+samtools index -@ 32 analysis/aligned_new/${sample}.sorted.bam
 
 # Calculate mapping statistics for deduplicated alignments
-get_mapping_stats analysis/aligned/${sample}.dedup.bam "dedup"
+get_mapping_stats analysis/aligned_new/${sample}.dedup.bam "dedup"
 
 # Index final BAM
-samtools index -@ 32 analysis/aligned/${sample}.dedup.bam
+log_message "Indexing final deduplicated BAM file..."
+samtools index -@ 32 analysis/aligned_new/${sample}.dedup.bam
 
 # Generate final alignment statistics
-echo "Generating alignment statistics..."
-samtools flagstat -@ 32 analysis/aligned/${sample}.dedup.bam > \
-    analysis/qc/${sample}_flagstat.txt
+log_message "Generating alignment statistics..."
+samtools flagstat -@ 32 analysis/aligned_new/${sample}.dedup.bam > analysis/qc/${sample}_flagstat.txt
 
 # Generate fragment size distribution metrics and plot
-echo "Generating fragment size distribution..."
+log_message "Generating fragment size distribution..."
 picard -Xmx48g CollectInsertSizeMetrics \
-    I=analysis/aligned/${sample}.dedup.bam \
+    I=analysis/aligned_new/${sample}.dedup.bam \
     O=analysis/qc/${sample}_insert_size_metrics.txt \
     H=analysis/qc/${sample}_insert_size_histogram.pdf \
     M=0.5 \
     W=1000
 
 # Clean up intermediate files to save space
-if [[ -s analysis/aligned/${sample}.dedup.bam ]]; then
-    rm -f analysis/aligned/${sample}.bam
-    rm -f analysis/aligned/${sample}.sorted.bam
-    rm -f analysis/aligned/${sample}.sorted.bam.bai
+if [[ -s analysis/aligned_new/${sample}.dedup.bam ]]; then
+    log_message "Cleaning up intermediate files..."
+    rm -f analysis/aligned_new/${sample}.bam
+    rm -f analysis/aligned_new/${sample}.sorted.bam
+    rm -f analysis/aligned_new/${sample}.sorted.bam.bai
 fi
 
 log_message "Alignment pipeline completed successfully for ${sample}"

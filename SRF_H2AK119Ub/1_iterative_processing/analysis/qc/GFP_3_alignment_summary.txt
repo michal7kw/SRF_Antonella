@@ -1,0 +1,10 @@
+=== Pipeline Summary for GFP_3 ===
+Initial reads from trimming: 75300228
+Final reads before deduplication: 102161808
+Final reads after duplicate marking: 102161808
+
+=== Duplication Summary ===
+Duplicate reads: 0 (0%)
+
+=== Final statistics ===
+Overall retention rate: 135.67%
