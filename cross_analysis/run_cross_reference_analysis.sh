@@ -34,9 +34,9 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 log_message "Checking required input files..."
 
 # V5 peaks and bigwig files
-V5_PEAKS="../SRF_V5/peaks/SES-V5ChIP-Seq2_S6_narrow_peaks.narrowPeak"
-V5_BIGWIG="../SRF_V5/bigwig/SES-V5ChIP-Seq2_S6.bw"
-V5_INPUT_BIGWIG="../SRF_V5/bigwig/InputSES-V5ChIP-Seq_S2.bw"
+V5_PEAKS="../SRF_V5/results/peaks/SES-V5ChIP-Seq2_S6_narrow_peaks.narrowPeak"
+V5_BIGWIG="../SRF_V5/results/bigwig/SES-V5ChIP-Seq2_S6.bw"
+V5_INPUT_BIGWIG="../SRF_V5/results/bigwig/InputSES-V5ChIP-Seq_S2.bw"
 
 # H2AK119Ub analysis files and bigwig files
 H2A_BASE="../SRF_H2AK119Ub/1_iterative_processing/analysis"
@@ -71,12 +71,12 @@ for file in "${required_files[@]}"; do
 done
 
 # Install required Bioconductor packages
-log_message "Installing required Bioconductor packages..."
-R --quiet --no-save << EOF
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install(c("BSgenome.Hsapiens.UCSC.hg38"), update = FALSE, ask = FALSE)
-EOF
+# log_message "Installing required Bioconductor packages..."
+# R --quiet --no-save << EOF
+# if (!require("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+# BiocManager::install(c("BSgenome.Hsapiens.UCSC.hg38"), update = FALSE, ask = FALSE)
+# EOF
 
 # Run the analysis
 log_message "Starting cross-reference analysis..."

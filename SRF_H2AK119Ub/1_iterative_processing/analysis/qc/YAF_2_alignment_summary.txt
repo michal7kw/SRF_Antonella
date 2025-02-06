@@ -1,9 +1,12 @@
 === Pipeline Summary for YAF_2 ===
 Initial reads from trimming: 131961898
-Final reads before deduplication: 146442376
+Mapped reads: 198946720
+Reads passing MAPQ filter: 146442376
 Final reads after duplicate marking: 146442376
 
-=== Duplication Summary ===
+=== Loss at each step ===
+Mapping loss: -66984822 reads (-50.00%)
+MAPQ filtering loss: 52504344 reads (27.00%)
 Duplicate reads: 0 (0%)
 
 === Final statistics ===

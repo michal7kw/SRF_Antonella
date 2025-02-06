@@ -1,42 +1,86 @@
 #!/usr/bin/env Rscript
 
-# This script performs cross-reference analysis between V5 ChIP-seq and H2AK119Ub ChIP-seq data
-# It analyzes the overlap between V5 binding sites and H2AK119Ub modified regions
-# Key analyses include:
-# - Peak calling and processing for both datasets
-# - Signal normalization and background assessment
-# - Overlap analysis between V5 and H2AK119Ub peaks
-# - Generation of plots and QC metrics
+#####################################################################
+# Cross-reference Analysis Script for V5 and H2AK119Ub ChIP-seq Data
+#####################################################################
+
+# DESCRIPTION:
+# This script performs comprehensive cross-reference analysis between V5 ChIP-seq 
+# and H2AK119Ub ChIP-seq data to identify overlapping binding sites and patterns.
+# It processes peak files, normalizes signals, and generates various analyses and 
+# visualizations to characterize the relationship between these marks.
+
+# INPUT FILES:
+# - V5 ChIP-seq peaks:
+#   * ../SRF_V5/results/peaks/SES-V5ChIP-Seq2_S6_narrow_peaks.narrowPeak
+#   * ../SRF_V5/results/peaks/SES-V5ChIP-Seq2_S6_broad_peaks.broadPeak
+#
+# - V5 ChIP-seq signal:
+#   * ../SRF_V5/results/bigwig/SES-V5ChIP-Seq2_S6.bw (ChIP)
+#   * ../SRF_V5/results/bigwig/InputSES-V5ChIP-Seq_S2.bw (Input)
+#
+# - H2AK119Ub peaks (broad):
+#   * ../SRF_H2AK119Ub/1_iterative_processing/analysis/peaks/GFP_[1-3]_broad_peaks_final.broadPeak
+#   * ../SRF_H2AK119Ub/1_iterative_processing/analysis/peaks/YAF_[1-3]_broad_peaks_final.broadPeak
+#
+# - H2AK119Ub signal:
+#   * ../SRF_H2AK119Ub/1_iterative_processing/analysis/visualization/GFP_[1-3].bw
+#   * ../SRF_H2AK119Ub/1_iterative_processing/analysis/visualization/YAF_[1-3].bw
+
+# OUTPUT FILES:
+# - Processed data:
+#   * results/processed_peaks.rds
+#   * results/normalized_v5_signal.rds
+#   * results/*_categorized_peaks.rds
+#
+# - Analysis results:
+#   * results/tables/overlap_statistics.csv
+#   * results/tables/overlap_summary.csv
+#   * results/analysis_summary.txt
+#   * results/qc_report.txt
+#
+# - Visualizations:
+#   * results/plots/v5_narrow_h2a_overlap_*.pdf
+#   * results/plots/v5_broad_h2a_overlap_*.pdf
+
+# ANALYSIS STEPS:
+# 1. Load and validate input files
+# 2. Process and standardize peak coordinates
+# 3. Normalize ChIP-seq signals
+# 4. Analyze peak overlaps
+# 5. Generate QC metrics
+# 6. Create visualizations
+# 7. Output summary statistics and reports
 
 # Load required libraries for genomic analysis, visualization and data processing
 suppressPackageStartupMessages({
-    # Genomic data handling
-    library(GenomicRanges)    # For handling genomic intervals
-    library(rtracklayer)      # For importing/exporting genomic files
-    library(BSgenome.Hsapiens.UCSC.hg38)  # Human genome sequence
-    library(GenomeInfoDb)     # Genome information
+    # Genomic data handling packages
+    library(GenomicRanges)    # For handling genomic intervals and operations
+    library(rtracklayer)      # For importing/exporting genomic files (BED, bigWig)
+    library(BSgenome.Hsapiens.UCSC.hg38)  # Human genome sequence and annotations
+    library(GenomeInfoDb)     # Genome information and chromosome standardization
     
-    # Peak analysis
-    library(ChIPseeker)       # ChIP peak annotation
-    library(DiffBind)         # Differential binding analysis
-    library(TxDb.Hsapiens.UCSC.hg38.knownGene)  # Gene annotations
-    library(org.Hs.eg.db)     # Gene ID mappings
+    # Peak analysis packages
+    library(ChIPseeker)       # ChIP peak annotation and visualization
+    library(DiffBind)         # Differential binding analysis for ChIP-seq
+    library(TxDb.Hsapiens.UCSC.hg38.knownGene)  # Gene annotations for hg38
+    library(org.Hs.eg.db)     # Gene ID mappings for human genes
     
-    # Visualization
-    library(ggplot2)          # For creating plots
-    library(VennDiagram)      # For overlap visualization
-    library(RColorBrewer)     # Color palettes
-    library(pheatmap)         # For heatmaps
-    library(EnrichedHeatmap)  # For ChIP signal heatmaps
-    library(gridExtra)        # For arranging plots
+    # Visualization packages
+    library(ggplot2)          # For creating publication-quality plots
+    library(VennDiagram)      # For visualizing overlaps between peak sets
+    library(RColorBrewer)     # For color palettes in visualizations
+    library(pheatmap)         # For creating heatmaps
+    library(EnrichedHeatmap)  # For ChIP signal profile heatmaps
+    library(gridExtra)        # For arranging multiple plots
     
-    # Data manipulation
-    library(dplyr)            # For data wrangling
-    library(clusterProfiler)  # For enrichment analysis
+    # Data manipulation packages
+    library(dplyr)            # For efficient data manipulation
+    library(clusterProfiler)  # For functional enrichment analysis
 })
 
 # Define file paths and directory structure
-# Base directories for different datasets
+# Base directories for different datasets and their organization
 h2a_base_dir <- "../SRF_H2AK119Ub/1_iterative_processing/analysis"
 h2a_peaks_dir <- file.path(h2a_base_dir, "peaks")
 v5_narrow_peaks_file <- "../SRF_V5/results/peaks/SES-V5ChIP-Seq2_S6_narrow_peaks.narrowPeak"
@@ -62,7 +106,7 @@ h2a_peak_files <- list(
 
 # Define bigWig file paths for signal visualization
 h2a_bigwig_dir <- file.path(h2a_base_dir, "visualization")
-v5_bigwig_dir <- "../SRF_V5/bigwig"
+v5_bigwig_dir <- "../SRF_V5/results/bigwig"
 
 # H2AK119Ub bigWig files organized by condition and replicate
 h2a_bigwig_files <- list(
@@ -91,22 +135,34 @@ dir.create(file.path(output_dir, "tables"), recursive = TRUE, showWarnings = FAL
 
 # Function to standardize chromosome names and ensure proper genome coordinates
 # This is crucial for consistent analysis across different data types
+# Function to standardize chromosome names and ensure proper genome coordinates
 standardize_chromosomes <- function(gr) {
     # Define standard chromosomes (chr1-22, X, Y)
     std_chroms <- paste0("chr", c(1:22, "X", "Y"))
     
-    # Ensure chromosome names have 'chr' prefix
+    # First ensure all chromosome names have 'chr' prefix
     current_seqlevels <- seqlevels(gr)
-    new_seqlevels <- sub("^chr", "", current_seqlevels)
-    new_seqlevels <- paste0("chr", new_seqlevels)
+    new_seqlevels <- current_seqlevels
+    new_seqlevels <- sub("^chr", "", new_seqlevels)  # Remove any existing 'chr' prefix
+    new_seqlevels <- paste0("chr", new_seqlevels)    # Add 'chr' prefix
+    
+    # Update seqlevels
     seqlevels(gr) <- new_seqlevels
     
     # Get proper sequence info from human genome
     genome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
     std_seqinfo <- seqinfo(genome)[std_chroms]
     
-    # Filter for standard chromosomes and set proper genome info
-    gr <- keepSeqlevels(gr, std_chroms, pruning.mode="coarse")
+    # Keep only standard chromosomes that exist in the input data
+    valid_chroms <- intersect(seqlevels(gr), std_chroms)
+    if (length(valid_chroms) == 0) {
+        stop("No valid chromosomes found after standardization")
+    }
+    
+    # Filter for valid chromosomes
+    gr <- keepSeqlevels(gr, valid_chroms, pruning.mode="coarse")
+    
+    # Update seqinfo
     seqinfo(gr) <- std_seqinfo[seqlevels(gr)]
     
     return(gr)
@@ -114,15 +170,51 @@ standardize_chromosomes <- function(gr) {
 
 # Function to read and process peak files from multiple replicates
 # Handles both narrow and broad peaks
+# Function to read and process peak files from multiple replicates
+# Function to read and process peak files from multiple replicates
 read_peaks <- function(peak_files, type) {
     peaks_list <- list()
     for (condition in names(peak_files[[type]])) {
         condition_peaks <- list()
         for (rep in names(peak_files[[type]][[condition]])) {
             file <- peak_files[[type]][[condition]][[rep]]
-            peaks <- import(file)
-            peaks <- standardize_chromosomes(peaks)
-            condition_peaks[[rep]] <- peaks
+            
+            # Read the peak file with more flexible numeric parsing
+            peaks <- tryCatch({
+                # Read the file as a table first
+                df <- read.table(file, 
+                               colClasses = c("character", "numeric", "numeric", 
+                                            "character", "numeric", "character",
+                                            "numeric", "numeric", "numeric"),
+                               stringsAsFactors = FALSE)
+                
+                # Convert scientific notation to integers
+                df[,2] <- round(as.numeric(df[,2]))
+                df[,3] <- round(as.numeric(df[,3]))
+                
+                # Replace '.' with '*' for strand information
+                df[,6] <- ifelse(df[,6] == ".", "*", df[,6])
+                
+                # Create GRanges object
+                GRanges(
+                    seqnames = df[,1],
+                    ranges = IRanges(start = df[,2], end = df[,3]),
+                    strand = df[,6],
+                    name = df[,4],
+                    score = df[,5],
+                    signalValue = df[,7],
+                    pValue = df[,8],
+                    qValue = df[,9]
+                )
+            }, error = function(e) {
+                warning(sprintf("Error reading file %s: %s", file, e$message))
+                return(GRanges())
+            })
+            
+            if (length(peaks) > 0) {
+                peaks <- standardize_chromosomes(peaks)
+                condition_peaks[[rep]] <- peaks
+            }
         }
         peaks_list[[condition]] <- condition_peaks
     }

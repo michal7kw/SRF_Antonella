@@ -1,9 +1,12 @@
 === Pipeline Summary for GFP_2 ===
 Initial reads from trimming: 90007541
-Final reads before deduplication: 145099854
+Mapped reads: 162111448
+Reads passing MAPQ filter: 145099854
 Final reads after duplicate marking: 145099854
 
-=== Duplication Summary ===
+=== Loss at each step ===
+Mapping loss: -72103907 reads (-80.00%)
+MAPQ filtering loss: 17011594 reads (11.00%)
 Duplicate reads: 0 (0%)
 
 === Final statistics ===
