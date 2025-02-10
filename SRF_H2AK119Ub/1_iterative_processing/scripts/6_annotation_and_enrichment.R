@@ -1,31 +1,31 @@
-#' This script performs annotation and enrichment analysis on peaks identified from
-#' differential binding analysis. It takes the peaks, annotates them relative to genes,
-#' performs GO enrichment analysis, and generates various visualizations.
-#'
-#' Input files:
-#' - analysis/diffbind_broad/significant_peaks.rds: GRanges object with differential peaks
-#' - analysis/diffbind_narrow/significant_peaks.rds (optional): Narrow peaks if analyzing both types
-#'
-#' Output files:
-#' In analysis/annotation_{peak_type}/:
-#'   figures/
-#'     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
-#'     - go_enrichment_plots.pdf: GO term enrichment plots (dotplot, emap, cnet)
-#'   tables/
-#'     - peak_annotation.csv: Detailed peak annotations
-#'     - go_enrichment.csv: GO enrichment analysis results
-#'   peak_annotation.rds: R object with full annotation data
-#'
-#' In analysis/gene_lists_{peak_type}/:
-#'   - YAF_enriched_genes_{peak_type}_full.csv: All enriched genes with details
-#'   - YAF_enriched_genes_{peak_type}_symbols.txt: List of gene symbols only
-#'
-#' Dependencies:
-#' - ChIPseeker for peak annotation
-#' - clusterProfiler for GO enrichment
-#' - org.Hs.eg.db for gene ID mapping
-#' - TxDb.Hsapiens.UCSC.hg38.knownGene for genome annotations
-#' - ggupset (optional) for upset plots
+# This script performs annotation and enrichment analysis on peaks identified from
+# differential binding analysis. It takes the peaks, annotates them relative to genes,
+# performs GO enrichment analysis, and generates various visualizations.
+#
+# Input files:
+# - analysis/diffbind_broad/significant_peaks.rds: GRanges object with differential peaks
+# - analysis/diffbind_narrow/significant_peaks.rds (optional): Narrow peaks if analyzing both types
+#
+# Output files:
+# In analysis/annotation_{peak_type}/:
+#   figures/
+#     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
+#     - go_enrichment_plots.pdf: GO term enrichment plots (dotplot, emap, cnet)
+#   tables/
+#     - peak_annotation.csv: Detailed peak annotations
+#     - go_enrichment.csv: GO enrichment analysis results
+#   peak_annotation.rds: R object with full annotation data
+#
+# In analysis/gene_lists_{peak_type}/:
+#   - YAF_enriched_genes_{peak_type}_full.csv: All enriched genes with details
+#   - YAF_enriched_genes_{peak_type}_symbols.txt: List of gene symbols only
+#
+# Dependencies:
+# - ChIPseeker for peak annotation
+# - clusterProfiler for GO enrichment
+# - org.Hs.eg.db for gene ID mapping
+# - TxDb.Hsapiens.UCSC.hg38.knownGene for genome annotations
+# - ggupset (optional) for upset plots
 
 source("scripts/utils.R")
 

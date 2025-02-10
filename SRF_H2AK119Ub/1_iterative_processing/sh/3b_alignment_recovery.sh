@@ -11,6 +11,7 @@
 #SBATCH --error="logs/3b_alignment_recovery_%a.err"
 #SBATCH --output="logs/3b_alignment_recovery_%a.out"
 
+# Documentation:
 # This script continues the alignment pipeline from intermediate results
 # It checks for existing files and only runs the remaining necessary steps
 

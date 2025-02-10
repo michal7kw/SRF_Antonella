@@ -1,0 +1,13 @@
+Cross-reference Analysis Summary
+==============================
+
+Analysis completed: 2025-02-06 17:14:52
+
+Peak Statistics:
+Total V5 narrow peaks: 104
+Total V5 broad peaks: 189
+H2AK119Ub broad peaks: 20875
+
+Overlap Statistics:
+Narrow V5 + Broad H2AK119Ub: 1 (1.0%)
+Broad V5 + Broad H2AK119Ub: 2 (1.1%)

@@ -5,10 +5,8 @@
 #####################################################################
 
 # DESCRIPTION:
-# This script performs comprehensive cross-reference analysis between V5 ChIP-seq 
-# and H2AK119Ub ChIP-seq data to identify overlapping binding sites and patterns.
-# It processes peak files, normalizes signals, and generates various analyses and 
-# visualizations to characterize the relationship between these marks.
+# This script performs cross-reference analysis between V5 ChIP-seq 
+# and H2AK119Ub ChIP-seq data to identify overlapping binding sites
 
 # INPUT FILES:
 # - V5 ChIP-seq peaks:
@@ -168,9 +166,6 @@ standardize_chromosomes <- function(gr) {
     return(gr)
 }
 
-# Function to read and process peak files from multiple replicates
-# Handles both narrow and broad peaks
-# Function to read and process peak files from multiple replicates
 # Function to read and process peak files from multiple replicates
 read_peaks <- function(peak_files, type) {
     peaks_list <- list()

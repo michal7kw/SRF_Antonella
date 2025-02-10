@@ -11,6 +11,7 @@
 #SBATCH --error="logs/3_alignment_%a.err"
 #SBATCH --output="logs/3_alignment_%a.out"
 
+# Documentation:
 # This script performs alignment of paired-end CUT&Tag sequencing data to a reference genome
 # It processes multiple samples in parallel using a SLURM array job
 # For each sample, it:

@@ -1,5 +1,18 @@
 #!/bin/bash
 
+#SBATCH --job-name=4_peak_calling
+#SBATCH --account=kubacki.michal
+#SBATCH --mem=64GB
+#SBATCH --time=INFINITE
+#SBATCH --nodes=1
+#SBATCH --ntasks=32
+#SBATCH --array=0-5
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=kubacki.michal@hsr.it
+#SBATCH --error="logs/4_peak_calling.err"
+#SBATCH --output="logs/4_peak_calling.out"
+
+# Documentation:
 # This script performs peak calling and filtering on CUT&Tag data using MACS2
 # It processes multiple samples in parallel using a SLURM array job
 # For each sample, it:
@@ -21,18 +34,6 @@
 # - analysis/peaks/{sample}_broad_peaks_viz.broadPeak - Visualization-optimized peaks
 # - analysis/qc/{sample}_metrics.csv - Peak calling QC metrics
 # - analysis/peak_stats/{sample}_peak_stats.txt - Peak statistics
-
-#SBATCH --job-name=4_peak_calling
-#SBATCH --account=kubacki.michal
-#SBATCH --mem=64GB
-#SBATCH --time=INFINITE
-#SBATCH --nodes=1
-#SBATCH --ntasks=32
-#SBATCH --array=0-5
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/4_peak_calling.err"
-#SBATCH --output="logs/4_peak_calling.out"
 
 set -e  # Exit on error
 set -u  # Exit on undefined variable

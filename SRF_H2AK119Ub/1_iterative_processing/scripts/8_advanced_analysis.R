@@ -1,42 +1,42 @@
-#' Advanced Analysis of ChIP-seq Peaks
-#' 
-#' This script performs advanced analysis of ChIP-seq peaks including:
-#' - Peak width distribution analysis
-#' - Signal intensity correlation between samples
-#' - Genomic distribution of peaks relative to genes
-#' - Signal profile analysis around TSS regions
-#' - Motif enrichment analysis (for narrow peaks)
-#' - Peak clustering based on signal patterns
-#'
-#' Input files:
-#' - analysis/diffbind_{peak_type}/significant_peaks.rds: GRanges object with differential peaks
-#' - analysis/annotation_{peak_type}/peak_annotation.rds: ChIPseeker annotation object
-#'
-#' Output files in analysis/advanced_analysis_{peak_type}/:
-#'   plots/
-#'     - peak_width_distribution.pdf: Distribution of peak widths
-#'     - signal_correlation_heatmap.pdf: Correlation between sample signals
-#'     - genomic_distribution.pdf: Peak distribution relative to genomic features
-#'     - tss_profile.pdf: Average signal profile around TSS
-#'     - motif_enrichment.pdf: Enriched sequence motifs (narrow peaks only)
-#'     - peak_clusters.pdf: Clustering of peaks by signal patterns
-#'   summary_statistics.txt: Key metrics from the analysis
-#'
-#' Dependencies:
-#' - GenomicRanges for genomic interval operations
-#' - ComplexHeatmap and circlize for heatmap visualization
-#' - ggplot2 for plotting
-#' - ChIPseeker for genomic feature annotation
-#' - motifmatchr and JASPAR2020 for motif analysis
-#' - BSgenome.Hsapiens.UCSC.hg38 for genome sequence
-#' - DiffBind for peak analysis
+# This script performs analysis of ChIP-seq peaks including:
+# - Peak width distribution analysis
+# - Signal intensity correlation between samples
+# - Genomic distribution of peaks relative to genes
+# - Signal profile analysis around TSS regions
+# - Motif enrichment analysis (for narrow peaks)
+# - Peak clustering based on signal patterns
+#
+# Input files:
+# - analysis/diffbind_{peak_type}/significant_peaks.rds: GRanges object with differential peaks
+# - analysis/annotation_{peak_type}/peak_annotation.rds: ChIPseeker annotation object
+#
+# Output files in analysis/advanced_analysis_{peak_type}/:
+#   plots/
+#     - peak_width_distribution.pdf: Distribution of peak widths
+#     - signal_correlation_heatmap.pdf: Correlation between sample signals
+#     - genomic_distribution.pdf: Peak distribution relative to genomic features
+#     - tss_profile.pdf: Average signal profile around TSS
+#     - motif_enrichment.pdf: Enriched sequence motifs (narrow peaks only)
+#     - peak_clusters.pdf: Clustering of peaks by signal patterns
+#   summary_statistics.txt: Key metrics from the analysis
+#
+# Dependencies:
+# - GenomicRanges for genomic interval operations
+# - ComplexHeatmap and circlize for heatmap visualization
+# - ggplot2 for plotting
+# - ChIPseeker for genomic feature annotation
+# - motifmatchr and JASPAR2020 for motif analysis
+# - BSgenome.Hsapiens.UCSC.hg38 for genome sequence
+# - DiffBind for peak analysis
 
-# Function to install and load required packages
-install_and_load_packages <- function(packages) {
+# Function to install missing packages
+install_missing_packages <- function(packages) {
     for(package in packages) {
         if(!requireNamespace(package, quietly = TRUE)) {
             message(paste("Installing package:", package))
-            if(package %in% c("motifmatchr", "BSgenome.Hsapiens.UCSC.hg38", "TxDb.Hsapiens.UCSC.hg38.knownGene", "JASPAR2020")) {
+            if(package %in% c("motifmatchr", "BSgenome.Hsapiens.UCSC.hg38", 
+                            "TxDb.Hsapiens.UCSC.hg38.knownGene", "JASPAR2020", 
+                            "GenomeInfoDb", "R.utils")) {
                 if(!requireNamespace("BiocManager", quietly = TRUE)) {
                     install.packages("BiocManager")
                 }
@@ -45,7 +45,6 @@ install_and_load_packages <- function(packages) {
                 install.packages(package, quiet = TRUE)
             }
         }
-        library(package, character.only = TRUE)
     }
 }
 
@@ -62,12 +61,19 @@ required_packages <- c(
     "motifmatchr",
     "JASPAR2020",
     "BSgenome.Hsapiens.UCSC.hg38",
-    "DiffBind"
+    "DiffBind",
+    "GenomeInfoDb",
+    "R.utils"  # Add R.utils as a dependency
 )
 
-# Install and load packages
+# Install any missing packages
+install_missing_packages(required_packages)
+
+# Load all required packages
 suppressPackageStartupMessages({
-    install_and_load_packages(required_packages)
+    for(package in required_packages) {
+        library(package, character.only = TRUE)
+    }
 })
 
 # Get command line arguments - peak type (broad/narrow)

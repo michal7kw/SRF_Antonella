@@ -10,9 +10,30 @@
 #SBATCH --error="logs/5_differential_binding.err"
 #SBATCH --output="logs/5_differential_binding.out"
 
-set -e
-set -u
-set -o pipefail
+# Documentation:
+# This script performs differential binding analysis for CUT&Tag data using DiffBind
+# It processes multiple samples with similar peak counts to identify differentially bound regions
+# The script performs the following main steps:
+# 1. Validates input peak and BAM files
+# 2. Cleans and standardizes peak file formats
+# 3. Runs differential binding analysis using an R script
+# 4. Generates output files with differential binding results
+
+# Input files:
+# - analysis/peaks/{sample}_broad_peaks_final.broadPeak: Final peak calls for each sample
+# - analysis/aligned/{sample}.dedup.bam: Deduplicated alignment files for each sample
+# - scripts/5_differential_binding.R: R script containing DiffBind analysis code
+
+# Output files:
+# - analysis/diffbind_broad/: Directory containing DiffBind results
+# - analysis/annotation_broad/: Directory containing annotated differential binding results
+# - logs/5_differential_binding.out: Standard output log
+# - logs/5_differential_binding.err: Error log
+
+# Error handling
+set -e  # Exit immediately if a command exits with non-zero status
+set -u  # Treat unset variables as an error
+set -o pipefail  # Fail pipeline if any command fails
 
 # Function to log messages with timestamps
 log_message() {
@@ -22,7 +43,7 @@ log_message() {
 # Function to validate and clean peak file format
 validate_peak_file() {
     local peak_file=$1
-    local expected_columns=9
+    local expected_columns=9  # Standard number of columns in broadPeak format
     local temp_file="${peak_file}.tmp"
     
     # Check if file exists
@@ -31,7 +52,7 @@ validate_peak_file() {
         return 1
     fi
     
-    # Clean and validate the file
+    # Clean and validate the file using awk
     awk -v cols=$expected_columns '
     BEGIN { valid_lines = 0; total_lines = 0 }
     {
@@ -62,26 +83,29 @@ validate_peak_file() {
     return 0
 }
 
-# Activate conda environment
+# Activate conda environment with required tools
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
 conda activate snakemake
 
-PEAKS_SUFFIX="peaks_final"
+# Define constants
+PEAKS_SUFFIX="peaks_final"  # Suffix for final peak files
+type="broad"  # Analysis type (broad peaks)
+
 # Define working directory
 WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
 cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exit 1; }
 
-# Create necessary directories
+# Create necessary output directories
 log_message "Creating output directories..."
-mkdir -p logs
-mkdir -p analysis/diffbind_broad
-mkdir -p analysis/annotation_broad
+mkdir -p logs  # For log files
+mkdir -p analysis/diffbind_broad  # For DiffBind results
+mkdir -p analysis/annotation_broad  # For annotated results
 
 # Define sample list with only selected samples that have similar peak counts
-samples=(GFP_1 GFP_3 YAF_2 YAF_3)  # Samples with similar peak counts (27k-37k peaks)
-type="broad"
+# Using samples with comparable peak counts (27k-37k peaks) for more reliable comparison
+samples=(GFP_1 GFP_3 YAF_2 YAF_3)
 
-log_message "Using selected samples with similar peak counts:"
+log_message "Using selected samples with similar peak counts: ${samples[*]}"
 
 # Validate all input files first
 log_message "Validating input files for all samples..."
@@ -89,17 +113,19 @@ for sample in "${samples[@]}"; do
     peak_file="analysis/peaks/${sample}_${type}_${PEAKS_SUFFIX}.${type}Peak"
     bam_file="analysis/aligned/${sample}.dedup.bam"
     
+    # Check if BAM file exists
     if [[ ! -f "$bam_file" ]]; then
         log_message "ERROR: BAM file not found: $bam_file"
         exit 1
     fi
     
+    # Check if peak file exists
     if [[ ! -f "$peak_file" ]]; then
         log_message "ERROR: Peak file not found: $peak_file"
         exit 1
     fi
     
-    # Create a backup of the peak file
+    # Create a backup of the peak file before validation
     peak_file_backup="${peak_file}.backup"
     if ! cp "$peak_file" "$peak_file_backup"; then
         log_message "ERROR: Failed to create backup of peak file"
@@ -116,12 +142,12 @@ for sample in "${samples[@]}"; do
     log_message "Validating peak file format for ${sample}..."
     if ! validate_peak_file "$peak_file"; then
         log_message "ERROR: Peak file validation failed. Please check the format of $peak_file"
-        # Restore from backup
+        # Restore from backup if validation fails
         mv "$peak_file_backup" "$peak_file"
         exit 1
     fi
     
-    # If successful, remove backup
+    # If validation is successful, remove the backup
     rm -f "$peak_file_backup"
     log_message "Peak validation completed for ${sample}"
 done
@@ -133,4 +159,4 @@ if ! Rscript scripts/5_differential_binding.R; then
     exit 1
 fi
 
-log_message "Differential binding analysis completed successfully" 
+log_message "Differential binding analysis completed successfully"

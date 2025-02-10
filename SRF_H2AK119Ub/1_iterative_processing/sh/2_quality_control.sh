@@ -14,6 +14,7 @@
 ### Optional ###
 # SBATCH --exclusive
 
+# Documentation:
 # This script performs quality control and trimming on paired-end sequencing data
 # It processes multiple samples in parallel using a SLURM array job
 # For each sample, it:

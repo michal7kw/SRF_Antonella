@@ -7,9 +7,7 @@
 # DESCRIPTION:
 # This script performs downstream analysis of the cross-referenced ChIP-seq data,
 # including genomic annotation, TSS distribution analysis, and gene list comparisons.
-# It generates comprehensive visualizations and reports to characterize the binding
-# patterns and genomic context of V5 and H2AK119Ub peaks.
-
+#
 # INPUT FILES:
 # - Processed peak categories from cross-reference analysis:
 #   * results/narrow_broad_categorized_peaks.rds
@@ -20,7 +18,7 @@
 # - v5_only: V5 peaks without H2AK119Ub
 # - h2a_with_v5: H2AK119Ub peaks overlapping V5
 # - h2a_only: H2AK119Ub peaks without V5
-
+#
 # OUTPUT FILES:
 # - Genomic annotation plots:
 #   * results/downstream_analysis/*_genomic_annotation.pdf
@@ -30,6 +28,9 @@
 #   * results/downstream_analysis/*_common_genes.txt
 #   * results/downstream_analysis/*_v5_with_h2a_specific_genes.txt
 #   * results/downstream_analysis/*_v5_only_specific_genes.txt
+#
+# - CSV files:
+#   * results/downstream_analysis/*_v5_with_h2a_overlapping_peaks.csv
 #
 # - Analysis summary:
 #   * results/downstream_analysis/analysis_summary.txt
@@ -93,7 +94,6 @@ custom_plot_annotation <- function(peak_annot, title, plot_type = "pie") {
     # Clean the title from any existing count
     title <- gsub("\\s*\\(n = \\d+ peaks\\)", "", title)
     
-    # Set up PDF device with better resolution
     if(plot_type == "pie") {
         # Create color palette for consistent visualization
         colors <- c(
@@ -138,26 +138,30 @@ custom_plot_annotation <- function(peak_annot, title, plot_type = "pie") {
         print(p)
         
     } else if(plot_type == "tss") {
-        # Plot TSS distribution with improved visualization parameters
-        p <- plotDistToTSS(peak_annot,
-                        xlab = "Distance to TSS (bp)",
-                        ylab = "Percentage of Peaks (%)",
-                        title = title) +
-            theme_minimal(base_size = 12) +
-            theme(
-                text = element_text(family = "sans"),
-                plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
-                plot.subtitle = element_text(size = 10, color = "gray40", hjust = 0.5),
-                axis.text = element_text(size = 9),
-                axis.title = element_text(size = 10),
-                panel.grid.minor = element_line(color = "gray90", linetype = "dotted"),
-                panel.grid.major = element_line(color = "gray85")
-            )
-        
-        # Add subtitle with peak count
-        p <- p + labs(subtitle = count_text)
-        
-        print(p)
+        # Wrap TSS plotting in tryCatch to gracefully handle errors
+        tryCatch({
+            p <- plotDistToTSS(peak_annot,
+                               xlab = "Distance to TSS (bp)",
+                               ylab = "Percentage of Peaks (%)",
+                               title = title) +
+                theme_minimal(base_size = 12) +
+                theme(
+                    text = element_text(family = "sans"),
+                    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+                    plot.subtitle = element_text(size = 10, color = "gray40", hjust = 0.5),
+                    axis.text = element_text(size = 9),
+                    axis.title = element_text(size = 10),
+                    panel.grid.minor = element_line(color = "gray90", linetype = "dotted"),
+                    panel.grid.major = element_line(color = "gray85")
+                )
+            
+            # Add subtitle with peak count
+            p <- p + labs(subtitle = count_text)
+            
+            print(p)
+        }, error = function(e) {
+            warning("Error creating TSS distribution plot: ", e$message)
+        })
     }
 }
 
@@ -242,6 +246,20 @@ main <- function() {
         write.table(v5_only_specific_symbols,
                    file = file.path(output_dir, sprintf("%s_v5_only_specific_genes.txt", cat_name)),
                    row.names = FALSE, col.names = FALSE, quote = FALSE)
+        
+        # -----------------------------
+        # Export overlapping peaks (V5 peaks with H2AK119Ub)
+        # as a CSV file including annotation details:
+        # peak coordinates, gene IDs, gene symbols, etc.
+        # -----------------------------
+        if (!is.null(v5_with_h2a_results)) {
+            overlap_df <- as.data.frame(v5_with_h2a_results@anno)
+            # Add gene symbol column using robust conversion
+            overlap_df$geneSymbol <- entrez_to_symbol(overlap_df$geneId)
+            
+            csv_filename <- file.path(output_dir, sprintf("%s_v5_with_h2a_overlapping_peaks.csv", cat_name))
+            write.csv(overlap_df, csv_filename, row.names = FALSE)
+        }
         
         # Generate comparison plots
         plot_comparison <- function(with_h2a_annot, only_annot, name) {

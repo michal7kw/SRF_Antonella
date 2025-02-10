@@ -1,60 +1,79 @@
 #!/bin/bash
 
-#SBATCH --job-name=4b_bigwig
-#SBATCH --account=kubacki.michal
-#SBATCH --mem=64GB
-#SBATCH --time=INFINITE
-#SBATCH --nodes=1
-#SBATCH --ntasks=32
-#SBATCH --array=0-5
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/4_peak_calling/4b_bigwig%a.err"
-#SBATCH --output="logs/4_peak_calling/4b_bigwig%a.out"
+# SLURM job configuration
+#SBATCH --job-name=4b_bigwig          # Job name
+#SBATCH --account=kubacki.michal      # Account to charge resources to
+#SBATCH --mem=64GB                   # Memory (RAM) required per node
+#SBATCH --time=INFINITE              # Maximum job runtime (unlimited)
+#SBATCH --nodes=1                    # Number of nodes to use
+#SBATCH --ntasks=32                  # Number of tasks (cores) to use
+#SBATCH --array=0-5                  # Job array index (0 to 5, for 6 samples)
+#SBATCH --mail-type=ALL              # Send email for all job events
+#SBATCH --mail-user=kubacki.michal@hsr.it  # Email address for notifications
+#SBATCH --error="logs/4b_bigwig%a.err"  # Standard error log file
+#SBATCH --output="logs/4b_bigwig%a.out" # Standard output log file
 
-set -e  # Exit on error
-set -u  # Exit on undefined variable
+# Documentation:
+# This script generates a bigWig file and estimates library complexity for a given sample.
+# It uses deeptools bamCoverage to create the bigWig file and Picard's EstimateLibraryComplexity
+# to assess library complexity. The script is designed to be run as a SLURM job array.
+# It processes each sample once, generating a bigWig file and a library complexity estimate.
+#
+# Input:
+#   - analysis/aligned/${sample}.dedup.bam: Deduplicated BAM file for the sample.
+#   - analysis/aligned/${sample}.dedup.bam.bai: Index file for the deduplicated BAM file.
+#
+# Output:
+#   - analysis/visualization/${sample}.bw: BigWig file containing normalized read coverage.
+#   - analysis/qc/${sample}_complexity.txt: Text file containing library complexity metrics.
+#   - logs/4b_bigwig%a.err: Standard error log file for the SLURM job array.
+#   - logs/4b_bigwig%a.out: Standard output log file for the SLURM job array.
 
+set -e  # Exit immediately if a command exits with a non-zero status.
+set -u  # Treat unset variables as an error.
+
+# Activate conda environment
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate snakemake  # Changed to match alignment script
+conda activate snakemake  # Activate the 'snakemake' conda environment.
 
 # Define working directory
 WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
-cd $WORKDIR
+cd $WORKDIR  # Change the current directory to the working directory.
 
-# Create necessary directories
+# Create necessary directories if they don't exist.
 mkdir -p analysis/visualization logs/peaks
 
-# Define samples (matching order with alignment script)
+# Define sample names (matching order with alignment script).
 samples=(GFP_1 GFP_2 GFP_3 YAF_1 YAF_2 YAF_3)
-# samples=(YAF_3)
-# analysis_types=(broad narrow)
-analysis_types=(broad)
-sample_idx=$((SLURM_ARRAY_TASK_ID / 2))
-analysis_idx=$((SLURM_ARRAY_TASK_ID % 2))
-sample=${samples[$sample_idx]}
-analysis_type=${analysis_types[$analysis_idx]}
+# samples=(YAF_3) # This line is commented out, used for testing with a single sample.
+# analysis_types=(broad narrow) # This line is commented out, used for different analysis types.
+analysis_types=(broad) # Currently, only 'broad' analysis type is used.
+sample_idx=$((SLURM_ARRAY_TASK_ID / 2))  # Integer division to get sample index.
+analysis_idx=$((SLURM_ARRAY_TASK_ID % 2))  # Modulo operation to get analysis type index (0 or 1).
+sample=${samples[$sample_idx]}          # Get the sample name based on the SLURM array index.
+analysis_type=${analysis_types[$analysis_idx]}  # Get the analysis type (currently unused, always 'broad').
 
-# Function to check if input/output exists and is not empty
+# Function to check if input/output exists and is not empty.
 check_output() {
-    local file=$1
-    if [[ ! -s $file ]]; then
+    local file=$1  # The first argument is the file to check.
+    if [[ ! -s $file ]]; then  # Check if the file does NOT exist or is empty (-s checks for non-zero size).
         echo "Error: Output file $file is empty or does not exist"
-        exit 1
+        exit 1  # Exit with an error code.
     fi
 }
 
-# Check if input BAM exists and is properly indexed
+# Check if input BAM exists and is properly indexed.
 if [[ ! -f analysis/aligned/${sample}.dedup.bam ]] || [[ ! -f analysis/aligned/${sample}.dedup.bam.bai ]]; then
     echo "Error: Input BAM or index not found for ${sample}"
-    exit 1
+    exit 1  # Exit with an error code if either the BAM file or its index is missing.
 fi
 
 echo "Processing ${sample} for ${analysis_type} peak calling..."
 
-# Generate bigwig only once per sample (when analysis_idx is 0)
+# Generate bigwig only once per sample (when analysis_idx is 0).
 if [[ $analysis_idx -eq 0 ]]; then
     echo "Generating bigWig file for ${sample}..."
+    # Use deeptools bamCoverage to generate a bigWig file.
     bamCoverage -b analysis/aligned/${sample}.dedup.bam \
         -o analysis/visualization/${sample}.bw \
         --binSize 10 \
@@ -63,13 +82,24 @@ if [[ $analysis_idx -eq 0 ]]; then
         --extendReads \
         --centerReads \
         --numberOfProcessors 32
-    check_output analysis/visualization/${sample}.bw
+    # -b: Input BAM file.
+    # -o: Output bigWig file.
+    # --binSize: Size of the bins (in base pairs) for averaging the coverage.
+    # --normalizeUsing: Method for normalizing the coverage (RPKM: Reads Per Kilobase Million).
+    # --smoothLength: Smoothing window size (in base pairs).
+    # --extendReads: Extend reads to the fragment length.
+    # --centerReads: Center reads before extending.
+    # --numberOfProcessors: Number of processors to use.
+    check_output analysis/visualization/${sample}.bw  # Check if the bigWig file was created successfully.
 
     echo "Calculating library complexity for ${sample}..."
+    # Use Picard's EstimateLibraryComplexity to estimate library complexity.
     picard EstimateLibraryComplexity \
         I=analysis/aligned/${sample}.dedup.bam \
         O=analysis/qc/${sample}_complexity.txt
-    check_output analysis/qc/${sample}_complexity.txt
+    # I: Input BAM file.
+    # O: Output text file with complexity metrics.
+    check_output analysis/qc/${sample}_complexity.txt  # Check if the complexity file was created successfully.
 fi
 
 echo "Completed processing ${sample} for ${analysis_type}"

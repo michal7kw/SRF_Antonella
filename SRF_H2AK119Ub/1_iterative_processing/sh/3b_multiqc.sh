@@ -10,6 +10,7 @@
 #SBATCH --error="logs/3b_multiqc.err"
 #SBATCH --output="logs/3b_multiqc.out"
 
+# Documentation:
 # This script runs MultiQC to aggregate FastQC reports and generate QC summaries
 # It processes both pre- and post-trimming FastQC results and creates a QC metrics summary
 
@@ -58,19 +59,19 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 log_message "Creating output directories..."
 mkdir -p analysis/{multiqc,qc} || { log_message "ERROR: Failed to create directories"; exit 1; }
 
-# Verify FastQC results exist before proceeding
-if [[ ! -d analysis/fastqc/pre_trim ]] || [[ ! -d analysis/fastqc/post_trim ]]; then
-    log_message "ERROR: FastQC directories not found. Please run quality control first."
-    exit 1
-fi
+# # Verify FastQC results exist before proceeding
+# if [[ ! -d analysis/fastqc/pre_trim ]] || [[ ! -d analysis/fastqc/post_trim ]]; then
+#     log_message "ERROR: FastQC directories not found. Please run quality control first."
+#     exit 1
+# fi
 
-# Check if alignment results exist
-if [[ ! -f analysis/qc/*_alignment_summary.txt ]] || \
-   [[ ! -f analysis/qc/*_flagstat.txt ]] || \
-   [[ ! -f analysis/qc/*_dup_metrics.txt ]]; then
-    log_message "ERROR: Alignment results not found. Please run 3_alignment.sh first"
-    exit 1
-fi
+# # Check if alignment results exist
+# if [[ ! -f analysis/qc/*_alignment_summary.txt ]] || \
+#    [[ ! -f analysis/qc/*_flagstat.txt ]] || \
+#    [[ ! -f analysis/qc/*_dup_metrics.txt ]]; then
+#     log_message "ERROR: Alignment results not found. Please run 3_alignment.sh first"
+#     exit 1
+# fi
 
 # Modify the MultiQC command to include alignment metrics
 multiqc \
@@ -91,16 +92,16 @@ echo "Sample,RawReads,CleanReads,TrimRetentionRate,MappedReads,UniqueReads,Final
 for sample in GFP_1 GFP_2 GFP_3 YAF_1 YAF_2 YAF_3; do
     log_message "Processing statistics for ${sample}..."
     
-    # Verify input files exist
-    if [[ ! -f ../DATA/fastq/${sample}_R1_001.fastq.gz ]]; then
-        log_message "WARNING: Raw fastq file not found for ${sample}, skipping..."
-        continue
-    fi
+    # # Verify input files exist
+    # if [[ ! -f ../DATA/fastq/${sample}_R1_001.fastq.gz ]]; then
+    #     log_message "WARNING: Raw fastq file not found for ${sample}, skipping..."
+    #     continue
+    # fi
     
-    if [[ ! -f analysis/trimmed/${sample}_R1_paired.fastq.gz ]]; then
-        log_message "WARNING: Cleaned fastq file not found for ${sample}, skipping..."
-        continue
-    fi
+    # if [[ ! -f analysis/trimmed/${sample}_R1_paired.fastq.gz ]]; then
+    #     log_message "WARNING: Cleaned fastq file not found for ${sample}, skipping..."
+    #     continue
+    # fi
     
     # Read trimming metrics from JSON
     if [[ -f analysis/qc/${sample}_trimming_metrics.json ]]; then
