@@ -54,3 +54,17 @@ Archive/
 # exclude large files
 *[]._larger_than_80MB
 *.bdg
+COMMON_DATA/
+
+
+*[]._larger_than_50MB
+SRF_H2AK119Ub/1_iterative_processing/analysis/OLD/
+SRF_RNA/results/fastqc/
+SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/
+SRF_H2AK119Ub/1_iterative_processing/analysis/4_multiqc/multiqc_final.html
+SRF_H2AK119Ub/1_iterative_processing/analysis/4_multiqc/multiqc_final_data/
+SRF_H2AK119Ub/results/fastqc/
+SRF_RNA/results/star/
+*.tar
+*.sra
+SRF_SES_V5/results/qc/fastqc/

@@ -1,7 +1,0 @@
-"SampleID","Factor","Condition","Replicate","bamReads","Peaks","PeakCaller"
-"YAF_1","H2AK119Ub","YAF",1,"analysis/aligned/YAF_1.dedup.bam","analysis/peaks/YAF_1_broad_peaks_final.broadPeak","broad"
-"YAF_2","H2AK119Ub","YAF",2,"analysis/aligned/YAF_2.dedup.bam","analysis/peaks/YAF_2_broad_peaks_final.broadPeak","broad"
-"YAF_3","H2AK119Ub","YAF",3,"analysis/aligned/YAF_3.dedup.bam","analysis/peaks/YAF_3_broad_peaks_final.broadPeak","broad"
-"GFP_1","H2AK119Ub","GFP",1,"analysis/aligned/GFP_1.dedup.bam","analysis/peaks/GFP_1_broad_peaks_final.broadPeak","broad"
-"GFP_2","H2AK119Ub","GFP",2,"analysis/aligned/GFP_2.dedup.bam","analysis/peaks/GFP_2_broad_peaks_final.broadPeak","broad"
-"GFP_3","H2AK119Ub","GFP",3,"analysis/aligned/GFP_3.dedup.bam","analysis/peaks/GFP_3_broad_peaks_final.broadPeak","broad"

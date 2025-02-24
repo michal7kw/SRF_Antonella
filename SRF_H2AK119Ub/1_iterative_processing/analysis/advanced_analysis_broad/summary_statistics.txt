@@ -1,6 +1,0 @@
-metric	value
-Total Peaks	41371
-Median Peak Width	1442
-Number of Clusters	3
-Peaks in Promoters	0
-Peaks in Enhancers	0

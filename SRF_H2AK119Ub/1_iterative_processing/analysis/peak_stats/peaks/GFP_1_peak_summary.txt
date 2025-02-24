@@ -1,6 +1,0 @@
-Sample: GFP_1
-Total Peaks: 103128
-Min Length: 500
-Max Length: 4879
-Mean Length: 1157.6
-Mean Fold Enrichment: 3.62153

@@ -1,0 +1,13 @@
+=== Pipeline Summary for YAF_3 ===
+Initial reads from trimming: 93388546
+Mapped reads: 155927790
+Reads passing MAPQ filter: 129580782
+Final reads after duplicate marking: 129580782
+
+=== Loss at each step ===
+Mapping loss: -62539244 reads (-66.00%)
+MAPQ filtering loss: 26347008 reads (17.00%)
+Duplicate reads: 0 (0%)
+
+=== Final statistics ===
+Overall retention rate: 138.75%

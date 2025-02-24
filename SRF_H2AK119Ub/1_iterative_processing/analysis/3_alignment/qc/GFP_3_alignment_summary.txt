@@ -1,0 +1,13 @@
+=== Pipeline Summary for GFP_3 ===
+Initial reads from trimming: 75300228
+Mapped reads: 119825998
+Reads passing MAPQ filter: 102161808
+Final reads after duplicate marking: 102161808
+
+=== Loss at each step ===
+Mapping loss: -44525770 reads (-59.00%)
+MAPQ filtering loss: 17664190 reads (15.00%)
+Duplicate reads: 0 (0%)
+
+=== Final statistics ===
+Overall retention rate: 135.67%

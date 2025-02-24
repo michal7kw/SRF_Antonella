@@ -1,2 +1,0 @@
-"seqnames","start","end","width","strand","name","score","signalValue","pValue","qValue","peak","annotation","geneChr","geneStart","geneEnd","geneLength","geneStrand","geneId","distanceToTSS","ENSEMBL","SYMBOL","GENENAME","geneSymbol"
-"chr16",60288104,60288436,333,"*","results/peaks/SES-V5ChIP-Seq2_S6_narrow_peak_31",13,3.71446,5.62296,1.31136,82,"Distal Intergenic",16,60346478,60499364,152887,1,"101927605",-58042,"ENSG00000261436","LOC101927605","uncharacterized LOC101927605","LOC101927605"

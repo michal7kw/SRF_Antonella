@@ -1,0 +1,65 @@
+__default__:
+    partition: "workq"
+    time: "240"
+    mem: "32000"
+    threads: 8
+
+download_genome:
+    time: "120"
+    mem: "16000"
+    threads: 4
+
+build_bowtie_index:
+    time: "480"
+    mem: "64000"
+    threads: 32
+
+fastqc_pre:
+    time: "120"
+    mem: "8000"
+    threads: 2
+
+fastqc_post:
+    time: "120"
+    mem: "8000"
+    threads: 2
+
+trimmomatic:
+    time: "240"
+    mem: "32000"
+    threads: 8
+
+align:
+    time: "1440"
+    mem: "64000"
+    threads: 32
+
+mark_duplicates:
+    time: "480"
+    mem: "48000"
+    threads: 8
+
+call_peaks:
+    time: "480"
+    mem: "32000"
+    threads: 8
+
+differential_binding:
+    time: "480"
+    mem: "64000"
+    threads: 16
+
+annotate_peaks:
+    time: "240"
+    mem: "32000"
+    threads: 8
+
+go_enrichment:
+    time: "240"
+    mem: "32000"
+    threads: 8
+
+multiqc:
+    time: "60"
+    mem: "4000"
+    threads: 1 

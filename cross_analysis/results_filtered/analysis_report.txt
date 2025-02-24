@@ -1,0 +1,181 @@
+===========================================
+ChIP-seq Cross-Reference Analysis Report
+===========================================
+
+Analysis Date: 2025-02-24 13:56:26
+
+
+=== Initial V5 Peak Statistics ===
+Total Peaks: 1089
+
+Peak Width Statistics:
+- Mean: 904.4 bp
+- Median: 744.0 bp
+- Range: 501 - 3774 bp
+- Standard Deviation: 458.2 bp
+
+Chromosome Distribution:
+- chr1: 412 peaks (37.8%)
+- chr10: 100 peaks (9.2%)
+- chr11: 7 peaks (0.6%)
+- chr12: 2 peaks (0.2%)
+- chr13: 146 peaks (13.4%)
+- chr14: 0 peaks (0.0%)
+- chr15: 6 peaks (0.6%)
+- chr16: 35 peaks (3.2%)
+- chr17: 30 peaks (2.8%)
+- chr18: 10 peaks (0.9%)
+- chr19: 2 peaks (0.2%)
+- chr2: 23 peaks (2.1%)
+- chr20: 40 peaks (3.7%)
+- chr21: 15 peaks (1.4%)
+- chr22: 16 peaks (1.5%)
+- chr3: 18 peaks (1.7%)
+- chr4: 53 peaks (4.9%)
+- chr5: 30 peaks (2.8%)
+- chr6: 38 peaks (3.5%)
+- chr7: 20 peaks (1.8%)
+- chr8: 16 peaks (1.5%)
+- chr9: 14 peaks (1.3%)
+- chrX: 7 peaks (0.6%)
+- chrY: 49 peaks (4.5%)
+
+=== Blacklist Filtering Summary ===
+Original peaks: 1089
+Filtered peaks: 27
+Removed peaks: 1062 (97.5%)
+
+Width Statistics Changes:
+Original - Mean: 904.4, Median: 744.0, Range: 501-3774
+Filtered - Mean: 849.7, Median: 828.0, Range: 511-1385
+
+=== Filtered V5 Peak Statistics ===
+Total Peaks: 27
+
+Peak Width Statistics:
+- Mean: 849.7 bp
+- Median: 828.0 bp
+- Range: 511 - 1385 bp
+- Standard Deviation: 270.1 bp
+
+Chromosome Distribution:
+- chr1: 7 peaks (25.9%)
+- chr10: 2 peaks (7.4%)
+- chr11: 1 peaks (3.7%)
+- chr12: 0 peaks (0.0%)
+- chr13: 0 peaks (0.0%)
+- chr14: 0 peaks (0.0%)
+- chr15: 0 peaks (0.0%)
+- chr16: 0 peaks (0.0%)
+- chr17: 0 peaks (0.0%)
+- chr18: 0 peaks (0.0%)
+- chr19: 0 peaks (0.0%)
+- chr2: 3 peaks (11.1%)
+- chr20: 2 peaks (7.4%)
+- chr21: 0 peaks (0.0%)
+- chr22: 0 peaks (0.0%)
+- chr3: 2 peaks (7.4%)
+- chr4: 4 peaks (14.8%)
+- chr5: 0 peaks (0.0%)
+- chr6: 5 peaks (18.5%)
+- chr7: 1 peaks (3.7%)
+- chr8: 0 peaks (0.0%)
+- chr9: 0 peaks (0.0%)
+- chrX: 0 peaks (0.0%)
+- chrY: 0 peaks (0.0%)
+
+
+=== Analysis for GFP condition ===
+
+=== Initial H2AK119Ub GFP Peak Statistics ===
+Total Peaks: 599607
+
+Peak Width Statistics:
+- Mean: 2424.6 bp
+- Median: 1703.0 bp
+- Range: 501 - 10001 bp
+- Standard Deviation: 1996.3 bp
+
+Chromosome Distribution:
+- chr1: 58063 peaks (9.7%)
+- chr10: 25358 peaks (4.2%)
+- chr11: 34003 peaks (5.7%)
+- chr12: 20012 peaks (3.3%)
+- chr13: 23550 peaks (3.9%)
+- chr14: 23723 peaks (4.0%)
+- chr15: 20474 peaks (3.4%)
+- chr16: 13003 peaks (2.2%)
+- chr17: 14349 peaks (2.4%)
+- chr18: 16619 peaks (2.8%)
+- chr19: 9769 peaks (1.6%)
+- chr2: 73703 peaks (12.3%)
+- chr20: 13155 peaks (2.2%)
+- chr21: 8002 peaks (1.3%)
+- chr22: 7470 peaks (1.2%)
+- chr3: 22474 peaks (3.7%)
+- chr4: 27144 peaks (4.5%)
+- chr5: 33854 peaks (5.6%)
+- chr6: 32733 peaks (5.5%)
+- chr7: 30725 peaks (5.1%)
+- chr8: 36512 peaks (6.1%)
+- chr9: 26015 peaks (4.3%)
+- chrX: 27457 peaks (4.6%)
+- chrY: 1440 peaks (0.2%)
+
+=== H2AK119Ub GFP Blacklist Filtering Summary ===
+Original peaks: 599607
+Filtered peaks: 599607
+Removed peaks: 0 (0.0%)
+
+Width Statistics Changes:
+Original - Mean: 2424.6, Median: 1703.0, Range: 501-10001
+Filtered - Mean: 2424.6, Median: 1703.0, Range: 501-10001
+
+
+=== Analysis for YAF condition ===
+
+=== Initial H2AK119Ub YAF Peak Statistics ===
+Total Peaks: 771331
+
+Peak Width Statistics:
+- Mean: 2754.9 bp
+- Median: 2001.0 bp
+- Range: 501 - 10001 bp
+- Standard Deviation: 2168.9 bp
+
+Chromosome Distribution:
+- chr1: 50557 peaks (6.6%)
+- chr10: 43969 peaks (5.7%)
+- chr11: 29746 peaks (3.9%)
+- chr12: 50886 peaks (6.6%)
+- chr13: 23184 peaks (3.0%)
+- chr14: 33955 peaks (4.4%)
+- chr15: 20550 peaks (2.7%)
+- chr16: 22074 peaks (2.9%)
+- chr17: 14464 peaks (1.9%)
+- chr18: 18105 peaks (2.3%)
+- chr19: 9773 peaks (1.3%)
+- chr2: 58799 peaks (7.6%)
+- chr20: 12445 peaks (1.6%)
+- chr21: 8114 peaks (1.1%)
+- chr22: 6220 peaks (0.8%)
+- chr3: 47516 peaks (6.2%)
+- chr4: 74855 peaks (9.7%)
+- chr5: 44317 peaks (5.7%)
+- chr6: 60012 peaks (7.8%)
+- chr7: 35831 peaks (4.6%)
+- chr8: 33807 peaks (4.4%)
+- chr9: 38139 peaks (4.9%)
+- chrX: 31853 peaks (4.1%)
+- chrY: 2160 peaks (0.3%)
+
+=== H2AK119Ub YAF Blacklist Filtering Summary ===
+Original peaks: 771331
+Filtered peaks: 771331
+Removed peaks: 0 (0.0%)
+
+Width Statistics Changes:
+Original - Mean: 2754.9, Median: 2001.0, Range: 501-10001
+Filtered - Mean: 2754.9, Median: 2001.0, Range: 501-10001
+
+Analysis completed successfully.

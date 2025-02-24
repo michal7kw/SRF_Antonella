@@ -1,0 +1,185 @@
+from os.path import join
+
+# Configuration
+CONFIG = {
+    'samples': ['C1', 'C2', 'C3', 'GFP1', 'GFP2', 'GFP3', 'YAF1', 'YAF2', 'YAF3'],
+    'conditions': ['C', 'GFP', 'YAF'],
+    'genome_dir': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star',  # Directory for STAR genome index
+    'genome_fasta': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa',  # Path to genome fasta
+    'gtf': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf',  # Basic Gencode v43 annotation for GRCh38
+    'threads': 8
+}
+
+# Output directories
+RESULTS_DIR = 'results'
+LOGS_DIR = 'logs'
+
+# Final output files for the complete pipeline
+rule all:
+    input:
+        # FastQC reports
+        expand(join(RESULTS_DIR, 'fastqc', '{sample}_L001_R1_001_fastqc.html'), sample=CONFIG['samples']),
+        expand(join(RESULTS_DIR, 'fastqc', '{sample}_L001_R2_001_fastqc.html'), sample=CONFIG['samples']),
+        # Trimmed FastQC reports
+        expand(join(RESULTS_DIR, 'fastqc', '{sample}_R1_trimmed_fastqc.html'), sample=CONFIG['samples']),
+        expand(join(RESULTS_DIR, 'fastqc', '{sample}_R2_trimmed_fastqc.html'), sample=CONFIG['samples']),
+        # STAR alignments
+        expand(join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam'), sample=CONFIG['samples']),
+        # featureCounts results
+        join(RESULTS_DIR, 'counts', 'all_samples_counts.txt'),
+        # MultiQC report
+        join(RESULTS_DIR, 'multiqc', 'multiqc_report.html')
+
+# FastQC on raw reads
+rule fastqc_raw:
+    input:
+        r1 = join('DATA', '{sample}', '{sample}_L001_R1_001.fastq.gz'),
+        r2 = join('DATA', '{sample}', '{sample}_L001_R2_001.fastq.gz')
+    output:
+        html_r1 = join(RESULTS_DIR, 'fastqc', '{sample}_L001_R1_001_fastqc.html'),
+        html_r2 = join(RESULTS_DIR, 'fastqc', '{sample}_L001_R2_001_fastqc.html'),
+        zip_r1 = join(RESULTS_DIR, 'fastqc', '{sample}_L001_R1_001_fastqc.zip'),
+        zip_r2 = join(RESULTS_DIR, 'fastqc', '{sample}_L001_R2_001_fastqc.zip')
+    log:
+        join(LOGS_DIR, 'fastqc', '{sample}.log')
+    threads: 2
+    shell:
+        'fastqc -o {RESULTS_DIR}/fastqc -t {threads} {input.r1} {input.r2} 2> {log}'
+
+# Trimmomatic PE
+rule trimmomatic:
+    input:
+        r1 = join('DATA', '{sample}', '{sample}_L001_R1_001.fastq.gz'),
+        r2 = join('DATA', '{sample}', '{sample}_L001_R2_001.fastq.gz')
+    output:
+        r1 = join(RESULTS_DIR, 'trimmed', '{sample}_R1_trimmed.fastq.gz'),
+        r2 = join(RESULTS_DIR, 'trimmed', '{sample}_R2_trimmed.fastq.gz'),
+        r1_unpaired = join(RESULTS_DIR, 'trimmed', '{sample}_R1_unpaired.fastq.gz'),
+        r2_unpaired = join(RESULTS_DIR, 'trimmed', '{sample}_R2_unpaired.fastq.gz')
+    log:
+        join(LOGS_DIR, 'trimmomatic', '{sample}.log')
+    threads: CONFIG['threads']
+    shell:
+        'trimmomatic PE -threads {threads} '
+        '{input.r1} {input.r2} '
+        '{output.r1} {output.r1_unpaired} '
+        '{output.r2} {output.r2_unpaired} '
+        'ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 '
+        'LEADING:3 TRAILING:3 '
+        'SLIDINGWINDOW:4:15 '
+        'MINLEN:36 '
+        '2> {log}'
+
+# FastQC on trimmed reads
+rule fastqc_trimmed:
+    input:
+        r1 = rules.trimmomatic.output.r1,
+        r2 = rules.trimmomatic.output.r2
+    output:
+        html_r1 = join(RESULTS_DIR, 'fastqc', '{sample}_R1_trimmed_fastqc.html'),
+        html_r2 = join(RESULTS_DIR, 'fastqc', '{sample}_R2_trimmed_fastqc.html'),
+        zip_r1 = join(RESULTS_DIR, 'fastqc', '{sample}_R1_trimmed_fastqc.zip'),
+        zip_r2 = join(RESULTS_DIR, 'fastqc', '{sample}_R2_trimmed_fastqc.zip')
+    log:
+        join(LOGS_DIR, 'fastqc_trimmed', '{sample}.log')
+    threads: 2
+    shell:
+        'fastqc -o {RESULTS_DIR}/fastqc -t {threads} {input.r1} {input.r2} 2> {log}'
+
+# STAR genome indexing
+rule star_index:
+    input:
+        fasta = CONFIG['genome_fasta'],
+        gtf = CONFIG['gtf']
+    output:
+        directory(CONFIG['genome_dir'])
+    log:
+        join(LOGS_DIR, 'star_index', 'star_index.log')
+    threads: CONFIG['threads']
+    shell:
+        'mkdir -p {output} && '
+        'STAR --runMode genomeGenerate '
+        '--genomeDir {output} '
+        '--genomeFastaFiles {input.fasta} '
+        '--sjdbGTFfile {input.gtf} '
+        '--runThreadN {threads} '
+        '--sjdbOverhang 100 '
+        '2> {log}'
+
+# STAR alignment
+rule star_align:
+    input:
+        r1 = rules.trimmomatic.output.r1,
+        r2 = rules.trimmomatic.output.r2,
+        index = CONFIG['genome_dir']
+    output:
+        bam = join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam'),
+        log = join(RESULTS_DIR, 'star', '{sample}', '{sample}_Log.final.out')
+    params:
+        outdir = join(RESULTS_DIR, 'star', '{sample}'),
+        prefix = join(RESULTS_DIR, 'star', '{sample}', '{sample}_')
+    log:
+        join(LOGS_DIR, 'star', '{sample}.log')
+    threads: CONFIG['threads']
+    shell:
+        'STAR '
+        '--runThreadN {threads} '
+        '--genomeDir {CONFIG[genome_dir]} '
+        '--readFilesIn {input.r1} {input.r2} '
+        '--readFilesCommand zcat '
+        '--outFileNamePrefix {params.prefix} '
+        '--outSAMtype BAM SortedByCoordinate '
+        '--outSAMattributes Standard '
+        '2> {log}'
+
+# Index BAM files
+rule index_bam:
+    input:
+        rules.star_align.output.bam
+    output:
+        join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam.bai')
+    log:
+        join(LOGS_DIR, 'samtools_index', '{sample}.log')
+    shell:
+        'samtools index {input} 2> {log}'
+
+# featureCounts
+rule featurecounts:
+    input:
+        bams = expand(join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam'), sample=CONFIG['samples'])
+    output:
+        counts = join(RESULTS_DIR, 'counts', 'all_samples_counts.txt'),
+        summary = join(RESULTS_DIR, 'counts', 'all_samples_counts.txt.summary')
+    log:
+        join(LOGS_DIR, 'featurecounts', 'all_samples.log')
+    threads: CONFIG['threads']
+    shell:
+        'featureCounts '
+        '-T {threads} '
+        '-p -t exon -g gene_id '
+        '-a {CONFIG[gtf]} '
+        '-o {output.counts} '
+        '{input.bams} '
+        '2> {log}'
+
+# MultiQC report
+rule multiqc:
+    input:
+        expand(join(RESULTS_DIR, 'fastqc', '{sample}_L001_R1_001_fastqc.zip'), sample=CONFIG['samples']),
+        expand(join(RESULTS_DIR, 'fastqc', '{sample}_L001_R2_001_fastqc.zip'), sample=CONFIG['samples']),
+        expand(join(RESULTS_DIR, 'fastqc', '{sample}_R1_trimmed_fastqc.zip'), sample=CONFIG['samples']),
+        expand(join(RESULTS_DIR, 'fastqc', '{sample}_R2_trimmed_fastqc.zip'), sample=CONFIG['samples']),
+        expand(join(RESULTS_DIR, 'star', '{sample}', '{sample}_Log.final.out'), sample=CONFIG['samples']),
+        join(RESULTS_DIR, 'counts', 'all_samples_counts.txt.summary')
+    output:
+        report = join(RESULTS_DIR, 'multiqc', 'multiqc_report.html')
+    log:
+        join(LOGS_DIR, 'multiqc', 'multiqc.log')
+    shell:
+        'multiqc '
+        '--force '
+        '-o {RESULTS_DIR}/multiqc '
+        '{RESULTS_DIR}/fastqc '
+        '{RESULTS_DIR}/star '
+        '{RESULTS_DIR}/counts '
+        '2> {log}'

@@ -1,0 +1,16 @@
+ChIP-seq Cross-reference Analysis Report
+ =====================================
+
+ Analysis Date: 2025-02-24 16:26:50
+
+
+V5 Peak Statistics:
+ ------------------
+ Total peaks: 1089
+ Width range: 501 - 3774 bp
+ Median width: 744 bp
+
+GFP Analysis:
+ -------------
+
+ERROR: duplicate row.names: rep1, rep2, rep3
