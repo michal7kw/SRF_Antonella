@@ -1,5 +1,10 @@
 #!/usr/bin/env Rscript
 
+#SBATCH --time=24:00:00        # Increase time limit to 24 hours
+#SBATCH --mem=64G             # Request 64GB memory
+#SBATCH --cpus-per-task=8     # Request 8 CPUs
+#SBATCH --output=cross_ref_%j.log  # Output log with job ID
+
 #####################################################################
 # Cross-reference Analysis Script for V5 and H2AK119Ub ChIP-seq Data
 #####################################################################
@@ -47,6 +52,7 @@ suppressPackageStartupMessages({
     library(EnrichedHeatmap)  # For ChIP signal profile heatmaps
     library(gridExtra)        # For arranging multiple plots
     library(scales)           # For scaling axis labels
+    library(grid)             # For grid graphics (required for Venn diagrams)
     
     # Data manipulation packages
     library(dplyr)            # For efficient data manipulation
@@ -160,6 +166,9 @@ read_peaks <- function(peak_files, type) {
         log_message("Reading single peak file...", "DEBUG")
         log_message(sprintf("File path: %s", peak_files), "DEBUG")
         
+        # Generate unique identifier prefix from filename
+        file_prefix <- sub("[.][^.]*$", "", basename(peak_files))
+        
         # Read raw lines first for counting
         raw_lines <- readLines(peak_files)
         log_message(sprintf("Raw number of lines in file: %d", length(raw_lines)), "DEBUG")
@@ -169,6 +178,9 @@ read_peaks <- function(peak_files, type) {
             peaks_df <- read.table(peak_files, header = FALSE)
             log_message(sprintf("Number of peaks after initial reading: %d", nrow(peaks_df)), "DEBUG")
             
+            # Add unique row names to peaks_df
+            rownames(peaks_df) <- paste0(file_prefix, "_peak_", seq_len(nrow(peaks_df)))
+            
             # Create GRanges
             gr <- GRanges(
                 seqnames = peaks_df$V1,
@@ -176,7 +188,7 @@ read_peaks <- function(peak_files, type) {
                     start = as.integer(peaks_df$V2),
                     end = as.integer(peaks_df$V3)
                 ),
-                name = peaks_df$V4,
+                name = paste0(file_prefix, "_peak_", seq_len(nrow(peaks_df))),
                 score = as.numeric(peaks_df$V5),
                 strand = ifelse(peaks_df$V6 == ".", "*", peaks_df$V6)
             )
@@ -206,7 +218,7 @@ read_peaks <- function(peak_files, type) {
     # For list input (H2AK119Ub peaks)
     peaks_list <- list()
     for (condition in names(peak_files[[type]])) {
-        condition_peaks <- GRangesList()
+        condition_peaks <- list()
         for (rep in names(peak_files[[type]][[condition]])) {
             file <- peak_files[[type]][[condition]][[rep]]
             log_message(sprintf("Processing file for %s %s: %s", condition, rep, file), "DEBUG")
@@ -219,18 +231,28 @@ read_peaks <- function(peak_files, type) {
                 peaks_df <- read.table(file, header = FALSE)
                 log_message(sprintf("Number of peaks after reading: %d", nrow(peaks_df)), "DEBUG")
                 
+                # Use existing peak names from column 4 (V4)
+                peak_ids <- peaks_df$V4
+                
                 gr <- GRanges(
                     seqnames = peaks_df$V1,
                     ranges = IRanges(
                         start = as.integer(peaks_df$V2),
                         end = as.integer(peaks_df$V3)
                     ),
-                    name = peaks_df$V4,
+                    name = peak_ids,
                     score = as.numeric(peaks_df$V5),
-                    strand = ifelse(peaks_df$V6 == ".", "*", peaks_df$V6)
+                    strand = ifelse(peaks_df$V6 == ".", "*", peaks_df$V6),
+                    peak_id = peak_ids,
+                    replicate = rep,
+                    condition = condition
                 )
                 
+                # Set names
+                names(gr) <- peak_ids
+                
                 log_message(sprintf("Number of peaks after GRanges conversion: %d", length(gr)), "DEBUG")
+                log_message(sprintf("Sample peak names: %s", paste(head(names(gr)), collapse=", ")), "DEBUG")
                 
                 gr_std <- standardize_chromosomes(gr)
                 log_message(sprintf("Number of peaks after standardization: %d", length(gr_std)), "DEBUG")
@@ -246,8 +268,18 @@ read_peaks <- function(peak_files, type) {
                 condition_peaks[[rep]] <- peaks
             }
         }
-        # Merge replicates for each condition
-        peaks_list[[condition]] <- unlist(condition_peaks)
+        # Merge replicates for each condition and ensure unique names
+        # Convert GRangesList to list of GRanges first
+        peaks_to_merge <- as.list(condition_peaks)
+        merged_peaks <- do.call(c, peaks_to_merge)
+        
+        # Generate new unique names for merged peaks
+        new_names <- paste0(condition, "_merged_peak_", seq_len(length(merged_peaks)))
+        names(merged_peaks) <- new_names
+        mcols(merged_peaks)$original_peak_id <- mcols(merged_peaks)$peak_id  # Save original IDs
+        mcols(merged_peaks)$peak_id <- new_names
+        
+        peaks_list[[condition]] <- merged_peaks
     }
     
     # Convert the list to a GRangesList
@@ -498,8 +530,35 @@ process_peaks <- function(peaks_list, is_broad = FALSE, blacklist = NULL) {
     processed_peaks <- list()
     
     for (condition in names(peaks_list)) {
-        # Merge replicates into single peak set
-        condition_peaks <- unlist(GRangesList(peaks_list[[condition]]))
+        # Process each replicate with unique identifiers
+        log_message(sprintf("Processing condition: %s", condition), "DEBUG")
+        log_message(sprintf("Replicate names: %s", paste(names(peaks_list[[condition]]), collapse=", ")), "DEBUG")
+        
+        # First read all peaks
+        all_peaks <- list()
+        total_peaks <- 0
+        
+        for (rep_name in names(peaks_list[[condition]])) {
+            log_message(sprintf("Processing replicate: %s", rep_name), "DEBUG")
+            peaks <- read_peaks(peaks_list[[condition]][[rep_name]], "broad")
+            
+            # Debug peak object
+            log_message(sprintf("Number of peaks for %s: %d", rep_name, length(peaks)), "DEBUG")
+            
+            # Add unique identifiers
+            mcols(peaks)$peak_id <- paste0(condition, "_", rep_name, "_", seq_len(length(peaks)))
+            mcols(peaks)$replicate <- rep_name
+            names(peaks) <- mcols(peaks)$peak_id
+            
+            all_peaks[[rep_name]] <- peaks
+            total_peaks <- total_peaks + length(peaks)
+        }
+        
+        # Combine all peaks with unique names
+        combined_peaks <- unlist(GRangesList(all_peaks))
+        names(combined_peaks) <- paste0(condition, "_peak_", seq_len(length(combined_peaks)))
+        mcols(combined_peaks)$peak_id <- names(combined_peaks)
+        condition_peaks <- combined_peaks
         
         # Standardize chromosomes and ensure valid coordinates
         condition_peaks <- standardize_chromosomes(condition_peaks)
@@ -892,13 +951,16 @@ suppressPackageStartupMessages({
 
 # Function to plot peak width distributions
 plot_peak_width_distribution <- function(peaks_list, names, title = "Peak Width Distribution") {
-    # Combine data from all peak sets
-    plot_data <- do.call(rbind, lapply(seq_along(peaks_list), function(i) {
-        data.frame(
+    # Convert GRanges objects to data frames with widths
+    plot_data <- data.frame()
+    for (i in seq_along(peaks_list)) {
+        # Extract widths from GRanges object
+        widths_df <- data.frame(
             width = width(peaks_list[[i]]),
             dataset = names[i]
         )
-    }))
+        plot_data <- rbind(plot_data, widths_df)
+    }
     
     # Create density plot
     p <- ggplot(plot_data, aes(x = width, fill = dataset)) +
@@ -990,10 +1052,24 @@ analyze_overlaps <- function(v5_peaks, h2a_peaks, condition) {
 }
 
 # Function to generate and analyze peak profiles with improved methodology
-generate_peak_profiles <- function(peaks, signal_files, condition, window_size = 2000, bin_size = 50) {
+generate_peak_profiles <- function(peaks, signal_files, condition, window_size = 2000, bin_size = 50, 
+                                      max_peaks = 10000, chunk_size = 1000) {
     if (length(peaks) == 0) {
         log_message("No peaks provided for profile generation", "WARNING")
         return(NULL)
+    }
+    
+    # Ensure peaks is a GRanges object
+    if (!is(peaks, "GRanges")) {
+        stop("Input 'peaks' must be a GRanges object")
+    }
+    
+    # Subsample peaks if there are too many
+    if (length(peaks) > max_peaks) {
+        set.seed(42)  # For reproducibility
+        idx <- sample(length(peaks), max_peaks)
+        peaks <- peaks[idx]
+        log_message(sprintf("Subsampled peaks to %d for profile generation", max_peaks), "INFO")
     }
     
     log_message(sprintf("Generating profiles for %d peaks in %s condition", 
@@ -1015,7 +1091,7 @@ generate_peak_profiles <- function(peaks, signal_files, condition, window_size =
             signal <- import.bw(signal_file)
             signal <- standardize_chromosomes(signal)
             
-            # Calculate coverage matrix
+            # Calculate coverage matrix using GenomicRanges methods
             coverage_mat <- normalizeToMatrix(signal, peak_windows,
                                             value_column = "score",
                                             mean_mode = "w0",
@@ -1127,7 +1203,77 @@ main_analysis <- function(narrow_peaks, broad_peaks, v5_narrow_peaks, v5_broad_p
             # Annotate peaks
             log_message("Performing peak annotation", "INFO")
             txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
-            peak_annot <- annotatePeak(h2a_peaks, TxDb=txdb,
+            
+            # Debug peak object before conversion
+            log_message(sprintf("Number of peaks before conversion: %d", length(h2a_peaks)), "DEBUG")
+            log_message(sprintf("Names of h2a_peaks: %s", paste(head(names(h2a_peaks)), collapse=", ")), "DEBUG")
+            
+            # Convert peaks to data frame preserving ALL metadata
+            peaks_df <- as.data.frame(h2a_peaks)
+            original_metadata <- mcols(h2a_peaks)
+            log_message(sprintf("Peaks data frame dimensions: %d x %d", nrow(peaks_df), ncol(peaks_df)), "DEBUG")
+            
+            # Check for existing metadata
+            existing_mcols <- colnames(original_metadata)
+            log_message(sprintf("Existing metadata columns: %s", paste(existing_mcols, collapse=", ")), "DEBUG")
+            
+            # Preserve or generate peak IDs
+            if ("peak_id" %in% existing_mcols && 
+                !all(is.na(original_metadata$peak_id)) && 
+                !all(original_metadata$peak_id == "")) {
+                # Use existing peak IDs
+                peak_ids <- original_metadata$peak_id
+                log_message("Using existing peak IDs from metadata", "DEBUG")
+            } else if (!is.null(names(h2a_peaks)) && 
+                       !all(is.na(names(h2a_peaks))) && 
+                       !all(names(h2a_peaks) == "")) {
+                # Use existing names
+                peak_ids <- names(h2a_peaks)
+                log_message("Using existing peak names", "DEBUG")
+            } else {
+                # Generate new unique IDs
+                peak_ids <- paste0(condition, "_peak_", seq_len(nrow(peaks_df)))
+                log_message("Generating new peak IDs", "DEBUG")
+            }
+            
+            # Ensure peak IDs are unique
+            if (length(unique(peak_ids)) != length(peak_ids)) {
+                log_message("WARNING: Duplicate peak IDs found, generating new unique IDs", "WARNING")
+                peak_ids <- make.unique(peak_ids)
+            }
+            
+            # Create GRanges preserving ALL metadata
+            peaks_gr <- makeGRangesFromDataFrame(peaks_df, keep.extra.columns=TRUE)
+            
+            # Copy over ALL original metadata
+            if (length(existing_mcols) > 0) {
+                for (col in existing_mcols) {
+                    mcols(peaks_gr)[[col]] <- original_metadata[[col]]
+                }
+            }
+            
+            # Update/add required metadata
+            mcols(peaks_gr)$peak_id <- peak_ids
+            mcols(peaks_gr)$condition <- condition
+            names(peaks_gr) <- peak_ids
+            
+            # Validate final object
+            stopifnot(
+                length(peaks_gr) == length(h2a_peaks),
+                length(unique(names(peaks_gr))) == length(peaks_gr),
+                !any(is.na(names(peaks_gr))),
+                !any(names(peaks_gr) == "")
+            )
+            
+            # Debug final object
+            log_message(sprintf("Final GRanges metadata columns: %s", 
+                paste(colnames(mcols(peaks_gr)), collapse=", ")), "DEBUG")
+            
+            log_message(sprintf("Final GRanges object length: %d", length(peaks_gr)), "DEBUG")
+            log_message(sprintf("Final GRanges names: %s", paste(head(names(peaks_gr)), collapse=", ")), "DEBUG")
+            
+            # Perform peak annotation
+            peak_annot <- annotatePeak(peaks_gr, TxDb=txdb,
                                       annoDb="org.Hs.eg.db")
             
             # Write annotation summary
@@ -1348,8 +1494,109 @@ main_analysis <- function(narrow_peaks, broad_peaks, v5_narrow_peaks, v5_broad_p
     })
 }
 
+# Set memory and performance optimization parameters
+options(future.globals.maxSize = 2000 * 1024^2)  # 2GB limit for future package
+options(mc.cores = parallel::detectCores() - 1)   # Use all but one core
+options(scipen = 999)                           # Avoid scientific notation
+options(datatable.optimize = 1)                 # Enable data.table optimization
+
+# Function to plot peak profiles
+plot_peak_profiles <- function(peaks, signal_data, condition, window_size = 2000) {
+    # Calculate profile matrix
+    profile_matrix <- do.call(cbind, lapply(signal_data, function(x) x$profile))
+    
+    # Calculate mean profile
+    mean_profile <- rowMeans(profile_matrix, na.rm = TRUE)
+    
+    # Calculate standard error
+    se_profile <- apply(profile_matrix, 1, function(x) sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x))))
+    
+    # Create position vector for x-axis
+    positions <- seq(-window_size, window_size, length.out = length(mean_profile))
+    
+    # Create data frame for plotting
+    plot_data <- data.frame(
+        Position = positions,
+        Mean = mean_profile,
+        SE_plus = mean_profile + se_profile,
+        SE_minus = mean_profile - se_profile
+    )
+    
+    # Create plot
+    p <- ggplot(plot_data, aes(x = Position)) +
+        geom_ribbon(aes(ymin = SE_minus, ymax = SE_plus), fill = "grey70", alpha = 0.3) +
+        geom_line(aes(y = Mean), color = "blue", size = 1) +
+        labs(x = "Distance from peak center (bp)",
+             y = "Average signal",
+             title = paste0(condition, " Peak Profiles")) +
+        theme_minimal() +
+        theme(plot.title = element_text(hjust = 0.5))
+    
+    # Save plot
+    ggsave(file.path(output_dir, "plots", paste0(condition, "_peak_profiles.pdf")),
+           p, width = 8, height = 6)
+    
+    return(p)
+}
+
+# Function to plot peak overlap analysis
+plot_overlap_analysis <- function(v5_peaks, h2a_peaks, condition) {
+    # Calculate overlaps
+    overlaps <- findOverlaps(v5_peaks, h2a_peaks)
+    
+    # Calculate overlap statistics
+    n_v5_peaks <- length(v5_peaks)
+    n_h2a_peaks <- length(h2a_peaks)
+    n_overlaps <- length(unique(queryHits(overlaps)))
+    
+    # Create Venn diagram data
+    v5_name <- "V5 Peaks"
+    h2a_name <- paste0(condition, " H2AK119Ub Peaks")
+    
+    # Set up colors
+    colors <- brewer.pal(3, "Set2")[1:2]
+    
+    # Create Venn diagram
+    venn_plot <- draw.pairwise.venn(
+        area1 = n_v5_peaks,
+        area2 = n_h2a_peaks,
+        cross.area = n_overlaps,
+        category = c(v5_name, h2a_name),
+        lty = "blank",
+        fill = colors,
+        alpha = 0.5,
+        cat.pos = c(0, 0),
+        cat.dist = c(0.025, 0.025),
+        cat.cex = 1,
+        cex = 1.5,
+        cat.col = colors,
+        scaled = TRUE
+    )
+    
+    # Save the plot
+    pdf(file.path(output_dir, "plots", paste0(condition, "_overlap_analysis.pdf")),
+        width = 8, height = 6)
+    grid.draw(venn_plot)
+    dev.off()
+    
+    # Return overlap statistics
+    return(list(
+        stats = list(
+            v5_peaks = n_v5_peaks,
+            h2a_peaks = n_h2a_peaks,
+            overlapping_peaks = n_overlaps,
+            percent_v5_overlap = 100 * n_overlaps / n_v5_peaks,
+            percent_h2a_overlap = 100 * n_overlaps / n_h2a_peaks
+        ),
+        overlaps = overlaps
+    ))
+}
+
 # Main execution block
 main <- function() {
+    # Enable garbage collection to manage memory
+    gc()
+    
     # Read V5 peaks with detailed tracking
     log_message("Starting to read V5 broad peaks...", "INFO")
     

@@ -101,7 +101,8 @@ done
 
 # Define working directory and create necessary subdirectories
 WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
-OUTPUT_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/3_alignment"
+ANALYSIS_DIR="${WORKDIR}/analysis"
+OUTPUT_DIR="${ANALYSIS_DIR}/3_alignment"
 log_message "Changing to working directory: $WORKDIR"
 cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exit 1; }
 
@@ -149,16 +150,16 @@ sample=${samples[$SLURM_ARRAY_TASK_ID]}
 log_message "Processing sample: ${sample}"
 
 # Check if input files exist
-if [[ ! -f analysis/trimmed/${sample}_R1_paired.fastq.gz ]] || [[ ! -f analysis/trimmed/${sample}_R2_paired.fastq.gz ]]; then
+if [[ ! -f ${ANALYSIS_DIR}/2_trimming/${sample}_R1_paired.fastq.gz ]] || [[ ! -f ${ANALYSIS_DIR}/2_trimming/${sample}_R2_paired.fastq.gz ]]; then
     log_message "ERROR: Input fastq files not found for ${sample}"
     log_message "Expected files:"
-    log_message "  - analysis/trimmed/${sample}_R1_paired.fastq.gz"
-    log_message "  - analysis/trimmed/${sample}_R2_paired.fastq.gz"
+    log_message "  - ${ANALYSIS_DIR}/2_trimming/${sample}_R1_paired.fastq.gz"
+    log_message "  - ${ANALYSIS_DIR}/2_trimming/${sample}_R2_paired.fastq.gz"
     exit 1
 fi
 
 # Check if trimming metrics exist
-if [[ ! -f analysis/2_trimming/qc/${sample}_trimming_metrics.json ]]; then
+if [[ ! -f ${ANALYSIS_DIR}/2_trimming/qc/${sample}_trimming_metrics.json ]]; then
     log_message "ERROR: Trimming metrics not found. Please run 2_quality_control.sh first"
     exit 1
 fi
@@ -194,8 +195,8 @@ log_message "Creating temporary directory: ${tmp_dir}"
 mkdir -p ${tmp_dir} || { log_message "ERROR: Failed to create temporary directory"; exit 1; }
 
 # Read trimming metrics for QC reporting
-if [[ -f analysis/2_trimming/qc/${sample}_trimming_metrics.json ]]; then
-    trim_metrics=$(cat analysis/2_trimming/qc/${sample}_trimming_metrics.json)
+if [[ -f ${ANALYSIS_DIR}/2_trimming/qc/${sample}_trimming_metrics.json ]]; then
+    trim_metrics=$(cat ${ANALYSIS_DIR}/2_trimming/qc/${sample}_trimming_metrics.json)
     initial_reads=$(echo $trim_metrics | jq -r '.clean_r1_reads')
     log_message "Found trimming metrics: ${initial_reads} input reads"
 else
@@ -212,8 +213,8 @@ bowtie2 -p 32 \
     --local --very-sensitive-local \
     --no-mixed --no-discordant \
     -I 0 -X 1000 \
-    -1 analysis/trimmed/${sample}_R1_paired.fastq.gz \
-    -2 analysis/trimmed/${sample}_R2_paired.fastq.gz \
+    -1 ${ANALYSIS_DIR}/2_trimming/${sample}_R1_paired.fastq.gz \
+    -2 ${ANALYSIS_DIR}/2_trimming/${sample}_R2_paired.fastq.gz \
     -S ${tmp_dir}/${sample}.sam \
     2> logs/aligned/${sample}.align.log
 

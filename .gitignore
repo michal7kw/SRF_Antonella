@@ -1,70 +1,60 @@
-*.bed
-*.bam
+# Directories to ignore
 logs/
-
-# exclude large files
-*[._]* > 80M
-
-*.log
-*Peak
-
-# R data files
-*.rds
-
 Archive/
-
-
-*.bw
-*.zip
-*.json
-*.fa
-*flagstat.*
-*.flagstat
-*.fastqc
-*.bam
-*.bai
-*.log
-*.gz
-*.gzip
-*.fastq
-*.fq
-*.out
-*.err
-*.log
-*.rds
-*.bed
-*.bedgraph
-*.bw
-*.bigwig
-*.bt2
-
 .snakemake/
-*.tmp
-*.sam
-.snakemake/
-*.tmp*
-*.log
-*.err
-*.zip
-*.gz
-*.bam*
-*.bw
-*.bed
-
-# exclude large files
-*[]._larger_than_80MB
-*.bdg
 COMMON_DATA/
 
-
-*[]._larger_than_50MB
+# Project-specific directories
 SRF_H2AK119Ub/1_iterative_processing/analysis/OLD/
-SRF_RNA/results/fastqc/
 SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/
 SRF_H2AK119Ub/1_iterative_processing/analysis/4_multiqc/multiqc_final.html
 SRF_H2AK119Ub/1_iterative_processing/analysis/4_multiqc/multiqc_final_data/
 SRF_H2AK119Ub/results/fastqc/
+SRF_RNA/results/fastqc/
 SRF_RNA/results/star/
-*.tar
-*.sra
 SRF_SES_V5/results/qc/fastqc/
+
+# Size-based exclusions
+*[._]* > 80M
+*[]._larger_than_80MB
+*[]._larger_than_50MB
+
+# Sequence and alignment files
+*.fa
+*.fastq
+*.fq
+*.sam
+*.bam
+*.bai
+*.sra
+
+# Peak and genomic track files
+*.bed
+*.bedgraph
+*.bw
+*.bigwig
+*.bdg
+*.bt2
+*Peak
+
+# Quality control and statistics
+*flagstat.*
+*.flagstat
+*.fastqc
+
+# Compressed and archive files
+*.gz
+*.gzip
+*.zip
+*.tar
+
+# Log and temporary files
+*.log
+*.err
+*.out
+*.tmp
+*.tmp*
+
+# R and analysis files
+*.rds
+*.json

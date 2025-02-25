@@ -6,8 +6,10 @@ CONFIG = {
     'conditions': ['C', 'GFP', 'YAF'],
     'genome_dir': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star',  # Directory for STAR genome index
     'genome_fasta': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa',  # Path to genome fasta
-    'gtf': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf',  # Basic Gencode v43 annotation for GRCh38
-    'threads': 8
+    'gtf': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf',  # Basic Gencode v43 annotation for GRCh38 (without chr prefix)
+    'max_threads': 32,  # Maximum threads for heavy processes
+    'medium_threads': 16,  # Medium thread count for moderate processes
+    'light_threads': 4  # Light thread count for simple processes
 }
 
 # Output directories
@@ -42,7 +44,10 @@ rule fastqc_raw:
         zip_r2 = join(RESULTS_DIR, 'fastqc', '{sample}_L001_R2_001_fastqc.zip')
     log:
         join(LOGS_DIR, 'fastqc', '{sample}.log')
-    threads: 2
+    threads: CONFIG['light_threads']
+    resources:
+        mem_mb=4000,
+        time='2h'
     shell:
         'fastqc -o {RESULTS_DIR}/fastqc -t {threads} {input.r1} {input.r2} 2> {log}'
 
@@ -58,7 +63,10 @@ rule trimmomatic:
         r2_unpaired = join(RESULTS_DIR, 'trimmed', '{sample}_R2_unpaired.fastq.gz')
     log:
         join(LOGS_DIR, 'trimmomatic', '{sample}.log')
-    threads: CONFIG['threads']
+    threads: CONFIG['medium_threads']
+    resources:
+        mem_mb=16000,
+        time='4h'
     shell:
         'trimmomatic PE -threads {threads} '
         '{input.r1} {input.r2} '
@@ -95,7 +103,10 @@ rule star_index:
         directory(CONFIG['genome_dir'])
     log:
         join(LOGS_DIR, 'star_index', 'star_index.log')
-    threads: CONFIG['threads']
+    threads: CONFIG['max_threads']
+    resources:
+        mem_mb=64000,
+        time='12h'
     shell:
         'mkdir -p {output} && '
         'STAR --runMode genomeGenerate '
@@ -104,6 +115,7 @@ rule star_index:
         '--sjdbGTFfile {input.gtf} '
         '--runThreadN {threads} '
         '--sjdbOverhang 100 '
+        '--limitGenomeGenerateRAM 60000000000 '
         '2> {log}'
 
 # STAR alignment
@@ -120,7 +132,10 @@ rule star_align:
         prefix = join(RESULTS_DIR, 'star', '{sample}', '{sample}_')
     log:
         join(LOGS_DIR, 'star', '{sample}.log')
-    threads: CONFIG['threads']
+    threads: CONFIG['max_threads']
+    resources:
+        mem_mb=48000,
+        time='8h'
     shell:
         'STAR '
         '--runThreadN {threads} '
@@ -130,6 +145,7 @@ rule star_align:
         '--outFileNamePrefix {params.prefix} '
         '--outSAMtype BAM SortedByCoordinate '
         '--outSAMattributes Standard '
+        '--limitBAMsortRAM 45000000000 '
         '2> {log}'
 
 # Index BAM files
@@ -152,7 +168,10 @@ rule featurecounts:
         summary = join(RESULTS_DIR, 'counts', 'all_samples_counts.txt.summary')
     log:
         join(LOGS_DIR, 'featurecounts', 'all_samples.log')
-    threads: CONFIG['threads']
+    threads: CONFIG['max_threads']
+    resources:
+        mem_mb=32000,
+        time='6h'
     shell:
         'featureCounts '
         '-T {threads} '

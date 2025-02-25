@@ -9,13 +9,14 @@ CONDITIONS = config["conditions"]
 
 # Directory structure
 WORKDIR = config["workdir"]
-GENOME_DIR = os.path.join(WORKDIR, "genome")
+COMMON_DATA_DIR = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA"
+GENOME_DIR = os.path.join(COMMON_DATA_DIR, "genome")
 LOGS_DIR = os.path.join(WORKDIR, "logs")
 ANALYSIS_DIR = os.path.join(WORKDIR, "results")
 DATA_DIR = os.path.join(WORKDIR, "DATA")
 
 # Create directory structure
-for d in [GENOME_DIR, LOGS_DIR] + [
+for d in [LOGS_DIR] + [
     os.path.join(ANALYSIS_DIR, subdir) for subdir in [
         "fastqc/pre_trim", "fastqc/post_trim", "trimmed", "aligned",
         "peaks", "visualization", "qc", "annotation", "diffbind_broad",
