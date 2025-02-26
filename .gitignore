@@ -21,26 +21,46 @@ SRF_SES_V5/results/qc/fastqc/
 
 # Sequence and alignment files
 *.fa
-*.fastq
-*.fq
 *.sam
-*.bam
-*.bai
-*.sra
+*.bt2
+*Peak
 
 # Peak and genomic track files
 *.bed
 *.bedgraph
-*.bw
 *.bigwig
-*.bdg
-*.bt2
-*Peak
 
 # Large table files
 cross_analysis/results/tables/GFP_peak_annotation.txt
 **/tables/*.txt size>80M
 **/results/tables/*.txt size>80M
+
+# Explicitly ignore all large files (>80MB)
+# Binary files
+*.bam
+*.bai
+*.sra
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bw
+*.bdg
+*.rds
+*.tar.gz
+
+# Specific large directories
+Archive/OLD/
+COMMON_DATA/genome/
+COMMON_DATA/genome_star/
+**/data_from_ncbi/
+**/data_from_drive_u251_epigenomics/
+**/results/alignment/
+**/results/bigwig/
+**/results_data_from_drive_u251_epigenomics/
+**/analysis/2_trimming/
+**/analysis/3_alignment/
+**/analysis/5_peak_calling/
 
 # Quality control and statistics
 *flagstat.*
@@ -61,5 +81,4 @@ cross_analysis/results/tables/GFP_peak_annotation.txt
 *.tmp*
 
 # R and analysis files
-*.rds
 *.json
