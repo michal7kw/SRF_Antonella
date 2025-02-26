@@ -23,6 +23,9 @@ conda activate snakemake
 # Unlock snakemake working directory if necessary
 snakemake --unlock
 
+# Clean up any previous temporary directories that might be causing issues
+find . -name "tmp_*" -type d -exec rm -rf {} + 2>/dev/null || true
+
 # Run snakemake
 snakemake \
     --snakefile Snakefile \
@@ -34,7 +37,12 @@ snakemake \
         runtime=1440 \
         threads=8 \
         nodes=1 \
+    --set-threads align=16 \
+    --set-resources align:mem_mb=128000 \
     --jobscript slurm-jobscript.sh \
-    --latency-wait 60 \
+    --latency-wait 120 \
     --rerun-incomplete \
-    --keep-going
+    --keep-going \
+    --forcerun align \
+    --notemp \
+    --verbose

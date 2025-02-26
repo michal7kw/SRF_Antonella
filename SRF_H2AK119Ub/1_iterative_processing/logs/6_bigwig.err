@@ -1,0 +1,583 @@
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+normalization: RPKM
+normalization: RPKM
+normalization: RPKM
+bamFilesList: ['analysis/3_alignment/YAF_1.dedup.bam']
+binLength: 10
+numberOfSamples: None
+blackListFileName: None
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 198
+numberOfProcessors: 32
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: False
+chrsToSkip: []
+stepSize: 10
+center_read: True
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 0
+maxFragmentLength: 0
+zerosToNans: False
+smoothLength: 30
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 792
+bamFilesList: ['analysis/3_alignment/YAF_3.dedup.bam']
+binLength: 10
+numberOfSamples: None
+blackListFileName: None
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 201
+numberOfProcessors: 32
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: False
+chrsToSkip: []
+stepSize: 10
+center_read: True
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 0
+maxFragmentLength: 0
+zerosToNans: False
+smoothLength: 30
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 804
+bamFilesList: ['analysis/3_alignment/YAF_2.dedup.bam']
+binLength: 10
+numberOfSamples: None
+blackListFileName: None
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: 202
+numberOfProcessors: 32
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: False
+chrsToSkip: []
+stepSize: 10
+center_read: True
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 0
+maxFragmentLength: 0
+zerosToNans: False
+smoothLength: 30
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 808
+INFO	2025-02-26 16:19:56	EstimateLibraryComplexity	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** 
+https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    EstimateLibraryComplexity -I analysis/3_alignment/YAF_1.dedup.bam -O /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/6_bigwig/YAF_1_complexity.txt
+**********
+
+
+16:19:56.416 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/share/picard-3.3.0-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Wed Feb 26 16:19:56 CET 2025] EstimateLibraryComplexity INPUT=[analysis/3_alignment/YAF_1.dedup.bam] OUTPUT=/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/6_bigwig/YAF_1_complexity.txt    MIN_IDENTICAL_BASES=5 MAX_DIFF_RATE=0.03 MIN_MEAN_QUALITY=20 MAX_GROUP_RATIO=500 MAX_READ_LENGTH=0 MIN_GROUP_COUNT=2 READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 MAX_OPTICAL_DUPLICATE_SET_SIZE=300000 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=2279706 CREATE_INDEX=false CREATE_MD5_FILE=false USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Wed Feb 26 16:19:56 CET 2025] Executing as kubacki.michal@srcn19 on Linux 4.18.0-553.el8_10.x86_64 amd64; OpenJDK 64-Bit Server VM 23.0.1-internal-adhoc.conda.src; Deflater: Intel; Inflater: Intel; Provider GCS is available; Picard version: 3.3.0
+INFO	2025-02-26 16:19:56	EstimateLibraryComplexity	Will store 2279706 read pairs in memory before sorting.
+INFO	2025-02-26 16:19:58	EstimateLibraryComplexity	Read     1,000,000 records.  Elapsed time: 00:00:01s.  Time for last 1,000,000:    1s.  Last read position: 1:19,044,185
+INFO	2025-02-26 16:20:00	EstimateLibraryComplexity	Read     2,000,000 records.  Elapsed time: 00:00:03s.  Time for last 1,000,000:    1s.  Last read position: 1:34,348,687
+INFO	2025-02-26 16:20:02	EstimateLibraryComplexity	Read     3,000,000 records.  Elapsed time: 00:00:05s.  Time for last 1,000,000:    1s.  Last read position: 1:52,901,407
+INFO	2025-02-26 16:20:04	EstimateLibraryComplexity	Read     4,000,000 records.  Elapsed time: 00:00:07s.  Time for last 1,000,000:    1s.  Last read position: 1:72,996,818
+INFO	2025-02-26 16:20:07	EstimateLibraryComplexity	Read     5,000,000 records.  Elapsed time: 00:00:10s.  Time for last 1,000,000:    3s.  Last read position: 1:95,565,170
+INFO	2025-02-26 16:20:09	EstimateLibraryComplexity	Read     6,000,000 records.  Elapsed time: 00:00:12s.  Time for last 1,000,000:    1s.  Last read position: 1:115,865,837
+INFO	2025-02-26 16:20:11	EstimateLibraryComplexity	Read     7,000,000 records.  Elapsed time: 00:00:14s.  Time for last 1,000,000:    1s.  Last read position: 1:158,186,081
+INFO	2025-02-26 16:20:13	EstimateLibraryComplexity	Read     8,000,000 records.  Elapsed time: 00:00:16s.  Time for last 1,000,000:    1s.  Last read position: 1:180,482,553
+INFO	2025-02-26 16:20:15	EstimateLibraryComplexity	Read     9,000,000 records.  Elapsed time: 00:00:18s.  Time for last 1,000,000:    1s.  Last read position: 1:204,306,738
+INFO	2025-02-26 16:20:18	EstimateLibraryComplexity	Read    10,000,000 records.  Elapsed time: 00:00:21s.  Time for last 1,000,000:    3s.  Last read position: 1:225,073,764
+INFO	2025-02-26 16:20:20	EstimateLibraryComplexity	Read    11,000,000 records.  Elapsed time: 00:00:23s.  Time for last 1,000,000:    1s.  Last read position: 10:683,708
+INFO	2025-02-26 16:20:21	EstimateLibraryComplexity	Read    12,000,000 records.  Elapsed time: 00:00:25s.  Time for last 1,000,000:    1s.  Last read position: 10:30,423,071
+INFO	2025-02-26 16:20:23	EstimateLibraryComplexity	Read    13,000,000 records.  Elapsed time: 00:00:26s.  Time for last 1,000,000:    1s.  Last read position: 10:57,412,851
+INFO	2025-02-26 16:20:26	EstimateLibraryComplexity	Read    14,000,000 records.  Elapsed time: 00:00:29s.  Time for last 1,000,000:    3s.  Last read position: 10:73,839,115
+INFO	2025-02-26 16:20:28	EstimateLibraryComplexity	Read    15,000,000 records.  Elapsed time: 00:00:31s.  Time for last 1,000,000:    1s.  Last read position: 10:91,589,816
+INFO	2025-02-26 16:20:30	EstimateLibraryComplexity	Read    16,000,000 records.  Elapsed time: 00:00:33s.  Time for last 1,000,000:    1s.  Last read position: 10:114,876,635
+INFO	2025-02-26 16:20:32	EstimateLibraryComplexity	Read    17,000,000 records.  Elapsed time: 00:00:35s.  Time for last 1,000,000:    1s.  Last read position: 11:6,246,203
+INFO	2025-02-26 16:20:34	EstimateLibraryComplexity	Read    18,000,000 records.  Elapsed time: 00:00:37s.  Time for last 1,000,000:    1s.  Last read position: 11:31,353,467
+INFO	2025-02-26 16:20:37	EstimateLibraryComplexity	Read    19,000,000 records.  Elapsed time: 00:00:40s.  Time for last 1,000,000:    3s.  Last read position: 11:57,979,095
+INFO	2025-02-26 16:20:39	EstimateLibraryComplexity	Read    20,000,000 records.  Elapsed time: 00:00:42s.  Time for last 1,000,000:    1s.  Last read position: 11:75,214,507
+INFO	2025-02-26 16:20:40	EstimateLibraryComplexity	Read    21,000,000 records.  Elapsed time: 00:00:44s.  Time for last 1,000,000:    1s.  Last read position: 11:97,916,509
+INFO	2025-02-26 16:20:42	EstimateLibraryComplexity	Read    22,000,000 records.  Elapsed time: 00:00:45s.  Time for last 1,000,000:    1s.  Last read position: 11:119,597,997
+INFO	2025-02-26 16:20:45	EstimateLibraryComplexity	Read    23,000,000 records.  Elapsed time: 00:00:48s.  Time for last 1,000,000:    3s.  Last read position: 12:2,983,401
+INFO	2025-02-26 16:20:47	EstimateLibraryComplexity	Read    24,000,000 records.  Elapsed time: 00:00:50s.  Time for last 1,000,000:    1s.  Last read position: 12:39,453,653
+INFO	2025-02-26 16:20:49	EstimateLibraryComplexity	Read    25,000,000 records.  Elapsed time: 00:00:52s.  Time for last 1,000,000:    1s.  Last read position: 12:69,405,698
+INFO	2025-02-26 16:20:51	EstimateLibraryComplexity	Read    26,000,000 records.  Elapsed time: 00:00:54s.  Time for last 1,000,000:    1s.  Last read position: 12:104,684,514
+INFO	2025-02-26 16:20:53	EstimateLibraryComplexity	Read    27,000,000 records.  Elapsed time: 00:00:56s.  Time for last 1,000,000:    1s.  Last read position: 13:20,403,355
+INFO	2025-02-26 16:20:56	EstimateLibraryComplexity	Read    28,000,000 records.  Elapsed time: 00:00:59s.  Time for last 1,000,000:    2s.  Last read position: 13:49,676,733
+INFO	2025-02-26 16:20:58	EstimateLibraryComplexity	Read    29,000,000 records.  Elapsed time: 00:01:01s.  Time for last 1,000,000:    1s.  Last read position: 13:91,634,609
+INFO	2025-02-26 16:20:59	EstimateLibraryComplexity	Read    30,000,000 records.  Elapsed time: 00:01:02s.  Time for last 1,000,000:    1s.  Last read position: 14:28,946,584
+INFO	2025-02-26 16:21:01	EstimateLibraryComplexity	Read    31,000,000 records.  Elapsed time: 00:01:04s.  Time for last 1,000,000:    1s.  Last read position: 14:62,345,996
+INFO	2025-02-26 16:21:04	EstimateLibraryComplexity	Read    32,000,000 records.  Elapsed time: 00:01:07s.  Time for last 1,000,000:    2s.  Last read position: 14:93,093,173
+INFO	2025-02-26 16:21:06	EstimateLibraryComplexity	Read    33,000,000 records.  Elapsed time: 00:01:09s.  Time for last 1,000,000:    1s.  Last read position: 15:39,087,887
+INFO	2025-02-26 16:21:08	EstimateLibraryComplexity	Read    34,000,000 records.  Elapsed time: 00:01:11s.  Time for last 1,000,000:    1s.  Last read position: 15:57,419,513
+INFO	2025-02-26 16:21:10	EstimateLibraryComplexity	Read    35,000,000 records.  Elapsed time: 00:01:13s.  Time for last 1,000,000:    1s.  Last read position: 15:70,883,603
+INFO	2025-02-26 16:21:12	EstimateLibraryComplexity	Read    36,000,000 records.  Elapsed time: 00:01:15s.  Time for last 1,000,000:    1s.  Last read position: 15:86,183,549
+INFO	2025-02-26 16:21:15	EstimateLibraryComplexity	Read    37,000,000 records.  Elapsed time: 00:01:18s.  Time for last 1,000,000:    2s.  Last read position: 16:2,064,340
+INFO	2025-02-26 16:21:16	EstimateLibraryComplexity	Read    38,000,000 records.  Elapsed time: 00:01:20s.  Time for last 1,000,000:    1s.  Last read position: 16:47,866,710
+INFO	2025-02-26 16:21:18	EstimateLibraryComplexity	Read    39,000,000 records.  Elapsed time: 00:01:21s.  Time for last 1,000,000:    1s.  Last read position: 16:62,509,133
+INFO	2025-02-26 16:21:20	EstimateLibraryComplexity	Read    40,000,000 records.  Elapsed time: 00:01:23s.  Time for last 1,000,000:    1s.  Last read position: 16:84,157,765
+INFO	2025-02-26 16:21:22	EstimateLibraryComplexity	Read    41,000,000 records.  Elapsed time: 00:01:25s.  Time for last 1,000,000:    1s.  Last read position: 17:10,672,697
+INFO	2025-02-26 16:21:25	EstimateLibraryComplexity	Read    42,000,000 records.  Elapsed time: 00:01:28s.  Time for last 1,000,000:    2s.  Last read position: 17:31,702,151
+INFO	2025-02-26 16:21:27	EstimateLibraryComplexity	Read    43,000,000 records.  Elapsed time: 00:01:30s.  Time for last 1,000,000:    1s.  Last read position: 17:44,949,720
+INFO	2025-02-26 16:21:29	EstimateLibraryComplexity	Read    44,000,000 records.  Elapsed time: 00:01:32s.  Time for last 1,000,000:    1s.  Last read position: 17:59,156,890
+INFO	2025-02-26 16:21:31	EstimateLibraryComplexity	Read    45,000,000 records.  Elapsed time: 00:01:34s.  Time for last 1,000,000:    1s.  Last read position: 17:74,542,153
+INFO	2025-02-26 16:21:34	EstimateLibraryComplexity	Read    46,000,000 records.  Elapsed time: 00:01:37s.  Time for last 1,000,000:    3s.  Last read position: 18:5,798,498
+INFO	2025-02-26 16:21:36	EstimateLibraryComplexity	Read    47,000,000 records.  Elapsed time: 00:01:39s.  Time for last 1,000,000:    1s.  Last read position: 18:43,489,454
+INFO	2025-02-26 16:21:37	EstimateLibraryComplexity	Read    48,000,000 records.  Elapsed time: 00:01:41s.  Time for last 1,000,000:    1s.  Last read position: 19:1,648,013
+INFO	2025-02-26 16:21:39	EstimateLibraryComplexity	Read    49,000,000 records.  Elapsed time: 00:01:43s.  Time for last 1,000,000:    1s.  Last read position: 19:28,145,420
+INFO	2025-02-26 16:21:41	EstimateLibraryComplexity	Read    50,000,000 records.  Elapsed time: 00:01:44s.  Time for last 1,000,000:    1s.  Last read position: 19:47,526,860
+INFO	2025-02-26 16:21:44	EstimateLibraryComplexity	Read    51,000,000 records.  Elapsed time: 00:01:47s.  Time for last 1,000,000:    3s.  Last read position: 2:11,558,257
+INFO	2025-02-26 16:21:46	EstimateLibraryComplexity	Read    52,000,000 records.  Elapsed time: 00:01:49s.  Time for last 1,000,000:    1s.  Last read position: 2:31,511,416
+INFO	2025-02-26 16:21:48	EstimateLibraryComplexity	Read    53,000,000 records.  Elapsed time: 00:01:51s.  Time for last 1,000,000:    1s.  Last read position: 2:54,382,092
+INFO	2025-02-26 16:21:50	EstimateLibraryComplexity	Read    54,000,000 records.  Elapsed time: 00:01:53s.  Time for last 1,000,000:    1s.  Last read position: 2:76,002,551
+INFO	2025-02-26 16:21:53	EstimateLibraryComplexity	Read    55,000,000 records.  Elapsed time: 00:01:56s.  Time for last 1,000,000:    2s.  Last read position: 2:105,747,890
+INFO	2025-02-26 16:21:55	EstimateLibraryComplexity	Read    56,000,000 records.  Elapsed time: 00:01:58s.  Time for last 1,000,000:    1s.  Last read position: 2:131,607,124
+INFO	2025-02-26 16:21:57	EstimateLibraryComplexity	Read    57,000,000 records.  Elapsed time: 00:02:00s.  Time for last 1,000,000:    1s.  Last read position: 2:160,929,871
+INFO	2025-02-26 16:21:58	EstimateLibraryComplexity	Read    58,000,000 records.  Elapsed time: 00:02:02s.  Time for last 1,000,000:    1s.  Last read position: 2:189,047,559
+INFO	2025-02-26 16:22:00	EstimateLibraryComplexity	Read    59,000,000 records.  Elapsed time: 00:02:03s.  Time for last 1,000,000:    1s.  Last read position: 2:217,291,136
+INFO	2025-02-26 16:22:03	EstimateLibraryComplexity	Read    60,000,000 records.  Elapsed time: 00:02:06s.  Time for last 1,000,000:    2s.  Last read position: 2:240,157,138
+INFO	2025-02-26 16:22:05	EstimateLibraryComplexity	Read    61,000,000 records.  Elapsed time: 00:02:08s.  Time for last 1,000,000:    1s.  Last read position: 20:18,121,450
+INFO	2025-02-26 16:22:07	EstimateLibraryComplexity	Read    62,000,000 records.  Elapsed time: 00:02:10s.  Time for last 1,000,000:    1s.  Last read position: 20:41,065,201
+INFO	2025-02-26 16:22:09	EstimateLibraryComplexity	Read    63,000,000 records.  Elapsed time: 00:02:12s.  Time for last 1,000,000:    1s.  Last read position: 20:57,476,315
+INFO	2025-02-26 16:22:12	EstimateLibraryComplexity	Read    64,000,000 records.  Elapsed time: 00:02:15s.  Time for last 1,000,000:    3s.  Last read position: 21:26,686,975
+INFO	2025-02-26 16:22:14	EstimateLibraryComplexity	Read    65,000,000 records.  Elapsed time: 00:02:17s.  Time for last 1,000,000:    1s.  Last read position: 22:17,737,849
+INFO	2025-02-26 16:22:16	EstimateLibraryComplexity	Read    66,000,000 records.  Elapsed time: 00:02:19s.  Time for last 1,000,000:    1s.  Last read position: 22:43,061,051
+INFO	2025-02-26 16:22:18	EstimateLibraryComplexity	Read    67,000,000 records.  Elapsed time: 00:02:21s.  Time for last 1,000,000:    1s.  Last read position: 3:20,905,647
+INFO	2025-02-26 16:22:20	EstimateLibraryComplexity	Read    68,000,000 records.  Elapsed time: 00:02:23s.  Time for last 1,000,000:    1s.  Last read position: 3:51,323,262
+INFO	2025-02-26 16:22:23	EstimateLibraryComplexity	Read    69,000,000 records.  Elapsed time: 00:02:26s.  Time for last 1,000,000:    3s.  Last read position: 3:84,608,136
+INFO	2025-02-26 16:22:23	EstimateLibraryComplexity	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** 
+https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    EstimateLibraryComplexity -I analysis/3_alignment/YAF_3.dedup.bam -O /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/6_bigwig/YAF_3_complexity.txt
+**********
+
+
+16:22:23.863 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/share/picard-3.3.0-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Wed Feb 26 16:22:23 CET 2025] EstimateLibraryComplexity INPUT=[analysis/3_alignment/YAF_3.dedup.bam] OUTPUT=/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/6_bigwig/YAF_3_complexity.txt    MIN_IDENTICAL_BASES=5 MAX_DIFF_RATE=0.03 MIN_MEAN_QUALITY=20 MAX_GROUP_RATIO=500 MAX_READ_LENGTH=0 MIN_GROUP_COUNT=2 READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 MAX_OPTICAL_DUPLICATE_SET_SIZE=300000 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=2279706 CREATE_INDEX=false CREATE_MD5_FILE=false USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Wed Feb 26 16:22:24 CET 2025] Executing as kubacki.michal@srcn20 on Linux 4.18.0-553.el8_10.x86_64 amd64; OpenJDK 64-Bit Server VM 23.0.1-internal-adhoc.conda.src; Deflater: Intel; Inflater: Intel; Provider GCS is available; Picard version: 3.3.0
+INFO	2025-02-26 16:22:24	EstimateLibraryComplexity	Will store 2279706 read pairs in memory before sorting.
+INFO	2025-02-26 16:22:24	EstimateLibraryComplexity	Read    70,000,000 records.  Elapsed time: 00:02:28s.  Time for last 1,000,000:    1s.  Last read position: 3:124,253,647
+INFO	2025-02-26 16:22:26	EstimateLibraryComplexity	Read     1,000,000 records.  Elapsed time: 00:00:02s.  Time for last 1,000,000:    1s.  Last read position: 1:12,612,798
+INFO	2025-02-26 16:22:26	EstimateLibraryComplexity	Read    71,000,000 records.  Elapsed time: 00:02:29s.  Time for last 1,000,000:    1s.  Last read position: 3:150,340,691
+INFO	2025-02-26 16:22:28	EstimateLibraryComplexity	Read     2,000,000 records.  Elapsed time: 00:00:03s.  Time for last 1,000,000:    1s.  Last read position: 1:23,689,770
+INFO	2025-02-26 16:22:28	EstimateLibraryComplexity	Read    72,000,000 records.  Elapsed time: 00:02:31s.  Time for last 1,000,000:    1s.  Last read position: 3:174,457,954
+INFO	2025-02-26 16:22:29	EstimateLibraryComplexity	Read     3,000,000 records.  Elapsed time: 00:00:05s.  Time for last 1,000,000:    1s.  Last read position: 1:34,473,027
+INFO	2025-02-26 16:22:30	EstimateLibraryComplexity	Read    73,000,000 records.  Elapsed time: 00:02:33s.  Time for last 1,000,000:    1s.  Last read position: 3:188,900,583
+INFO	2025-02-26 16:22:31	EstimateLibraryComplexity	Read     4,000,000 records.  Elapsed time: 00:00:07s.  Time for last 1,000,000:    1s.  Last read position: 1:47,592,463
+INFO	2025-02-26 16:22:33	EstimateLibraryComplexity	Read    74,000,000 records.  Elapsed time: 00:02:36s.  Time for last 1,000,000:    2s.  Last read position: 4:5,187,345
+INFO	2025-02-26 16:22:35	EstimateLibraryComplexity	Read    75,000,000 records.  Elapsed time: 00:02:38s.  Time for last 1,000,000:    1s.  Last read position: 4:29,106,144
+INFO	2025-02-26 16:22:36	EstimateLibraryComplexity	Read     5,000,000 records.  Elapsed time: 00:00:12s.  Time for last 1,000,000:    4s.  Last read position: 1:66,368,901
+INFO	2025-02-26 16:22:37	EstimateLibraryComplexity	Read    76,000,000 records.  Elapsed time: 00:02:40s.  Time for last 1,000,000:    1s.  Last read position: 4:54,636,370
+INFO	2025-02-26 16:22:38	EstimateLibraryComplexity	Read     6,000,000 records.  Elapsed time: 00:00:14s.  Time for last 1,000,000:    1s.  Last read position: 1:93,916,610
+INFO	2025-02-26 16:22:39	EstimateLibraryComplexity	Read    77,000,000 records.  Elapsed time: 00:02:42s.  Time for last 1,000,000:    1s.  Last read position: 4:71,517,712
+INFO	2025-02-26 16:22:40	EstimateLibraryComplexity	Read     7,000,000 records.  Elapsed time: 00:00:15s.  Time for last 1,000,000:    1s.  Last read position: 1:115,339,912
+INFO	2025-02-26 16:22:41	EstimateLibraryComplexity	Read    78,000,000 records.  Elapsed time: 00:02:45s.  Time for last 1,000,000:    2s.  Last read position: 4:99,635,964
+INFO	2025-02-26 16:22:41	EstimateLibraryComplexity	Read     8,000,000 records.  Elapsed time: 00:00:17s.  Time for last 1,000,000:    1s.  Last read position: 1:155,003,120
+INFO	2025-02-26 16:22:43	EstimateLibraryComplexity	Read    79,000,000 records.  Elapsed time: 00:02:46s.  Time for last 1,000,000:    1s.  Last read position: 4:140,126,376
+INFO	2025-02-26 16:22:43	EstimateLibraryComplexity	Read     9,000,000 records.  Elapsed time: 00:00:19s.  Time for last 1,000,000:    1s.  Last read position: 1:173,602,480
+INFO	2025-02-26 16:22:45	EstimateLibraryComplexity	Read    80,000,000 records.  Elapsed time: 00:02:48s.  Time for last 1,000,000:    1s.  Last read position: 4:176,245,805
+INFO	2025-02-26 16:22:47	EstimateLibraryComplexity	Read    81,000,000 records.  Elapsed time: 00:02:50s.  Time for last 1,000,000:    1s.  Last read position: 5:12,954,159
+INFO	2025-02-26 16:22:47	EstimateLibraryComplexity	Read    10,000,000 records.  Elapsed time: 00:00:23s.  Time for last 1,000,000:    3s.  Last read position: 1:201,537,794
+INFO	2025-02-26 16:22:49	EstimateLibraryComplexity	Read    82,000,000 records.  Elapsed time: 00:02:52s.  Time for last 1,000,000:    1s.  Last read position: 5:37,813,240
+INFO	2025-02-26 16:22:49	EstimateLibraryComplexity	Read    11,000,000 records.  Elapsed time: 00:00:25s.  Time for last 1,000,000:    1s.  Last read position: 1:217,303,523
+INFO	2025-02-26 16:22:51	EstimateLibraryComplexity	Read    12,000,000 records.  Elapsed time: 00:00:27s.  Time for last 1,000,000:    1s.  Last read position: 1:235,791,931
+INFO	2025-02-26 16:22:52	EstimateLibraryComplexity	Read    83,000,000 records.  Elapsed time: 00:02:55s.  Time for last 1,000,000:    2s.  Last read position: 5:65,088,518
+INFO	2025-02-26 16:22:53	EstimateLibraryComplexity	Read    13,000,000 records.  Elapsed time: 00:00:29s.  Time for last 1,000,000:    1s.  Last read position: 10:15,113,757
+INFO	2025-02-26 16:22:54	EstimateLibraryComplexity	Read    84,000,000 records.  Elapsed time: 00:02:57s.  Time for last 1,000,000:    1s.  Last read position: 5:87,933,833
+INFO	2025-02-26 16:22:55	EstimateLibraryComplexity	Read    85,000,000 records.  Elapsed time: 00:02:59s.  Time for last 1,000,000:    1s.  Last read position: 5:113,428,642
+INFO	2025-02-26 16:22:57	EstimateLibraryComplexity	Read    14,000,000 records.  Elapsed time: 00:00:33s.  Time for last 1,000,000:    3s.  Last read position: 10:46,284,763
+INFO	2025-02-26 16:22:57	EstimateLibraryComplexity	Read    86,000,000 records.  Elapsed time: 00:03:00s.  Time for last 1,000,000:    1s.  Last read position: 5:135,768,295
+INFO	2025-02-26 16:22:59	EstimateLibraryComplexity	Read    15,000,000 records.  Elapsed time: 00:00:35s.  Time for last 1,000,000:    1s.  Last read position: 10:68,215,979
+INFO	2025-02-26 16:23:00	EstimateLibraryComplexity	Read    87,000,000 records.  Elapsed time: 00:03:04s.  Time for last 1,000,000:    3s.  Last read position: 5:153,715,090
+INFO	2025-02-26 16:23:01	EstimateLibraryComplexity	Read    16,000,000 records.  Elapsed time: 00:00:36s.  Time for last 1,000,000:    1s.  Last read position: 10:78,438,104
+INFO	2025-02-26 16:23:02	EstimateLibraryComplexity	Read    88,000,000 records.  Elapsed time: 00:03:05s.  Time for last 1,000,000:    1s.  Last read position: 5:173,776,630
+INFO	2025-02-26 16:23:02	EstimateLibraryComplexity	Read    17,000,000 records.  Elapsed time: 00:00:38s.  Time for last 1,000,000:    1s.  Last read position: 10:97,273,313
+INFO	2025-02-26 16:23:04	EstimateLibraryComplexity	Read    89,000,000 records.  Elapsed time: 00:03:07s.  Time for last 1,000,000:    1s.  Last read position: 6:12,338,306
+INFO	2025-02-26 16:23:04	EstimateLibraryComplexity	Read    18,000,000 records.  Elapsed time: 00:00:40s.  Time for last 1,000,000:    1s.  Last read position: 10:118,661,640
+INFO	2025-02-26 16:23:06	EstimateLibraryComplexity	Read    90,000,000 records.  Elapsed time: 00:03:09s.  Time for last 1,000,000:    1s.  Last read position: 6:32,397,637
+INFO	2025-02-26 16:23:08	EstimateLibraryComplexity	Read    91,000,000 records.  Elapsed time: 00:03:11s.  Time for last 1,000,000:    1s.  Last read position: 6:47,867,538
+INFO	2025-02-26 16:23:08	EstimateLibraryComplexity	Read    19,000,000 records.  Elapsed time: 00:00:44s.  Time for last 1,000,000:    3s.  Last read position: 11:2,302,056
+INFO	2025-02-26 16:23:10	EstimateLibraryComplexity	Read    20,000,000 records.  Elapsed time: 00:00:46s.  Time for last 1,000,000:    1s.  Last read position: 11:27,266,460
+INFO	2025-02-26 16:23:11	EstimateLibraryComplexity	Read    92,000,000 records.  Elapsed time: 00:03:14s.  Time for last 1,000,000:    3s.  Last read position: 6:76,465,464
+INFO	2025-02-26 16:23:12	EstimateLibraryComplexity	Read    21,000,000 records.  Elapsed time: 00:00:48s.  Time for last 1,000,000:    1s.  Last read position: 11:46,400,933
+INFO	2025-02-26 16:23:13	EstimateLibraryComplexity	Read    93,000,000 records.  Elapsed time: 00:03:16s.  Time for last 1,000,000:    1s.  Last read position: 6:101,361,828
+INFO	2025-02-26 16:23:14	EstimateLibraryComplexity	Read    22,000,000 records.  Elapsed time: 00:00:50s.  Time for last 1,000,000:    1s.  Last read position: 11:66,842,990
+INFO	2025-02-26 16:23:15	EstimateLibraryComplexity	Read    94,000,000 records.  Elapsed time: 00:03:18s.  Time for last 1,000,000:    1s.  Last read position: 6:124,447,020
+INFO	2025-02-26 16:23:16	EstimateLibraryComplexity	Read    95,000,000 records.  Elapsed time: 00:03:19s.  Time for last 1,000,000:    1s.  Last read position: 6:147,001,303
+INFO	2025-02-26 16:23:18	EstimateLibraryComplexity	Read    23,000,000 records.  Elapsed time: 00:00:53s.  Time for last 1,000,000:    3s.  Last read position: 11:79,199,092
+INFO	2025-02-26 16:23:19	EstimateLibraryComplexity	Read    96,000,000 records.  Elapsed time: 00:03:23s.  Time for last 1,000,000:    3s.  Last read position: 6:168,272,663
+INFO	2025-02-26 16:23:19	EstimateLibraryComplexity	Read    24,000,000 records.  Elapsed time: 00:00:55s.  Time for last 1,000,000:    1s.  Last read position: 11:109,540,880
+INFO	2025-02-26 16:23:21	EstimateLibraryComplexity	Read    97,000,000 records.  Elapsed time: 00:03:24s.  Time for last 1,000,000:    1s.  Last read position: 7:23,095,400
+INFO	2025-02-26 16:23:21	EstimateLibraryComplexity	Read    25,000,000 records.  Elapsed time: 00:00:57s.  Time for last 1,000,000:    1s.  Last read position: 11:123,433,562
+INFO	2025-02-26 16:23:23	EstimateLibraryComplexity	Read    98,000,000 records.  Elapsed time: 00:03:26s.  Time for last 1,000,000:    1s.  Last read position: 7:43,572,397
+INFO	2025-02-26 16:23:23	EstimateLibraryComplexity	Read    26,000,000 records.  Elapsed time: 00:00:59s.  Time for last 1,000,000:    1s.  Last read position: 12:5,145,928
+INFO	2025-02-26 16:23:24	EstimateLibraryComplexity	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** 
+https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    EstimateLibraryComplexity -I analysis/3_alignment/YAF_2.dedup.bam -O /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/6_bigwig/YAF_2_complexity.txt
+**********
+
+
+16:23:24.321 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/share/picard-3.3.0-0/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Wed Feb 26 16:23:24 CET 2025] EstimateLibraryComplexity INPUT=[analysis/3_alignment/YAF_2.dedup.bam] OUTPUT=/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/6_bigwig/YAF_2_complexity.txt    MIN_IDENTICAL_BASES=5 MAX_DIFF_RATE=0.03 MIN_MEAN_QUALITY=20 MAX_GROUP_RATIO=500 MAX_READ_LENGTH=0 MIN_GROUP_COUNT=2 READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 MAX_OPTICAL_DUPLICATE_SET_SIZE=300000 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=2279706 CREATE_INDEX=false CREATE_MD5_FILE=false USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Wed Feb 26 16:23:24 CET 2025] Executing as kubacki.michal@srcn20 on Linux 4.18.0-553.el8_10.x86_64 amd64; OpenJDK 64-Bit Server VM 23.0.1-internal-adhoc.conda.src; Deflater: Intel; Inflater: Intel; Provider GCS is available; Picard version: 3.3.0
+INFO	2025-02-26 16:23:24	EstimateLibraryComplexity	Will store 2279706 read pairs in memory before sorting.
+INFO	2025-02-26 16:23:25	EstimateLibraryComplexity	Read    99,000,000 records.  Elapsed time: 00:03:28s.  Time for last 1,000,000:    1s.  Last read position: 7:71,996,425
+INFO	2025-02-26 16:23:25	EstimateLibraryComplexity	Read    27,000,000 records.  Elapsed time: 00:01:01s.  Time for last 1,000,000:    1s.  Last read position: 12:45,350,795
+INFO	2025-02-26 16:23:26	EstimateLibraryComplexity	Read     1,000,000 records.  Elapsed time: 00:00:02s.  Time for last 1,000,000:    2s.  Last read position: 1:10,532,622
+INFO	2025-02-26 16:23:27	EstimateLibraryComplexity	Read   100,000,000 records.  Elapsed time: 00:03:30s.  Time for last 1,000,000:    1s.  Last read position: 7:93,942,661
+INFO	2025-02-26 16:23:28	EstimateLibraryComplexity	Read     2,000,000 records.  Elapsed time: 00:00:04s.  Time for last 1,000,000:    1s.  Last read position: 1:20,279,292
+INFO	2025-02-26 16:23:29	EstimateLibraryComplexity	Read    28,000,000 records.  Elapsed time: 00:01:05s.  Time for last 1,000,000:    3s.  Last read position: 12:71,020,405
+INFO	2025-02-26 16:23:30	EstimateLibraryComplexity	Read   101,000,000 records.  Elapsed time: 00:03:33s.  Time for last 1,000,000:    3s.  Last read position: 7:112,496,325
+INFO	2025-02-26 16:23:30	EstimateLibraryComplexity	Read     3,000,000 records.  Elapsed time: 00:00:05s.  Time for last 1,000,000:    1s.  Last read position: 1:29,570,986
+INFO	2025-02-26 16:23:31	EstimateLibraryComplexity	Read    29,000,000 records.  Elapsed time: 00:01:07s.  Time for last 1,000,000:    1s.  Last read position: 12:109,518,532
+INFO	2025-02-26 16:23:32	EstimateLibraryComplexity	Read   102,000,000 records.  Elapsed time: 00:03:35s.  Time for last 1,000,000:    1s.  Last read position: 7:130,922,735
+INFO	2025-02-26 16:23:32	EstimateLibraryComplexity	Read     4,000,000 records.  Elapsed time: 00:00:07s.  Time for last 1,000,000:    1s.  Last read position: 1:39,839,217
+INFO	2025-02-26 16:23:33	EstimateLibraryComplexity	Read    30,000,000 records.  Elapsed time: 00:01:08s.  Time for last 1,000,000:    1s.  Last read position: 12:132,523,094
+INFO	2025-02-26 16:23:33	EstimateLibraryComplexity	Read   103,000,000 records.  Elapsed time: 00:03:37s.  Time for last 1,000,000:    1s.  Last read position: 7:144,109,539
+INFO	2025-02-26 16:23:35	EstimateLibraryComplexity	Read    31,000,000 records.  Elapsed time: 00:01:10s.  Time for last 1,000,000:    1s.  Last read position: 13:47,688,739
+INFO	2025-02-26 16:23:35	EstimateLibraryComplexity	Read   104,000,000 records.  Elapsed time: 00:03:39s.  Time for last 1,000,000:    1s.  Last read position: 7:157,595,147
+INFO	2025-02-26 16:23:36	EstimateLibraryComplexity	Read     5,000,000 records.  Elapsed time: 00:00:12s.  Time for last 1,000,000:    4s.  Last read position: 1:53,485,701
+INFO	2025-02-26 16:23:37	EstimateLibraryComplexity	Read   105,000,000 records.  Elapsed time: 00:03:40s.  Time for last 1,000,000:    1s.  Last read position: 8:26,918,403
+INFO	2025-02-26 16:23:38	EstimateLibraryComplexity	Read    32,000,000 records.  Elapsed time: 00:01:14s.  Time for last 1,000,000:    3s.  Last read position: 13:98,361,669
+INFO	2025-02-26 16:23:38	EstimateLibraryComplexity	Read     6,000,000 records.  Elapsed time: 00:00:14s.  Time for last 1,000,000:    1s.  Last read position: 1:71,235,273
+INFO	2025-02-26 16:23:40	EstimateLibraryComplexity	Read    33,000,000 records.  Elapsed time: 00:01:16s.  Time for last 1,000,000:    1s.  Last read position: 14:34,362,916
+INFO	2025-02-26 16:23:40	EstimateLibraryComplexity	Read   106,000,000 records.  Elapsed time: 00:03:43s.  Time for last 1,000,000:    2s.  Last read position: 8:54,581,820
+INFO	2025-02-26 16:23:40	EstimateLibraryComplexity	Read     7,000,000 records.  Elapsed time: 00:00:16s.  Time for last 1,000,000:    2s.  Last read position: 1:96,217,765
+INFO	2025-02-26 16:23:42	EstimateLibraryComplexity	Read   107,000,000 records.  Elapsed time: 00:03:45s.  Time for last 1,000,000:    1s.  Last read position: 8:71,413,504
+INFO	2025-02-26 16:23:42	EstimateLibraryComplexity	Read    34,000,000 records.  Elapsed time: 00:01:18s.  Time for last 1,000,000:    1s.  Last read position: 14:69,576,784
+INFO	2025-02-26 16:23:42	EstimateLibraryComplexity	Read     8,000,000 records.  Elapsed time: 00:00:18s.  Time for last 1,000,000:    2s.  Last read position: 1:115,641,315
+INFO	2025-02-26 16:23:44	EstimateLibraryComplexity	Read   108,000,000 records.  Elapsed time: 00:03:47s.  Time for last 1,000,000:    2s.  Last read position: 8:90,653,211
+INFO	2025-02-26 16:23:45	EstimateLibraryComplexity	Read    35,000,000 records.  Elapsed time: 00:01:20s.  Time for last 1,000,000:    2s.  Last read position: 14:97,071,128
+INFO	2025-02-26 16:23:45	EstimateLibraryComplexity	Read     9,000,000 records.  Elapsed time: 00:00:20s.  Time for last 1,000,000:    2s.  Last read position: 1:154,689,366
+INFO	2025-02-26 16:23:46	EstimateLibraryComplexity	Read   109,000,000 records.  Elapsed time: 00:03:49s.  Time for last 1,000,000:    1s.  Last read position: 8:105,632,078
+INFO	2025-02-26 16:23:46	EstimateLibraryComplexity	Read    36,000,000 records.  Elapsed time: 00:01:22s.  Time for last 1,000,000:    1s.  Last read position: 15:38,923,407
+INFO	2025-02-26 16:23:49	EstimateLibraryComplexity	Read    10,000,000 records.  Elapsed time: 00:00:24s.  Time for last 1,000,000:    3s.  Last read position: 1:169,679,412
+INFO	2025-02-26 16:23:49	EstimateLibraryComplexity	Read   110,000,000 records.  Elapsed time: 00:03:52s.  Time for last 1,000,000:    2s.  Last read position: 8:124,196,404
+INFO	2025-02-26 16:23:50	EstimateLibraryComplexity	Read    37,000,000 records.  Elapsed time: 00:01:26s.  Time for last 1,000,000:    3s.  Last read position: 15:56,905,610
+INFO	2025-02-26 16:23:51	EstimateLibraryComplexity	Read    11,000,000 records.  Elapsed time: 00:00:26s.  Time for last 1,000,000:    1s.  Last read position: 1:196,537,882
+INFO	2025-02-26 16:23:51	EstimateLibraryComplexity	Read   111,000,000 records.  Elapsed time: 00:03:54s.  Time for last 1,000,000:    1s.  Last read position: 8:139,026,866
+INFO	2025-02-26 16:23:52	EstimateLibraryComplexity	Read    38,000,000 records.  Elapsed time: 00:01:28s.  Time for last 1,000,000:    1s.  Last read position: 15:69,045,217
+INFO	2025-02-26 16:23:53	EstimateLibraryComplexity	Read   112,000,000 records.  Elapsed time: 00:03:56s.  Time for last 1,000,000:    1s.  Last read position: 9:14,094,485
+INFO	2025-02-26 16:23:53	EstimateLibraryComplexity	Read    12,000,000 records.  Elapsed time: 00:00:28s.  Time for last 1,000,000:    1s.  Last read position: 1:209,585,753
+INFO	2025-02-26 16:23:54	EstimateLibraryComplexity	Read    39,000,000 records.  Elapsed time: 00:01:30s.  Time for last 1,000,000:    1s.  Last read position: 15:79,124,313
+INFO	2025-02-26 16:23:55	EstimateLibraryComplexity	Read   113,000,000 records.  Elapsed time: 00:03:58s.  Time for last 1,000,000:    1s.  Last read position: 9:37,008,488
+INFO	2025-02-26 16:23:55	EstimateLibraryComplexity	Read    13,000,000 records.  Elapsed time: 00:00:30s.  Time for last 1,000,000:    2s.  Last read position: 1:228,297,905
+INFO	2025-02-26 16:23:56	EstimateLibraryComplexity	Read    40,000,000 records.  Elapsed time: 00:01:32s.  Time for last 1,000,000:    1s.  Last read position: 15:92,860,571
+INFO	2025-02-26 16:23:56	EstimateLibraryComplexity	Read   114,000,000 records.  Elapsed time: 00:04:00s.  Time for last 1,000,000:    1s.  Last read position: 9:90,790,240
+INFO	2025-02-26 16:23:58	EstimateLibraryComplexity	Read    41,000,000 records.  Elapsed time: 00:01:34s.  Time for last 1,000,000:    1s.  Last read position: 16:10,079,329
+INFO	2025-02-26 16:23:59	EstimateLibraryComplexity	Read    14,000,000 records.  Elapsed time: 00:00:34s.  Time for last 1,000,000:    3s.  Last read position: 10:155,844
+INFO	2025-02-26 16:24:00	EstimateLibraryComplexity	Read   115,000,000 records.  Elapsed time: 00:04:03s.  Time for last 1,000,000:    3s.  Last read position: 9:114,176,733
+INFO	2025-02-26 16:24:01	EstimateLibraryComplexity	Read    15,000,000 records.  Elapsed time: 00:00:36s.  Time for last 1,000,000:    1s.  Last read position: 10:25,699,020
+INFO	2025-02-26 16:24:01	EstimateLibraryComplexity	Read   116,000,000 records.  Elapsed time: 00:04:05s.  Time for last 1,000,000:    1s.  Last read position: 9:134,189,678
+INFO	2025-02-26 16:24:01	EstimateLibraryComplexity	Read    42,000,000 records.  Elapsed time: 00:01:37s.  Time for last 1,000,000:    3s.  Last read position: 16:48,792,668
+INFO	2025-02-26 16:24:03	EstimateLibraryComplexity	Read    16,000,000 records.  Elapsed time: 00:00:38s.  Time for last 1,000,000:    1s.  Last read position: 10:49,101,741
+INFO	2025-02-26 16:24:03	EstimateLibraryComplexity	Read   117,000,000 records.  Elapsed time: 00:04:06s.  Time for last 1,000,000:    1s.  Last read position: X:28,439,989
+INFO	2025-02-26 16:24:03	EstimateLibraryComplexity	Read    43,000,000 records.  Elapsed time: 00:01:39s.  Time for last 1,000,000:    1s.  Last read position: 16:60,683,303
+INFO	2025-02-26 16:24:05	EstimateLibraryComplexity	Read    17,000,000 records.  Elapsed time: 00:00:40s.  Time for last 1,000,000:    1s.  Last read position: 10:69,661,948
+INFO	2025-02-26 16:24:05	EstimateLibraryComplexity	Read   118,000,000 records.  Elapsed time: 00:04:08s.  Time for last 1,000,000:    1s.  Last read position: X:70,090,610
+INFO	2025-02-26 16:24:05	EstimateLibraryComplexity	Read    44,000,000 records.  Elapsed time: 00:01:41s.  Time for last 1,000,000:    1s.  Last read position: 16:79,084,485
+INFO	2025-02-26 16:24:06	EstimateLibraryComplexity	Read    18,000,000 records.  Elapsed time: 00:00:42s.  Time for last 1,000,000:    1s.  Last read position: 10:78,389,276
+INFO	2025-02-26 16:24:07	EstimateLibraryComplexity	Read    45,000,000 records.  Elapsed time: 00:01:43s.  Time for last 1,000,000:    1s.  Last read position: 17:3,675,680
+INFO	2025-02-26 16:24:08	EstimateLibraryComplexity	Read   119,000,000 records.  Elapsed time: 00:04:11s.  Time for last 1,000,000:    3s.  Last read position: X:118,948,261
+INFO	2025-02-26 16:24:10	EstimateLibraryComplexity	Read   120,000,000 records.  Elapsed time: 00:04:13s.  Time for last 1,000,000:    1s.  Last read position: Y:15,272,795
+INFO	2025-02-26 16:24:10	EstimateLibraryComplexity	Finished reading - read 120116812 records - moving on to scanning for duplicates.
+INFO	2025-02-26 16:24:10	EstimateLibraryComplexity	Read    19,000,000 records.  Elapsed time: 00:00:46s.  Time for last 1,000,000:    3s.  Last read position: 10:94,669,032
+INFO	2025-02-26 16:24:11	EstimateLibraryComplexity	Read    46,000,000 records.  Elapsed time: 00:01:47s.  Time for last 1,000,000:    3s.  Last read position: 17:14,934,897
+INFO	2025-02-26 16:24:12	EstimateLibraryComplexity	Read    20,000,000 records.  Elapsed time: 00:00:48s.  Time for last 1,000,000:    1s.  Last read position: 10:113,708,796
+INFO	2025-02-26 16:24:13	EstimateLibraryComplexity	Read    47,000,000 records.  Elapsed time: 00:01:49s.  Time for last 1,000,000:    1s.  Last read position: 17:31,550,586
+INFO	2025-02-26 16:24:14	EstimateLibraryComplexity	Read    21,000,000 records.  Elapsed time: 00:00:50s.  Time for last 1,000,000:    1s.  Last read position: 10:129,525,606
+INFO	2025-02-26 16:24:14	EstimateLibraryComplexity	Read    48,000,000 records.  Elapsed time: 00:01:50s.  Time for last 1,000,000:    1s.  Last read position: 17:41,904,769
+INFO	2025-02-26 16:24:16	EstimateLibraryComplexity	Read    22,000,000 records.  Elapsed time: 00:00:52s.  Time for last 1,000,000:    1s.  Last read position: 11:11,852,834
+INFO	2025-02-26 16:24:16	EstimateLibraryComplexity	Read    49,000,000 records.  Elapsed time: 00:01:52s.  Time for last 1,000,000:    1s.  Last read position: 17:50,384,941
+INFO	2025-02-26 16:24:18	EstimateLibraryComplexity	Read    50,000,000 records.  Elapsed time: 00:01:54s.  Time for last 1,000,000:    1s.  Last read position: 17:64,457,462
+INFO	2025-02-26 16:24:20	EstimateLibraryComplexity	Read    23,000,000 records.  Elapsed time: 00:00:56s.  Time for last 1,000,000:    4s.  Last read position: 11:34,438,800
+INFO	2025-02-26 16:24:22	EstimateLibraryComplexity	Read    51,000,000 records.  Elapsed time: 00:01:58s.  Time for last 1,000,000:    3s.  Last read position: 17:76,167,040
+INFO	2025-02-26 16:24:22	EstimateLibraryComplexity	Read    24,000,000 records.  Elapsed time: 00:00:58s.  Time for last 1,000,000:    1s.  Last read position: 11:57,799,227
+INFO	2025-02-26 16:24:24	EstimateLibraryComplexity	Read    52,000,000 records.  Elapsed time: 00:02:00s.  Time for last 1,000,000:    1s.  Last read position: 18:496,386
+INFO	2025-02-26 16:24:24	EstimateLibraryComplexity	Read    25,000,000 records.  Elapsed time: 00:01:00s.  Time for last 1,000,000:    1s.  Last read position: 11:67,616,632
+INFO	2025-02-26 16:24:26	EstimateLibraryComplexity	Read    53,000,000 records.  Elapsed time: 00:02:01s.  Time for last 1,000,000:    1s.  Last read position: 18:29,351,379
+INFO	2025-02-26 16:24:26	EstimateLibraryComplexity	Read    26,000,000 records.  Elapsed time: 00:01:02s.  Time for last 1,000,000:    1s.  Last read position: 11:78,045,372
+INFO	2025-02-26 16:24:27	EstimateLibraryComplexity	Read    54,000,000 records.  Elapsed time: 00:02:03s.  Time for last 1,000,000:    1s.  Last read position: 18:72,181,508
+INFO	2025-02-26 16:24:28	EstimateLibraryComplexity	Read    27,000,000 records.  Elapsed time: 00:01:04s.  Time for last 1,000,000:    2s.  Last read position: 11:105,549,768
+INFO	2025-02-26 16:24:31	EstimateLibraryComplexity	Read    55,000,000 records.  Elapsed time: 00:02:07s.  Time for last 1,000,000:    3s.  Last read position: 19:8,470,625
+INFO	2025-02-26 16:24:32	EstimateLibraryComplexity	Read    28,000,000 records.  Elapsed time: 00:01:08s.  Time for last 1,000,000:    4s.  Last read position: 11:120,169,702
+INFO	2025-02-26 16:24:33	EstimateLibraryComplexity	Read    56,000,000 records.  Elapsed time: 00:02:09s.  Time for last 1,000,000:    1s.  Last read position: 19:28,583,199
+INFO	2025-02-26 16:24:34	EstimateLibraryComplexity	Read    29,000,000 records.  Elapsed time: 00:01:10s.  Time for last 1,000,000:    1s.  Last read position: 11:133,977,238
+INFO	2025-02-26 16:24:35	EstimateLibraryComplexity	Read    57,000,000 records.  Elapsed time: 00:02:11s.  Time for last 1,000,000:    1s.  Last read position: 19:42,559,363
+INFO	2025-02-26 16:24:36	EstimateLibraryComplexity	Read    30,000,000 records.  Elapsed time: 00:01:12s.  Time for last 1,000,000:    1s.  Last read position: 12:22,249,139
+INFO	2025-02-26 16:24:37	EstimateLibraryComplexity	Read    58,000,000 records.  Elapsed time: 00:02:13s.  Time for last 1,000,000:    1s.  Last read position: 19:55,629,018
+INFO	2025-02-26 16:24:38	EstimateLibraryComplexity	Read    31,000,000 records.  Elapsed time: 00:01:14s.  Time for last 1,000,000:    1s.  Last read position: 12:53,766,470
+INFO	2025-02-26 16:24:39	EstimateLibraryComplexity	Read    59,000,000 records.  Elapsed time: 00:02:15s.  Time for last 1,000,000:    1s.  Last read position: 2:16,744,870
+INFO	2025-02-26 16:24:42	EstimateLibraryComplexity	Read    32,000,000 records.  Elapsed time: 00:01:18s.  Time for last 1,000,000:    4s.  Last read position: 12:89,269,074
+INFO	2025-02-26 16:24:42	EstimateLibraryComplexity	Read    60,000,000 records.  Elapsed time: 00:02:18s.  Time for last 1,000,000:    3s.  Last read position: 2:35,391,701
+INFO	2025-02-26 16:24:44	EstimateLibraryComplexity	Read    33,000,000 records.  Elapsed time: 00:01:20s.  Time for last 1,000,000:    1s.  Last read position: 12:115,258,011
+INFO	2025-02-26 16:24:44	EstimateLibraryComplexity	Read    61,000,000 records.  Elapsed time: 00:02:20s.  Time for last 1,000,000:    1s.  Last read position: 2:58,559,921
+INFO	2025-02-26 16:24:46	EstimateLibraryComplexity	Read    34,000,000 records.  Elapsed time: 00:01:22s.  Time for last 1,000,000:    1s.  Last read position: 13:22,276,069
+INFO	2025-02-26 16:24:46	EstimateLibraryComplexity	Read    62,000,000 records.  Elapsed time: 00:02:22s.  Time for last 1,000,000:    1s.  Last read position: 2:79,586,869
+INFO	2025-02-26 16:24:48	EstimateLibraryComplexity	Read    63,000,000 records.  Elapsed time: 00:02:24s.  Time for last 1,000,000:    1s.  Last read position: 2:106,575,098
+INFO	2025-02-26 16:24:48	EstimateLibraryComplexity	Read    35,000,000 records.  Elapsed time: 00:01:24s.  Time for last 1,000,000:    2s.  Last read position: 13:48,504,275
+INFO	2025-02-26 16:24:50	EstimateLibraryComplexity	Read    36,000,000 records.  Elapsed time: 00:01:26s.  Time for last 1,000,000:    2s.  Last read position: 13:96,448,879
+INFO	2025-02-26 16:24:52	EstimateLibraryComplexity	Read    64,000,000 records.  Elapsed time: 00:02:28s.  Time for last 1,000,000:    3s.  Last read position: 2:129,134,395
+INFO	2025-02-26 16:24:54	EstimateLibraryComplexity	Read    65,000,000 records.  Elapsed time: 00:02:30s.  Time for last 1,000,000:    1s.  Last read position: 2:162,448,836
+INFO	2025-02-26 16:24:54	EstimateLibraryComplexity	Read    37,000,000 records.  Elapsed time: 00:01:30s.  Time for last 1,000,000:    3s.  Last read position: 14:26,206,797
+INFO	2025-02-26 16:24:56	EstimateLibraryComplexity	Read    66,000,000 records.  Elapsed time: 00:02:32s.  Time for last 1,000,000:    1s.  Last read position: 2:196,459,680
+INFO	2025-02-26 16:24:56	EstimateLibraryComplexity	Read    38,000,000 records.  Elapsed time: 00:01:32s.  Time for last 1,000,000:    1s.  Last read position: 14:62,067,082
+INFO	2025-02-26 16:24:58	EstimateLibraryComplexity	Read    67,000,000 records.  Elapsed time: 00:02:33s.  Time for last 1,000,000:    1s.  Last read position: 2:222,866,745
+INFO	2025-02-26 16:24:58	EstimateLibraryComplexity	Read    39,000,000 records.  Elapsed time: 00:01:34s.  Time for last 1,000,000:    1s.  Last read position: 14:89,247,440
+INFO	2025-02-26 16:24:59	EstimateLibraryComplexity	Read    68,000,000 records.  Elapsed time: 00:02:35s.  Time for last 1,000,000:    1s.  Last read position: 2:240,956,632
+INFO	2025-02-26 16:25:00	EstimateLibraryComplexity	Read    40,000,000 records.  Elapsed time: 00:01:35s.  Time for last 1,000,000:    1s.  Last read position: 15:20,350,402
+INFO	2025-02-26 16:25:02	EstimateLibraryComplexity	Read    41,000,000 records.  Elapsed time: 00:01:37s.  Time for last 1,000,000:    1s.  Last read position: 15:43,240,633
+INFO	2025-02-26 16:25:03	EstimateLibraryComplexity	Read    69,000,000 records.  Elapsed time: 00:02:39s.  Time for last 1,000,000:    3s.  Last read position: 20:17,417,820
+INFO	2025-02-26 16:25:05	EstimateLibraryComplexity	Read    70,000,000 records.  Elapsed time: 00:02:41s.  Time for last 1,000,000:    1s.  Last read position: 20:36,878,153
+INFO	2025-02-26 16:25:06	EstimateLibraryComplexity	Read    42,000,000 records.  Elapsed time: 00:01:41s.  Time for last 1,000,000:    3s.  Last read position: 15:60,840,514
+INFO	2025-02-26 16:25:07	EstimateLibraryComplexity	Read    71,000,000 records.  Elapsed time: 00:02:43s.  Time for last 1,000,000:    1s.  Last read position: 20:49,516,533
+INFO	2025-02-26 16:25:08	EstimateLibraryComplexity	Read    43,000,000 records.  Elapsed time: 00:01:43s.  Time for last 1,000,000:    1s.  Last read position: 15:70,180,317
+INFO	2025-02-26 16:25:09	EstimateLibraryComplexity	Read    72,000,000 records.  Elapsed time: 00:02:45s.  Time for last 1,000,000:    1s.  Last read position: 20:61,203,113
+INFO	2025-02-26 16:25:10	EstimateLibraryComplexity	Read    44,000,000 records.  Elapsed time: 00:01:45s.  Time for last 1,000,000:    1s.  Last read position: 15:79,099,901
+INFO	2025-02-26 16:25:11	EstimateLibraryComplexity	Processed 295473 groups.
+INFO	2025-02-26 16:25:11	EstimateLibraryComplexity	Read    73,000,000 records.  Elapsed time: 00:02:47s.  Time for last 1,000,000:    1s.  Last read position: 21:32,095,013
+INFO	2025-02-26 16:25:12	EstimateLibraryComplexity	Read    45,000,000 records.  Elapsed time: 00:01:47s.  Time for last 1,000,000:    1s.  Last read position: 15:91,194,837
+INFO	2025-02-26 16:25:14	EstimateLibraryComplexity	Read    74,000,000 records.  Elapsed time: 00:02:50s.  Time for last 1,000,000:    3s.  Last read position: 22:17,219,016
+INFO	2025-02-26 16:25:15	EstimateLibraryComplexity	Read    46,000,000 records.  Elapsed time: 00:01:51s.  Time for last 1,000,000:    3s.  Last read position: 16:2,854,137
+INFO	2025-02-26 16:25:16	EstimateLibraryComplexity	Read    75,000,000 records.  Elapsed time: 00:02:52s.  Time for last 1,000,000:    1s.  Last read position: 22:36,461,943
+INFO	2025-02-26 16:25:17	EstimateLibraryComplexity	Read    47,000,000 records.  Elapsed time: 00:01:53s.  Time for last 1,000,000:    1s.  Last read position: 16:27,471,338
+INFO	2025-02-26 16:25:18	EstimateLibraryComplexity	Read    76,000,000 records.  Elapsed time: 00:02:54s.  Time for last 1,000,000:    1s.  Last read position: 3:1,360,723
+INFO	2025-02-26 16:25:19	EstimateLibraryComplexity	Read    48,000,000 records.  Elapsed time: 00:01:55s.  Time for last 1,000,000:    1s.  Last read position: 16:54,561,141
+INFO	2025-02-26 16:25:20	EstimateLibraryComplexity	Read    77,000,000 records.  Elapsed time: 00:02:56s.  Time for last 1,000,000:    1s.  Last read position: 3:31,462,176
+INFO	2025-02-26 16:25:21	EstimateLibraryComplexity	Read    49,000,000 records.  Elapsed time: 00:01:57s.  Time for last 1,000,000:    1s.  Last read position: 16:67,206,718
+INFO	2025-02-26 16:25:23	EstimateLibraryComplexity	Read    50,000,000 records.  Elapsed time: 00:01:59s.  Time for last 1,000,000:    1s.  Last read position: 16:84,300,926
+INFO	2025-02-26 16:25:24	EstimateLibraryComplexity	Read    78,000,000 records.  Elapsed time: 00:03:00s.  Time for last 1,000,000:    3s.  Last read position: 3:54,312,929
+INFO	2025-02-26 16:25:26	EstimateLibraryComplexity	Read    79,000,000 records.  Elapsed time: 00:03:02s.  Time for last 1,000,000:    1s.  Last read position: 3:98,929,723
+INFO	2025-02-26 16:25:27	EstimateLibraryComplexity	Read    51,000,000 records.  Elapsed time: 00:02:03s.  Time for last 1,000,000:    3s.  Last read position: 17:4,200,661
+INFO	2025-02-26 16:25:28	EstimateLibraryComplexity	Read    80,000,000 records.  Elapsed time: 00:03:04s.  Time for last 1,000,000:    1s.  Last read position: 3:129,538,848
+INFO	2025-02-26 16:25:29	EstimateLibraryComplexity	Read    52,000,000 records.  Elapsed time: 00:02:04s.  Time for last 1,000,000:    1s.  Last read position: 17:13,647,637
+INFO	2025-02-26 16:25:30	EstimateLibraryComplexity	Read    81,000,000 records.  Elapsed time: 00:03:06s.  Time for last 1,000,000:    1s.  Last read position: 3:157,607,872
+INFO	2025-02-26 16:25:31	EstimateLibraryComplexity	Read    53,000,000 records.  Elapsed time: 00:02:06s.  Time for last 1,000,000:    1s.  Last read position: 17:29,074,840
+INFO	2025-02-26 16:25:32	EstimateLibraryComplexity	Read    82,000,000 records.  Elapsed time: 00:03:07s.  Time for last 1,000,000:    1s.  Last read position: 3:183,185,444
+INFO	2025-02-26 16:25:33	EstimateLibraryComplexity	Read    54,000,000 records.  Elapsed time: 00:02:08s.  Time for last 1,000,000:    1s.  Last read position: 17:39,312,189
+INFO	2025-02-26 16:25:35	EstimateLibraryComplexity	Read    83,000,000 records.  Elapsed time: 00:03:11s.  Time for last 1,000,000:    3s.  Last read position: 3:194,088,662
+INFO	2025-02-26 16:25:37	EstimateLibraryComplexity	Read    55,000,000 records.  Elapsed time: 00:02:12s.  Time for last 1,000,000:    3s.  Last read position: 17:46,866,244
+INFO	2025-02-26 16:25:37	EstimateLibraryComplexity	Read    84,000,000 records.  Elapsed time: 00:03:13s.  Time for last 1,000,000:    1s.  Last read position: 4:7,171,304
+INFO	2025-02-26 16:25:38	EstimateLibraryComplexity	Read    56,000,000 records.  Elapsed time: 00:02:14s.  Time for last 1,000,000:    1s.  Last read position: 17:57,440,210
+INFO	2025-02-26 16:25:39	EstimateLibraryComplexity	Read    85,000,000 records.  Elapsed time: 00:03:15s.  Time for last 1,000,000:    1s.  Last read position: 4:31,121,045
+INFO	2025-02-26 16:25:40	EstimateLibraryComplexity	Read    57,000,000 records.  Elapsed time: 00:02:16s.  Time for last 1,000,000:    1s.  Last read position: 17:69,502,159
+INFO	2025-02-26 16:25:41	EstimateLibraryComplexity	Read    86,000,000 records.  Elapsed time: 00:03:17s.  Time for last 1,000,000:    1s.  Last read position: 4:56,551,954
+INFO	2025-02-26 16:25:42	EstimateLibraryComplexity	Read    58,000,000 records.  Elapsed time: 00:02:18s.  Time for last 1,000,000:    1s.  Last read position: 17:77,600,904
+INFO	2025-02-26 16:25:44	EstimateLibraryComplexity	Read    59,000,000 records.  Elapsed time: 00:02:20s.  Time for last 1,000,000:    1s.  Last read position: 18:174,834
+INFO	2025-02-26 16:25:45	EstimateLibraryComplexity	Read    87,000,000 records.  Elapsed time: 00:03:21s.  Time for last 1,000,000:    3s.  Last read position: 4:80,188,946
+INFO	2025-02-26 16:25:47	EstimateLibraryComplexity	Read    88,000,000 records.  Elapsed time: 00:03:23s.  Time for last 1,000,000:    1s.  Last read position: 4:126,956,652
+INFO	2025-02-26 16:25:48	EstimateLibraryComplexity	Read    60,000,000 records.  Elapsed time: 00:02:23s.  Time for last 1,000,000:    3s.  Last read position: 18:23,556,942
+INFO	2025-02-26 16:25:49	EstimateLibraryComplexity	Read    89,000,000 records.  Elapsed time: 00:03:25s.  Time for last 1,000,000:    1s.  Last read position: 4:173,293,662
+INFO	2025-02-26 16:25:50	EstimateLibraryComplexity	Read    61,000,000 records.  Elapsed time: 00:02:25s.  Time for last 1,000,000:    1s.  Last read position: 18:59,429,304
+INFO	2025-02-26 16:25:51	EstimateLibraryComplexity	Read    90,000,000 records.  Elapsed time: 00:03:27s.  Time for last 1,000,000:    1s.  Last read position: 5:9,533,402
+INFO	2025-02-26 16:25:52	EstimateLibraryComplexity	Read    62,000,000 records.  Elapsed time: 00:02:27s.  Time for last 1,000,000:    1s.  Last read position: 19:3,677,631
+INFO	2025-02-26 16:25:53	EstimateLibraryComplexity	Read    91,000,000 records.  Elapsed time: 00:03:29s.  Time for last 1,000,000:    1s.  Last read position: 5:37,835,143
+INFO	2025-02-26 16:25:55	EstimateLibraryComplexity	Read    63,000,000 records.  Elapsed time: 00:02:30s.  Time for last 1,000,000:    2s.  Last read position: 19:14,091,358
+INFO	2025-02-26 16:25:56	EstimateLibraryComplexity	Read    92,000,000 records.  Elapsed time: 00:03:32s.  Time for last 1,000,000:    3s.  Last read position: 5:67,551,791
+INFO	2025-02-26 16:25:58	EstimateLibraryComplexity	Read    93,000,000 records.  Elapsed time: 00:03:34s.  Time for last 1,000,000:    1s.  Last read position: 5:93,273,487
+INFO	2025-02-26 16:25:58	EstimateLibraryComplexity	Read    64,000,000 records.  Elapsed time: 00:02:34s.  Time for last 1,000,000:    3s.  Last read position: 19:33,072,165
+INFO	2025-02-26 16:26:00	EstimateLibraryComplexity	Read    94,000,000 records.  Elapsed time: 00:03:36s.  Time for last 1,000,000:    1s.  Last read position: 5:124,185,772
+INFO	2025-02-26 16:26:00	EstimateLibraryComplexity	Read    65,000,000 records.  Elapsed time: 00:02:36s.  Time for last 1,000,000:    1s.  Last read position: 19:44,799,180
+INFO	2025-02-26 16:26:02	EstimateLibraryComplexity	Read    95,000,000 records.  Elapsed time: 00:03:38s.  Time for last 1,000,000:    1s.  Last read position: 5:141,600,166
+INFO	2025-02-26 16:26:02	EstimateLibraryComplexity	Read    66,000,000 records.  Elapsed time: 00:02:38s.  Time for last 1,000,000:    1s.  Last read position: 19:55,552,880
+INFO	2025-02-26 16:26:04	EstimateLibraryComplexity	Read    67,000,000 records.  Elapsed time: 00:02:40s.  Time for last 1,000,000:    2s.  Last read position: 2:12,587,306
+INFO	2025-02-26 16:26:06	EstimateLibraryComplexity	Read    96,000,000 records.  Elapsed time: 00:03:42s.  Time for last 1,000,000:    3s.  Last read position: 5:159,232,873
+INFO	2025-02-26 16:26:06	EstimateLibraryComplexity	Read    68,000,000 records.  Elapsed time: 00:02:42s.  Time for last 1,000,000:    2s.  Last read position: 2:28,693,897
+INFO	2025-02-26 16:26:08	EstimateLibraryComplexity	Read    97,000,000 records.  Elapsed time: 00:03:44s.  Time for last 1,000,000:    1s.  Last read position: 5:177,095,471
+INFO	2025-02-26 16:26:10	EstimateLibraryComplexity	Read    98,000,000 records.  Elapsed time: 00:03:46s.  Time for last 1,000,000:    1s.  Last read position: 6:12,933,121
+INFO	2025-02-26 16:26:10	EstimateLibraryComplexity	Read    69,000,000 records.  Elapsed time: 00:02:46s.  Time for last 1,000,000:    3s.  Last read position: 2:47,050,209
+INFO	2025-02-26 16:26:11	EstimateLibraryComplexity	Processed 475024 groups.
+INFO	2025-02-26 16:26:12	EstimateLibraryComplexity	Read    99,000,000 records.  Elapsed time: 00:03:47s.  Time for last 1,000,000:    1s.  Last read position: 6:31,954,242
+INFO	2025-02-26 16:26:12	EstimateLibraryComplexity	Read    70,000,000 records.  Elapsed time: 00:02:48s.  Time for last 1,000,000:    1s.  Last read position: 2:70,309,446
+INFO	2025-02-26 16:26:13	EstimateLibraryComplexity	Read   100,000,000 records.  Elapsed time: 00:03:49s.  Time for last 1,000,000:    1s.  Last read position: 6:43,518,044
+INFO	2025-02-26 16:26:14	EstimateLibraryComplexity	Read    71,000,000 records.  Elapsed time: 00:02:50s.  Time for last 1,000,000:    1s.  Last read position: 2:95,276,211
+INFO	2025-02-26 16:26:16	EstimateLibraryComplexity	Read    72,000,000 records.  Elapsed time: 00:02:52s.  Time for last 1,000,000:    2s.  Last read position: 2:112,883,497
+INFO	2025-02-26 16:26:17	EstimateLibraryComplexity	Read   101,000,000 records.  Elapsed time: 00:03:53s.  Time for last 1,000,000:    3s.  Last read position: 6:72,667,217
+INFO	2025-02-26 16:26:18	EstimateLibraryComplexity	Read    73,000,000 records.  Elapsed time: 00:02:54s.  Time for last 1,000,000:    2s.  Last read position: 2:133,154,666
+INFO	2025-02-26 16:26:19	EstimateLibraryComplexity	Read   102,000,000 records.  Elapsed time: 00:03:55s.  Time for last 1,000,000:    1s.  Last read position: 6:104,645,347
+INFO	2025-02-26 16:26:21	EstimateLibraryComplexity	Read   103,000,000 records.  Elapsed time: 00:03:57s.  Time for last 1,000,000:    1s.  Last read position: 6:130,190,873
+INFO	2025-02-26 16:26:22	EstimateLibraryComplexity	Read    74,000,000 records.  Elapsed time: 00:02:58s.  Time for last 1,000,000:    4s.  Last read position: 2:164,704,896
+INFO	2025-02-26 16:26:23	EstimateLibraryComplexity	Read   104,000,000 records.  Elapsed time: 00:03:59s.  Time for last 1,000,000:    1s.  Last read position: 6:153,151,592
+INFO	2025-02-26 16:26:25	EstimateLibraryComplexity	Read    75,000,000 records.  Elapsed time: 00:03:00s.  Time for last 1,000,000:    2s.  Last read position: 2:195,655,555
+INFO	2025-02-26 16:26:25	EstimateLibraryComplexity	Read   105,000,000 records.  Elapsed time: 00:04:01s.  Time for last 1,000,000:    1s.  Last read position: 7:737,214
+INFO	2025-02-26 16:26:27	EstimateLibraryComplexity	Read    76,000,000 records.  Elapsed time: 00:03:02s.  Time for last 1,000,000:    2s.  Last read position: 2:219,571,627
+INFO	2025-02-26 16:26:29	EstimateLibraryComplexity	Read   106,000,000 records.  Elapsed time: 00:04:04s.  Time for last 1,000,000:    3s.  Last read position: 7:25,501,869
+INFO	2025-02-26 16:26:29	EstimateLibraryComplexity	Read    77,000,000 records.  Elapsed time: 00:03:04s.  Time for last 1,000,000:    2s.  Last read position: 2:237,916,201
+INFO	2025-02-26 16:26:30	EstimateLibraryComplexity	Read   107,000,000 records.  Elapsed time: 00:04:06s.  Time for last 1,000,000:    1s.  Last read position: 7:44,522,094
+INFO	2025-02-26 16:26:32	EstimateLibraryComplexity	Read   108,000,000 records.  Elapsed time: 00:04:08s.  Time for last 1,000,000:    1s.  Last read position: 7:70,981,562
+INFO	2025-02-26 16:26:33	EstimateLibraryComplexity	Read    78,000,000 records.  Elapsed time: 00:03:08s.  Time for last 1,000,000:    3s.  Last read position: 20:6,747,076
+INFO	2025-02-26 16:26:34	EstimateLibraryComplexity	Read   109,000,000 records.  Elapsed time: 00:04:10s.  Time for last 1,000,000:    1s.  Last read position: 7:94,656,516
+INFO	2025-02-26 16:26:34	EstimateLibraryComplexity	Read    79,000,000 records.  Elapsed time: 00:03:10s.  Time for last 1,000,000:    1s.  Last read position: 20:25,473,984
+INFO	2025-02-26 16:26:36	EstimateLibraryComplexity	Read    80,000,000 records.  Elapsed time: 00:03:12s.  Time for last 1,000,000:    1s.  Last read position: 20:41,387,581
+INFO	2025-02-26 16:26:38	EstimateLibraryComplexity	Read   110,000,000 records.  Elapsed time: 00:04:14s.  Time for last 1,000,000:    3s.  Last read position: 7:111,682,733
+INFO	2025-02-26 16:26:38	EstimateLibraryComplexity	Read    81,000,000 records.  Elapsed time: 00:03:14s.  Time for last 1,000,000:    1s.  Last read position: 20:51,756,508
+INFO	2025-02-26 16:26:40	EstimateLibraryComplexity	Read   111,000,000 records.  Elapsed time: 00:04:16s.  Time for last 1,000,000:    1s.  Last read position: 7:131,819,285
+INFO	2025-02-26 16:26:40	EstimateLibraryComplexity	Read    82,000,000 records.  Elapsed time: 00:03:16s.  Time for last 1,000,000:    1s.  Last read position: 20:61,913,187
+INFO	2025-02-26 16:26:42	EstimateLibraryComplexity	Read   112,000,000 records.  Elapsed time: 00:04:18s.  Time for last 1,000,000:    1s.  Last read position: 7:144,390,373
+INFO	2025-02-26 16:26:44	EstimateLibraryComplexity	Read   113,000,000 records.  Elapsed time: 00:04:20s.  Time for last 1,000,000:    1s.  Last read position: 7:156,153,249
+INFO	2025-02-26 16:26:44	EstimateLibraryComplexity	Read    83,000,000 records.  Elapsed time: 00:03:20s.  Time for last 1,000,000:    3s.  Last read position: 21:29,895,856
+INFO	2025-02-26 16:26:46	EstimateLibraryComplexity	Read   114,000,000 records.  Elapsed time: 00:04:21s.  Time for last 1,000,000:    1s.  Last read position: 8:21,275,626
+INFO	2025-02-26 16:26:46	EstimateLibraryComplexity	Read    84,000,000 records.  Elapsed time: 00:03:21s.  Time for last 1,000,000:    1s.  Last read position: 21:44,331,179
+INFO	2025-02-26 16:26:48	EstimateLibraryComplexity	Read    85,000,000 records.  Elapsed time: 00:03:23s.  Time for last 1,000,000:    1s.  Last read position: 22:28,423,101
+INFO	2025-02-26 16:26:49	EstimateLibraryComplexity	Read   115,000,000 records.  Elapsed time: 00:04:25s.  Time for last 1,000,000:    3s.  Last read position: 8:48,419,892
+INFO	2025-02-26 16:26:50	EstimateLibraryComplexity	Read    86,000,000 records.  Elapsed time: 00:03:25s.  Time for last 1,000,000:    1s.  Last read position: 22:42,867,833
+INFO	2025-02-26 16:26:51	EstimateLibraryComplexity	Read   116,000,000 records.  Elapsed time: 00:04:27s.  Time for last 1,000,000:    1s.  Last read position: 8:66,921,753
+INFO	2025-02-26 16:26:53	EstimateLibraryComplexity	Read   117,000,000 records.  Elapsed time: 00:04:29s.  Time for last 1,000,000:    1s.  Last read position: 8:89,899,870
+INFO	2025-02-26 16:26:54	EstimateLibraryComplexity	Read    87,000,000 records.  Elapsed time: 00:03:29s.  Time for last 1,000,000:    3s.  Last read position: 3:10,726,859
+INFO	2025-02-26 16:26:55	EstimateLibraryComplexity	Read   118,000,000 records.  Elapsed time: 00:04:31s.  Time for last 1,000,000:    1s.  Last read position: 8:105,607,908
+INFO	2025-02-26 16:26:56	EstimateLibraryComplexity	Read    88,000,000 records.  Elapsed time: 00:03:31s.  Time for last 1,000,000:    2s.  Last read position: 3:38,023,943
+INFO	2025-02-26 16:26:58	EstimateLibraryComplexity	Read    89,000,000 records.  Elapsed time: 00:03:33s.  Time for last 1,000,000:    1s.  Last read position: 3:55,722,184
+INFO	2025-02-26 16:26:59	EstimateLibraryComplexity	Read   119,000,000 records.  Elapsed time: 00:04:35s.  Time for last 1,000,000:    3s.  Last read position: 8:125,897,439
+INFO	2025-02-26 16:27:00	EstimateLibraryComplexity	Read    90,000,000 records.  Elapsed time: 00:03:35s.  Time for last 1,000,000:    2s.  Last read position: 3:97,935,862
+INFO	2025-02-26 16:27:01	EstimateLibraryComplexity	Read   120,000,000 records.  Elapsed time: 00:04:37s.  Time for last 1,000,000:    1s.  Last read position: 8:140,303,448
+INFO	2025-02-26 16:27:02	EstimateLibraryComplexity	Read    91,000,000 records.  Elapsed time: 00:03:37s.  Time for last 1,000,000:    2s.  Last read position: 3:127,489,525
+INFO	2025-02-26 16:27:03	EstimateLibraryComplexity	Read   121,000,000 records.  Elapsed time: 00:04:38s.  Time for last 1,000,000:    1s.  Last read position: 9:11,140,464
+INFO	2025-02-26 16:27:05	EstimateLibraryComplexity	Read   122,000,000 records.  Elapsed time: 00:04:40s.  Time for last 1,000,000:    1s.  Last read position: 9:36,874,447
+INFO	2025-02-26 16:27:06	EstimateLibraryComplexity	Read    92,000,000 records.  Elapsed time: 00:03:41s.  Time for last 1,000,000:    3s.  Last read position: 3:150,786,382
+INFO	2025-02-26 16:27:07	EstimateLibraryComplexity	Read   123,000,000 records.  Elapsed time: 00:04:42s.  Time for last 1,000,000:    1s.  Last read position: 9:89,668,679
+INFO	2025-02-26 16:27:08	EstimateLibraryComplexity	Read    93,000,000 records.  Elapsed time: 00:03:43s.  Time for last 1,000,000:    2s.  Last read position: 3:177,628,124
+INFO	2025-02-26 16:27:10	EstimateLibraryComplexity	Read    94,000,000 records.  Elapsed time: 00:03:45s.  Time for last 1,000,000:    1s.  Last read position: 3:189,080,303
+INFO	2025-02-26 16:27:10	EstimateLibraryComplexity	Read   124,000,000 records.  Elapsed time: 00:04:46s.  Time for last 1,000,000:    3s.  Last read position: 9:111,813,885
+INFO	2025-02-26 16:27:11	EstimateLibraryComplexity	Processed 595342 groups.
+INFO	2025-02-26 16:27:12	EstimateLibraryComplexity	Read    95,000,000 records.  Elapsed time: 00:03:47s.  Time for last 1,000,000:    2s.  Last read position: 4:1,030,225
+INFO	2025-02-26 16:27:12	EstimateLibraryComplexity	Read   125,000,000 records.  Elapsed time: 00:04:48s.  Time for last 1,000,000:    1s.  Last read position: 9:128,902,417
+INFO	2025-02-26 16:27:14	EstimateLibraryComplexity	Read   126,000,000 records.  Elapsed time: 00:04:50s.  Time for last 1,000,000:    1s.  Last read position: X:3,160,933
+INFO	2025-02-26 16:27:15	EstimateLibraryComplexity	Read    96,000,000 records.  Elapsed time: 00:03:51s.  Time for last 1,000,000:    3s.  Last read position: 4:11,290,262
+INFO	2025-02-26 16:27:16	EstimateLibraryComplexity	Read   127,000,000 records.  Elapsed time: 00:04:52s.  Time for last 1,000,000:    1s.  Last read position: X:42,187,573
+INFO	2025-02-26 16:27:17	EstimateLibraryComplexity	Read    97,000,000 records.  Elapsed time: 00:03:53s.  Time for last 1,000,000:    2s.  Last read position: 4:39,639,085
+INFO	2025-02-26 16:27:19	EstimateLibraryComplexity	Read    98,000,000 records.  Elapsed time: 00:03:55s.  Time for last 1,000,000:    1s.  Last read position: 4:58,698,410
+INFO	2025-02-26 16:27:20	EstimateLibraryComplexity	Read   128,000,000 records.  Elapsed time: 00:04:56s.  Time for last 1,000,000:    3s.  Last read position: X:97,315,013
+INFO	2025-02-26 16:27:21	EstimateLibraryComplexity	Read    99,000,000 records.  Elapsed time: 00:03:57s.  Time for last 1,000,000:    2s.  Last read position: 4:84,384,210
+INFO	2025-02-26 16:27:22	EstimateLibraryComplexity	Read   129,000,000 records.  Elapsed time: 00:04:58s.  Time for last 1,000,000:    1s.  Last read position: X:140,829,319
+INFO	2025-02-26 16:27:23	EstimateLibraryComplexity	Finished reading - read 129580782 records - moving on to scanning for duplicates.
+INFO	2025-02-26 16:27:23	EstimateLibraryComplexity	Read   100,000,000 records.  Elapsed time: 00:03:59s.  Time for last 1,000,000:    2s.  Last read position: 4:128,849,723
+INFO	2025-02-26 16:27:27	EstimateLibraryComplexity	Read   101,000,000 records.  Elapsed time: 00:04:03s.  Time for last 1,000,000:    4s.  Last read position: 4:172,034,191
+INFO	2025-02-26 16:27:29	EstimateLibraryComplexity	Read   102,000,000 records.  Elapsed time: 00:04:05s.  Time for last 1,000,000:    1s.  Last read position: 5:5,705,602
+INFO	2025-02-26 16:27:31	EstimateLibraryComplexity	Read   103,000,000 records.  Elapsed time: 00:04:07s.  Time for last 1,000,000:    2s.  Last read position: 5:31,826,959
+INFO	2025-02-26 16:27:33	EstimateLibraryComplexity	Read   104,000,000 records.  Elapsed time: 00:04:09s.  Time for last 1,000,000:    2s.  Last read position: 5:58,700,135
+INFO	2025-02-26 16:27:35	EstimateLibraryComplexity	Read   105,000,000 records.  Elapsed time: 00:04:11s.  Time for last 1,000,000:    1s.  Last read position: 5:80,060,536
+INFO	2025-02-26 16:27:39	EstimateLibraryComplexity	Read   106,000,000 records.  Elapsed time: 00:04:15s.  Time for last 1,000,000:    3s.  Last read position: 5:110,354,292
+INFO	2025-02-26 16:27:41	EstimateLibraryComplexity	Read   107,000,000 records.  Elapsed time: 00:04:17s.  Time for last 1,000,000:    1s.  Last read position: 5:133,559,514
+INFO	2025-02-26 16:27:43	EstimateLibraryComplexity	Read   108,000,000 records.  Elapsed time: 00:04:19s.  Time for last 1,000,000:    1s.  Last read position: 5:147,167,056
+INFO	2025-02-26 16:27:45	EstimateLibraryComplexity	Read   109,000,000 records.  Elapsed time: 00:04:21s.  Time for last 1,000,000:    1s.  Last read position: 5:164,901,569
+INFO	2025-02-26 16:27:49	EstimateLibraryComplexity	Read   110,000,000 records.  Elapsed time: 00:04:25s.  Time for last 1,000,000:    3s.  Last read position: 5:178,290,123
+INFO	2025-02-26 16:27:51	EstimateLibraryComplexity	Read   111,000,000 records.  Elapsed time: 00:04:27s.  Time for last 1,000,000:    1s.  Last read position: 6:11,650,453
+INFO	2025-02-26 16:27:53	EstimateLibraryComplexity	Read   112,000,000 records.  Elapsed time: 00:04:29s.  Time for last 1,000,000:    1s.  Last read position: 6:30,457,187
+INFO	2025-02-26 16:27:55	EstimateLibraryComplexity	Read   113,000,000 records.  Elapsed time: 00:04:31s.  Time for last 1,000,000:    2s.  Last read position: 6:40,560,743
+INFO	2025-02-26 16:27:57	EstimateLibraryComplexity	Read   114,000,000 records.  Elapsed time: 00:04:33s.  Time for last 1,000,000:    2s.  Last read position: 6:54,860,899
+INFO	2025-02-26 16:28:01	EstimateLibraryComplexity	Read   115,000,000 records.  Elapsed time: 00:04:37s.  Time for last 1,000,000:    3s.  Last read position: 6:89,663,328
+INFO	2025-02-26 16:28:03	EstimateLibraryComplexity	Read   116,000,000 records.  Elapsed time: 00:04:39s.  Time for last 1,000,000:    1s.  Last read position: 6:113,829,789
+INFO	2025-02-26 16:28:05	EstimateLibraryComplexity	Read   117,000,000 records.  Elapsed time: 00:04:41s.  Time for last 1,000,000:    2s.  Last read position: 6:139,242,674
+INFO	2025-02-26 16:28:07	EstimateLibraryComplexity	Read   118,000,000 records.  Elapsed time: 00:04:43s.  Time for last 1,000,000:    2s.  Last read position: 6:159,068,384
+[Wed Feb 26 16:28:10 CET 2025] picard.sam.markduplicates.EstimateLibraryComplexity done. Elapsed time: 8.24 minutes.
+Runtime.totalMemory()=536870912
+INFO	2025-02-26 16:28:11	EstimateLibraryComplexity	Read   119,000,000 records.  Elapsed time: 00:04:46s.  Time for last 1,000,000:    3s.  Last read position: 7:2,174,789
+INFO	2025-02-26 16:28:13	EstimateLibraryComplexity	Read   120,000,000 records.  Elapsed time: 00:04:48s.  Time for last 1,000,000:    1s.  Last read position: 7:26,013,712
+INFO	2025-02-26 16:28:15	EstimateLibraryComplexity	Read   121,000,000 records.  Elapsed time: 00:04:50s.  Time for last 1,000,000:    1s.  Last read position: 7:43,666,990
+INFO	2025-02-26 16:28:17	EstimateLibraryComplexity	Read   122,000,000 records.  Elapsed time: 00:04:52s.  Time for last 1,000,000:    1s.  Last read position: 7:67,657,004
+INFO	2025-02-26 16:28:19	EstimateLibraryComplexity	Read   123,000,000 records.  Elapsed time: 00:04:54s.  Time for last 1,000,000:    1s.  Last read position: 7:87,731,761
+INFO	2025-02-26 16:28:23	EstimateLibraryComplexity	Read   124,000,000 records.  Elapsed time: 00:04:58s.  Time for last 1,000,000:    3s.  Last read position: 7:103,381,127
+INFO	2025-02-26 16:28:23	EstimateLibraryComplexity	Processed 199608 groups.
+INFO	2025-02-26 16:28:25	EstimateLibraryComplexity	Read   125,000,000 records.  Elapsed time: 00:05:00s.  Time for last 1,000,000:    1s.  Last read position: 7:126,294,966
+INFO	2025-02-26 16:28:27	EstimateLibraryComplexity	Read   126,000,000 records.  Elapsed time: 00:05:02s.  Time for last 1,000,000:    1s.  Last read position: 7:137,991,117
+INFO	2025-02-26 16:28:29	EstimateLibraryComplexity	Read   127,000,000 records.  Elapsed time: 00:05:04s.  Time for last 1,000,000:    1s.  Last read position: 7:149,867,907
+INFO	2025-02-26 16:28:33	EstimateLibraryComplexity	Read   128,000,000 records.  Elapsed time: 00:05:08s.  Time for last 1,000,000:    3s.  Last read position: 7:157,551,036
+INFO	2025-02-26 16:28:34	EstimateLibraryComplexity	Read   129,000,000 records.  Elapsed time: 00:05:10s.  Time for last 1,000,000:    1s.  Last read position: 8:21,472,143
+INFO	2025-02-26 16:28:36	EstimateLibraryComplexity	Read   130,000,000 records.  Elapsed time: 00:05:12s.  Time for last 1,000,000:    1s.  Last read position: 8:46,433,894
+INFO	2025-02-26 16:28:38	EstimateLibraryComplexity	Read   131,000,000 records.  Elapsed time: 00:05:14s.  Time for last 1,000,000:    1s.  Last read position: 8:63,496,525
+INFO	2025-02-26 16:28:40	EstimateLibraryComplexity	Read   132,000,000 records.  Elapsed time: 00:05:16s.  Time for last 1,000,000:    1s.  Last read position: 8:81,551,995
+INFO	2025-02-26 16:28:44	EstimateLibraryComplexity	Read   133,000,000 records.  Elapsed time: 00:05:20s.  Time for last 1,000,000:    3s.  Last read position: 8:100,519,706
+INFO	2025-02-26 16:28:46	EstimateLibraryComplexity	Read   134,000,000 records.  Elapsed time: 00:05:22s.  Time for last 1,000,000:    1s.  Last read position: 8:120,036,076
+INFO	2025-02-26 16:28:48	EstimateLibraryComplexity	Read   135,000,000 records.  Elapsed time: 00:05:24s.  Time for last 1,000,000:    1s.  Last read position: 8:132,473,919
+INFO	2025-02-26 16:28:50	EstimateLibraryComplexity	Read   136,000,000 records.  Elapsed time: 00:05:26s.  Time for last 1,000,000:    1s.  Last read position: 8:142,781,894
+INFO	2025-02-26 16:28:52	EstimateLibraryComplexity	Read   137,000,000 records.  Elapsed time: 00:05:28s.  Time for last 1,000,000:    1s.  Last read position: 9:16,069,842
+INFO	2025-02-26 16:28:56	EstimateLibraryComplexity	Read   138,000,000 records.  Elapsed time: 00:05:31s.  Time for last 1,000,000:    3s.  Last read position: 9:37,903,468
+INFO	2025-02-26 16:28:58	EstimateLibraryComplexity	Read   139,000,000 records.  Elapsed time: 00:05:33s.  Time for last 1,000,000:    1s.  Last read position: 9:89,445,165
+INFO	2025-02-26 16:29:00	EstimateLibraryComplexity	Read   140,000,000 records.  Elapsed time: 00:05:35s.  Time for last 1,000,000:    2s.  Last read position: 9:108,655,334
+INFO	2025-02-26 16:29:02	EstimateLibraryComplexity	Read   141,000,000 records.  Elapsed time: 00:05:37s.  Time for last 1,000,000:    2s.  Last read position: 9:125,986,707
+INFO	2025-02-26 16:29:06	EstimateLibraryComplexity	Read   142,000,000 records.  Elapsed time: 00:05:41s.  Time for last 1,000,000:    3s.  Last read position: 9:134,748,742
+INFO	2025-02-26 16:29:08	EstimateLibraryComplexity	Read   143,000,000 records.  Elapsed time: 00:05:43s.  Time for last 1,000,000:    1s.  Last read position: X:19,239,160
+INFO	2025-02-26 16:29:10	EstimateLibraryComplexity	Read   144,000,000 records.  Elapsed time: 00:05:45s.  Time for last 1,000,000:    2s.  Last read position: X:53,082,812
+INFO	2025-02-26 16:29:12	EstimateLibraryComplexity	Read   145,000,000 records.  Elapsed time: 00:05:47s.  Time for last 1,000,000:    2s.  Last read position: X:109,767,727
+INFO	2025-02-26 16:29:14	EstimateLibraryComplexity	Read   146,000,000 records.  Elapsed time: 00:05:49s.  Time for last 1,000,000:    2s.  Last read position: X:152,285,735
+INFO	2025-02-26 16:29:17	EstimateLibraryComplexity	Finished reading - read 146442376 records - moving on to scanning for duplicates.
+INFO	2025-02-26 16:29:24	EstimateLibraryComplexity	Processed 303638 groups.
+INFO	2025-02-26 16:30:17	EstimateLibraryComplexity	Processed 158448 groups.
+INFO	2025-02-26 16:30:24	EstimateLibraryComplexity	Processed 336163 groups.
+INFO	2025-02-26 16:31:17	EstimateLibraryComplexity	Processed 262334 groups.
+INFO	2025-02-26 16:31:24	EstimateLibraryComplexity	Processed 410631 groups.
+INFO	2025-02-26 16:32:17	EstimateLibraryComplexity	Processed 316342 groups.
+INFO	2025-02-26 16:32:24	EstimateLibraryComplexity	Processed 434895 groups.
+INFO	2025-02-26 16:33:17	EstimateLibraryComplexity	Processed 345842 groups.
+INFO	2025-02-26 16:33:24	EstimateLibraryComplexity	Processed 512961 groups.
+INFO	2025-02-26 16:34:18	EstimateLibraryComplexity	Processed 354224 groups.
+INFO	2025-02-26 16:34:24	EstimateLibraryComplexity	Processed 546090 groups.
+INFO	2025-02-26 16:35:18	EstimateLibraryComplexity	Processed 430095 groups.
+INFO	2025-02-26 16:35:24	EstimateLibraryComplexity	Processed 590212 groups.
+INFO	2025-02-26 16:36:19	EstimateLibraryComplexity	Processed 441610 groups.
+INFO	2025-02-26 16:36:24	EstimateLibraryComplexity	Processed 611390 groups.
+INFO	2025-02-26 16:37:19	EstimateLibraryComplexity	Processed 471842 groups.
+INFO	2025-02-26 16:37:24	EstimateLibraryComplexity	Processed 636214 groups.
+INFO	2025-02-26 16:38:19	EstimateLibraryComplexity	Processed 532322 groups.
+INFO	2025-02-26 16:38:24	EstimateLibraryComplexity	Processed 677729 groups.
+INFO	2025-02-26 16:39:19	EstimateLibraryComplexity	Processed 562689 groups.
+INFO	2025-02-26 16:39:24	EstimateLibraryComplexity	Processed 689446 groups.
+INFO	2025-02-26 16:40:19	EstimateLibraryComplexity	Processed 573339 groups.
+INFO	2025-02-26 16:40:24	EstimateLibraryComplexity	Processed 704403 groups.
+INFO	2025-02-26 16:41:19	EstimateLibraryComplexity	Processed 601552 groups.
+INFO	2025-02-26 16:41:24	EstimateLibraryComplexity	Processed 788244 groups.
+[Wed Feb 26 16:42:03 CET 2025] picard.sam.markduplicates.EstimateLibraryComplexity done. Elapsed time: 19.66 minutes.
+Runtime.totalMemory()=536870912
+INFO	2025-02-26 16:42:19	EstimateLibraryComplexity	Processed 628528 groups.
+INFO	2025-02-26 16:43:19	EstimateLibraryComplexity	Processed 641338 groups.
+INFO	2025-02-26 16:44:19	EstimateLibraryComplexity	Processed 663003 groups.
+INFO	2025-02-26 16:45:19	EstimateLibraryComplexity	Processed 698422 groups.
+INFO	2025-02-26 16:46:19	EstimateLibraryComplexity	Processed 710952 groups.
+INFO	2025-02-26 16:47:19	EstimateLibraryComplexity	Processed 724271 groups.
+INFO	2025-02-26 16:48:19	EstimateLibraryComplexity	Processed 733619 groups.
+INFO	2025-02-26 16:49:19	EstimateLibraryComplexity	Processed 746168 groups.
+INFO	2025-02-26 16:50:19	EstimateLibraryComplexity	Processed 932914 groups.
+[Wed Feb 26 16:50:22 CET 2025] picard.sam.markduplicates.EstimateLibraryComplexity done. Elapsed time: 26.97 minutes.
+Runtime.totalMemory()=536870912

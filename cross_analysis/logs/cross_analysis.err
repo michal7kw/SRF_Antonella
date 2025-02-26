@@ -1,0 +1,19 @@
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+'select()' returned 1:many mapping between keys and columns
+'select()' returned 1:many mapping between keys and columns
+'select()' returned 1:many mapping between keys and columns
+Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'args' in selecting a method for function 'do.call': GRanges objects don't support [[, as.list(), lapply(), or unlist() at
+  the moment
+Calls: main ... tryCatch -> tryCatchList -> tryCatchOne -> <Anonymous>
+In addition: Warning messages:
+1: Reset `target_ratio` to 1 when `extend` is 0. 
+2: Reset `target_ratio` to 1 when `extend` is 0. 
+3: Reset `target_ratio` to 1 when `extend` is 0. 
+4: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead. 
+5: Reset `target_ratio` to 1 when `extend` is 0. 
+6: Reset `target_ratio` to 1 when `extend` is 0. 
+7: Reset `target_ratio` to 1 when `extend` is 0. 
+Execution halted

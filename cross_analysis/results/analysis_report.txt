@@ -2,7 +2,7 @@
 ChIP-seq Cross-Reference Analysis Report
 ===========================================
 
-Analysis Date: 2025-02-25 07:56:19
+Analysis Date: 2025-02-25 15:35:22
 
 
 === Initial V5 Peak Statistics ===
@@ -88,52 +88,52 @@ Chromosome Distribution:
 === Analysis for GFP condition ===
 
 Peak Statistics for GFP:
- Total peaks: 599607
- Peaks overlapping with V5: 20 (0.0%)
+ Total peaks: 732151
+ Peaks overlapping with V5: 18 (0.0%)
 
 === Initial H2AK119Ub GFP Peak Statistics ===
-Total Peaks: 599607
+Total Peaks: 732151
 
 Peak Width Statistics:
-- Mean: 2424.6 bp
-- Median: 1703.0 bp
+- Mean: 2375.8 bp
+- Median: 1670.0 bp
 - Range: 501 - 10001 bp
-- Standard Deviation: 1996.3 bp
+- Standard Deviation: 1956.4 bp
 
 Chromosome Distribution:
-- chr1: 58063 peaks (9.7%)
-- chr10: 25358 peaks (4.2%)
-- chr11: 34003 peaks (5.7%)
-- chr12: 20012 peaks (3.3%)
-- chr13: 23550 peaks (3.9%)
-- chr14: 23723 peaks (4.0%)
-- chr15: 20474 peaks (3.4%)
-- chr16: 13003 peaks (2.2%)
-- chr17: 14349 peaks (2.4%)
-- chr18: 16619 peaks (2.8%)
-- chr19: 9769 peaks (1.6%)
-- chr2: 73703 peaks (12.3%)
-- chr20: 13155 peaks (2.2%)
-- chr21: 8002 peaks (1.3%)
-- chr22: 7470 peaks (1.2%)
-- chr3: 22474 peaks (3.7%)
-- chr4: 27144 peaks (4.5%)
-- chr5: 33854 peaks (5.6%)
-- chr6: 32733 peaks (5.5%)
-- chr7: 30725 peaks (5.1%)
-- chr8: 36512 peaks (6.1%)
-- chr9: 26015 peaks (4.3%)
-- chrX: 27457 peaks (4.6%)
-- chrY: 1440 peaks (0.2%)
+- chr1: 51055 peaks (7.0%)
+- chr10: 32675 peaks (4.5%)
+- chr11: 30616 peaks (4.2%)
+- chr12: 26068 peaks (3.6%)
+- chr13: 24064 peaks (3.3%)
+- chr14: 21254 peaks (2.9%)
+- chr15: 23487 peaks (3.2%)
+- chr16: 19560 peaks (2.7%)
+- chr17: 16291 peaks (2.2%)
+- chr18: 11801 peaks (1.6%)
+- chr19: 9220 peaks (1.3%)
+- chr2: 82939 peaks (11.3%)
+- chr20: 15994 peaks (2.2%)
+- chr21: 6799 peaks (0.9%)
+- chr22: 8492 peaks (1.2%)
+- chr3: 51369 peaks (7.0%)
+- chr4: 45232 peaks (6.2%)
+- chr5: 36333 peaks (5.0%)
+- chr6: 63294 peaks (8.6%)
+- chr7: 52803 peaks (7.2%)
+- chr8: 39136 peaks (5.3%)
+- chr9: 30180 peaks (4.1%)
+- chrX: 31651 peaks (4.3%)
+- chrY: 1838 peaks (0.3%)
 
 === H2AK119Ub GFP Blacklist Filtering Summary ===
-Original peaks: 599607
-Filtered peaks: 599607
+Original peaks: 732151
+Filtered peaks: 732151
 Removed peaks: 0 (0.0%)
 
 Width Statistics Changes:
-Original - Mean: 2424.6, Median: 1703.0, Range: 501-10001
-Filtered - Mean: 2424.6, Median: 1703.0, Range: 501-10001
+Original - Mean: 2375.8, Median: 1670.0, Range: 501-10001
+Filtered - Mean: 2375.8, Median: 1670.0, Range: 501-10001
 
 ERROR: error in evaluating the argument 'args' in selecting a method for function 'do.call': GRanges objects don't support [[, as.list(), lapply(), or unlist() at
   the moment

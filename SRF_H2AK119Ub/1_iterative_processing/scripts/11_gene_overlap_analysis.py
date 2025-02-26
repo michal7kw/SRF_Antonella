@@ -1,7 +1,7 @@
 # This script performs overlap analysis between YAF-enriched genes and SOX2 target genes.
 
 #### Input files: ####
-# - analysis/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt:
+# - analysis/gene_lists_broad/YAF_enriched_genes
 #     List of genes enriched in YAF samples (gene symbols)
 # ---------------------------------------------------------------------------------------------------------
 # MIR8071-2
@@ -12,7 +12,7 @@
 # MST1L
 # ---------------------------------------------------------------------------------------------------------
 
-# - analysis/gene_lists_broad/YAF_enriched_genes_broad_full.csv:
+# - analysis/gene_lists_broad/YAF_enriched_genes
 #     Full data for YAF-enriched genes including annotation and fold change
 # ---------------------------------------------------------------------------------------------------------
 # "ENTREZID","SYMBOL","distanceToTSS","annotation","fold_change"
@@ -57,9 +57,9 @@ import sys
 
 # Define file paths and create output directory
 OUTPUT_DIR = sys.argv[1]
-YAF_GENES_FILE = "analysis/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt"
-YAF_FULL_FILE = "analysis/gene_lists_broad/YAF_enriched_genes_broad_full.csv"
-SOX2_GENES_FILE = "sox2_binding.csv"
+YAF_GENES_FILE = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt"
+YAF_FULL_FILE = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_full.csv"
+SOX2_GENES_FILE = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/sox2_binding.csv"
 
 if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
@@ -87,7 +87,7 @@ def get_regulatory_region_genes(file_path):
     """
     try:
         df = pd.read_csv(file_path)
-        regulatory_regions = ['Promoter (<=1kb)', 'Promoter (1-2kb)', 'Promoter (2-3kb)', '5\' UTR']
+        regulatory_regions = ['Promoter (<=1kb)', 'Promoter (1-2kb)', 'Promoter (2-3kb)', '5\' UTR', 'Exon']
         first_exon = df['annotation'].str.contains('exon 1 of', na=False)
         regulatory_mask = df['annotation'].isin(regulatory_regions) | first_exon
         return set(df[regulatory_mask]['SYMBOL'].unique())
@@ -166,7 +166,7 @@ def calculate_enrichment_scores():
     """
     try:
         df = pd.read_csv(YAF_FULL_FILE)
-        regulatory_regions = ['Promoter (<=1kb)', 'Promoter (1-2kb)', 'Promoter (2-3kb)', '5\' UTR']
+        regulatory_regions = ['Promoter (<=1kb)', 'Promoter (1-2kb)', 'Promoter (2-3kb)', '5\' UTR', 'Exon']
         first_exon = df['annotation'].str.contains('exon 1 of', na=False)
         regulatory_mask = df['annotation'].isin(regulatory_regions) | first_exon
         

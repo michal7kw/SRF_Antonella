@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=6_annotation_and_enrichment
+#SBATCH --job-name=8_annotation_and_enrichment
 #SBATCH --account=kubacki.michal
 #SBATCH --mem=64GB
 #SBATCH --time=12:00:00
@@ -7,8 +7,8 @@
 #SBATCH --ntasks=16
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/6_annotation_and_enrichment.err"
-#SBATCH --output="logs/6_annotation_and_enrichment.out"
+#SBATCH --error="logs/8_annotation_and_enrichment.err"
+#SBATCH --output="logs/8_annotation_and_enrichment.out"
 
 # Documentation:
 # This script performs annotation and enrichment analysis on peaks identified from
@@ -16,13 +16,13 @@
 # performs GO enrichment analysis, and generates various visualizations.
 #
 # Input files:
-# - analysis/7_differential_binding/diffbind_broad/all_peaks.rds: GRanges object with all peaks from DiffBind analysis
-# - analysis/7_differential_binding/diffbind_broad/significant_peaks.rds: GRanges object with significant differential peaks
+# - analysis/7_differential_binding/significant_peaks.rds: GRanges object with significant differential peaks
 #
 # Output files:
 # In analysis/8_annotation_and_enrichment/annotation_broad/:
 #   figures/
 #     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
+#     - detailed_pie_chart.pdf: Detailed pie chart with genomic feature distribution
 #     - go_enrichment_plots.pdf: GO term enrichment plots (dotplot, emap, cnet)
 #   tables/
 #     - peak_annotation.csv: Detailed peak annotations
@@ -32,6 +32,10 @@
 # In analysis/8_annotation_and_enrichment/gene_lists_broad/:
 #   - YAF_enriched_genes_broad_full.csv: All enriched genes with details
 #   - YAF_enriched_genes_broad_symbols.txt: List of gene symbols only
+#   - YAF_enriched_genes_broad_promoters.txt: Genes associated with promoter regions
+#   - YAF_enriched_genes_broad_promoters_1st_exon_intron.txt: Genes in promoters + 1st exon/intron
+#   - YAF_enriched_genes_broad_distal_intergenic.txt: Genes associated with distal intergenic regions
+#   - YAF_enriched_genes_broad_other_regions.txt: Genes in other genomic regions
 #
 # Dependencies:
 # - ChIPseeker for peak annotation
@@ -39,6 +43,7 @@
 # - org.Hs.eg.db for gene ID mapping
 # - TxDb.Hsapiens.UCSC.hg38.knownGene for genome annotations
 # - ggupset (optional) for upset plots
+# - ggplot2 for custom visualizations
 
 set -e
 set -u
@@ -70,8 +75,7 @@ mkdir -p ${OUTPUT_DIR}/gene_lists_broad
 log_message "Checking input files..."
 peak_type="broad"
 files=(
-    "analysis/7_differential_binding/diffbind_${peak_type}/all_peaks.rds"
-    "analysis/7_differential_binding/diffbind_${peak_type}/significant_peaks.rds"
+    "analysis/7_differential_binding/significant_peaks.rds"
 )
 for file in "${files[@]}"; do
     if [[ ! -f "$file" ]]; then
@@ -82,6 +86,6 @@ done
 
 # Run R script for annotation and enrichment analysis
 log_message "Running annotation and enrichment analysis..."
-Rscript scripts/6_annotation_and_enrichment.R ${OUTPUT_DIR}
+Rscript scripts/8_annotation_and_enrichment.R ${OUTPUT_DIR}
 
 log_message "Annotation and enrichment analysis completed"

@@ -1,0 +1,15 @@
+
+/// MultiQC 🔍 v1.25.2
+
+     version_check | MultiQC Version v1.27 now available!
+       file_search | Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/fastqc
+       file_search | Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/star
+       file_search | Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/counts
+
+     featurecounts | Found 9 reports
+              star | Found 9 reports
+            fastqc | Found 36 reports
+
+     write_results | Data        : results/multiqc/multiqc_data
+     write_results | Report      : results/multiqc/multiqc_report.html
+           multiqc | MultiQC complete

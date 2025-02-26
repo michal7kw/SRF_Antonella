@@ -1,0 +1,230 @@
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+host: srcn02
+Building DAG of jobs...
+You are running snakemake in a SLURM job context. This is not recommended, as it may lead to unexpected behavior. Please run Snakemake directly on the login node.
+SLURM run ID: f50420be-ec50-4501-91a3-af57fbe10823
+Using shell: /usr/bin/bash
+Provided remote nodes: 100
+Job stats:
+job              count
+-------------  -------
+all                  1
+featurecounts        1
+multiqc              1
+star_align           9
+star_index           1
+total               13
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Mon Feb 24 16:40:53 2025]
+rule star_index:
+    input: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf
+    output: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    log: logs/star_index/star_index.log
+    jobid: 29
+    reason: Missing output files: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=7811, disk_mib=7450, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+No SLURM account given, trying to guess.
+Guessed SLURM account: kubacki.michal
+Job 29 has been submitted with SLURM jobid 4218177 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_index/4218177.log).
+[Mon Feb 24 19:24:30 2025]
+Finished job 29.
+1 of 13 steps (8%) done
+Select jobs to execute...
+Execute 9 jobs...
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/YAF2_R1_trimmed.fastq.gz, results/trimmed/YAF2_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Log.final.out
+    log: logs/star/YAF2.log
+    jobid: 36
+    reason: Missing output files: results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=YAF2
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=18154, disk_mib=17314, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 36 has been submitted with SLURM jobid 4219673 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/YAF2/4219673.log).
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/C1_R1_trimmed.fastq.gz, results/trimmed/C1_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C1/C1_Log.final.out
+    log: logs/star/C1.log
+    jobid: 28
+    reason: Missing output files: results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C1/C1_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=C1
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=19897, disk_mib=18976, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 28 has been submitted with SLURM jobid 4219674 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/C1/4219674.log).
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/C3_R1_trimmed.fastq.gz, results/trimmed/C3_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Log.final.out
+    log: logs/star/C3.log
+    jobid: 31
+    reason: Missing output files: results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=C3
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=11719, disk_mib=11177, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 31 has been submitted with SLURM jobid 4219675 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/C3/4219675.log).
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/GFP2_R1_trimmed.fastq.gz, results/trimmed/GFP2_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Log.final.out
+    log: logs/star/GFP2.log
+    jobid: 33
+    reason: Missing output files: results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=GFP2
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=12444, disk_mib=11868, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 33 has been submitted with SLURM jobid 4219676 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/GFP2/4219676.log).
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/YAF1_R1_trimmed.fastq.gz, results/trimmed/YAF1_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Log.final.out
+    log: logs/star/YAF1.log
+    jobid: 35
+    reason: Missing output files: results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=YAF1
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=17842, disk_mib=17016, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 35 has been submitted with SLURM jobid 4219677 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/YAF1/4219677.log).
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/YAF3_R1_trimmed.fastq.gz, results/trimmed/YAF3_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Log.final.out
+    log: logs/star/YAF3.log
+    jobid: 37
+    reason: Missing output files: results/star/YAF3/YAF3_Log.final.out, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=YAF3
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=10166, disk_mib=9696, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 37 has been submitted with SLURM jobid 4219678 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/YAF3/4219678.log).
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/C2_R1_trimmed.fastq.gz, results/trimmed/C2_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Log.final.out
+    log: logs/star/C2.log
+    jobid: 30
+    reason: Missing output files: results/star/C2/C2_Log.final.out, results/star/C2/C2_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=C2
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=15667, disk_mib=14942, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 30 has been submitted with SLURM jobid 4219679 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/C2/4219679.log).
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/GFP1_R1_trimmed.fastq.gz, results/trimmed/GFP1_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Log.final.out
+    log: logs/star/GFP1.log
+    jobid: 32
+    reason: Missing output files: results/star/GFP1/GFP1_Log.final.out, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=GFP1
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=12221, disk_mib=11655, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 32 has been submitted with SLURM jobid 4219680 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/GFP1/4219680.log).
+
+[Mon Feb 24 19:24:31 2025]
+rule star_align:
+    input: results/trimmed/GFP3_R1_trimmed.fastq.gz, results/trimmed/GFP3_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Log.final.out
+    log: logs/star/GFP3.log
+    jobid: 34
+    reason: Missing output files: results/star/GFP3/GFP3_Log.final.out, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=GFP3
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=9591, disk_mib=9147, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 34 has been submitted with SLURM jobid 4219681 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_star_align/GFP3/4219681.log).
+[Mon Feb 24 20:13:04 2025]
+Finished job 34.
+2 of 13 steps (15%) done
+[Mon Feb 24 20:29:24 2025]
+Finished job 37.
+3 of 13 steps (23%) done
+[Mon Feb 24 20:29:24 2025]
+Finished job 32.
+4 of 13 steps (31%) done
+[Mon Feb 24 20:36:09 2025]
+Finished job 31.
+5 of 13 steps (38%) done
+[Mon Feb 24 20:41:27 2025]
+Finished job 30.
+6 of 13 steps (46%) done
+[Mon Feb 24 20:51:31 2025]
+Finished job 33.
+7 of 13 steps (54%) done
+[Mon Feb 24 21:15:45 2025]
+Finished job 28.
+8 of 13 steps (62%) done
+[Mon Feb 24 21:17:49 2025]
+Finished job 36.
+9 of 13 steps (69%) done
+[Mon Feb 24 21:18:30 2025]
+Finished job 35.
+10 of 13 steps (77%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Mon Feb 24 21:18:30 2025]
+rule featurecounts:
+    input: results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam
+    output: results/counts/all_samples_counts.txt, results/counts/all_samples_counts.txt.summary
+    log: logs/featurecounts/all_samples.log
+    jobid: 38
+    reason: Missing output files: results/counts/all_samples_counts.txt, results/counts/all_samples_counts.txt.summary; Input files updated by another job: results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam
+    threads: 2
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=107634, disk_mib=102648, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 38 has been submitted with SLURM jobid 4220241 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_featurecounts/4220241.log).
+[Mon Feb 24 21:37:21 2025]
+Finished job 38.
+11 of 13 steps (85%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Mon Feb 24 21:37:22 2025]
+rule multiqc:
+    input: results/fastqc/C1_L001_R1_001_fastqc.zip, results/fastqc/C2_L001_R1_001_fastqc.zip, results/fastqc/C3_L001_R1_001_fastqc.zip, results/fastqc/GFP1_L001_R1_001_fastqc.zip, results/fastqc/GFP2_L001_R1_001_fastqc.zip, results/fastqc/GFP3_L001_R1_001_fastqc.zip, results/fastqc/YAF1_L001_R1_001_fastqc.zip, results/fastqc/YAF2_L001_R1_001_fastqc.zip, results/fastqc/YAF3_L001_R1_001_fastqc.zip, results/fastqc/C1_L001_R2_001_fastqc.zip, results/fastqc/C2_L001_R2_001_fastqc.zip, results/fastqc/C3_L001_R2_001_fastqc.zip, results/fastqc/GFP1_L001_R2_001_fastqc.zip, results/fastqc/GFP2_L001_R2_001_fastqc.zip, results/fastqc/GFP3_L001_R2_001_fastqc.zip, results/fastqc/YAF1_L001_R2_001_fastqc.zip, results/fastqc/YAF2_L001_R2_001_fastqc.zip, results/fastqc/YAF3_L001_R2_001_fastqc.zip, results/fastqc/C1_R1_trimmed_fastqc.zip, results/fastqc/C2_R1_trimmed_fastqc.zip, results/fastqc/C3_R1_trimmed_fastqc.zip, results/fastqc/GFP1_R1_trimmed_fastqc.zip, results/fastqc/GFP2_R1_trimmed_fastqc.zip, results/fastqc/GFP3_R1_trimmed_fastqc.zip, results/fastqc/YAF1_R1_trimmed_fastqc.zip, results/fastqc/YAF2_R1_trimmed_fastqc.zip, results/fastqc/YAF3_R1_trimmed_fastqc.zip, results/fastqc/C1_R2_trimmed_fastqc.zip, results/fastqc/C2_R2_trimmed_fastqc.zip, results/fastqc/C3_R2_trimmed_fastqc.zip, results/fastqc/GFP1_R2_trimmed_fastqc.zip, results/fastqc/GFP2_R2_trimmed_fastqc.zip, results/fastqc/GFP3_R2_trimmed_fastqc.zip, results/fastqc/YAF1_R2_trimmed_fastqc.zip, results/fastqc/YAF2_R2_trimmed_fastqc.zip, results/fastqc/YAF3_R2_trimmed_fastqc.zip, results/star/C1/C1_Log.final.out, results/star/C2/C2_Log.final.out, results/star/C3/C3_Log.final.out, results/star/GFP1/GFP1_Log.final.out, results/star/GFP2/GFP2_Log.final.out, results/star/GFP3/GFP3_Log.final.out, results/star/YAF1/YAF1_Log.final.out, results/star/YAF2/YAF2_Log.final.out, results/star/YAF3/YAF3_Log.final.out, results/counts/all_samples_counts.txt.summary
+    output: results/multiqc/multiqc_report.html
+    log: logs/multiqc/multiqc.log
+    jobid: 39
+    reason: Missing output files: results/multiqc/multiqc_report.html; Input files updated by another job: results/star/GFP3/GFP3_Log.final.out, results/star/GFP1/GFP1_Log.final.out, results/counts/all_samples_counts.txt.summary, results/star/YAF1/YAF1_Log.final.out, results/star/YAF3/YAF3_Log.final.out, results/star/GFP2/GFP2_Log.final.out, results/star/C2/C2_Log.final.out, results/star/YAF2/YAF2_Log.final.out, results/star/C1/C1_Log.final.out, results/star/C3/C3_Log.final.out
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+Job 39 has been submitted with SLURM jobid 4220312 (log: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/.snakemake/slurm_logs/rule_multiqc/4220312.log).
+[Mon Feb 24 21:39:23 2025]
+Finished job 39.
+12 of 13 steps (92%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Mon Feb 24 21:39:23 2025]
+localrule all:
+    input: results/fastqc/C1_L001_R1_001_fastqc.html, results/fastqc/C2_L001_R1_001_fastqc.html, results/fastqc/C3_L001_R1_001_fastqc.html, results/fastqc/GFP1_L001_R1_001_fastqc.html, results/fastqc/GFP2_L001_R1_001_fastqc.html, results/fastqc/GFP3_L001_R1_001_fastqc.html, results/fastqc/YAF1_L001_R1_001_fastqc.html, results/fastqc/YAF2_L001_R1_001_fastqc.html, results/fastqc/YAF3_L001_R1_001_fastqc.html, results/fastqc/C1_L001_R2_001_fastqc.html, results/fastqc/C2_L001_R2_001_fastqc.html, results/fastqc/C3_L001_R2_001_fastqc.html, results/fastqc/GFP1_L001_R2_001_fastqc.html, results/fastqc/GFP2_L001_R2_001_fastqc.html, results/fastqc/GFP3_L001_R2_001_fastqc.html, results/fastqc/YAF1_L001_R2_001_fastqc.html, results/fastqc/YAF2_L001_R2_001_fastqc.html, results/fastqc/YAF3_L001_R2_001_fastqc.html, results/fastqc/C1_R1_trimmed_fastqc.html, results/fastqc/C2_R1_trimmed_fastqc.html, results/fastqc/C3_R1_trimmed_fastqc.html, results/fastqc/GFP1_R1_trimmed_fastqc.html, results/fastqc/GFP2_R1_trimmed_fastqc.html, results/fastqc/GFP3_R1_trimmed_fastqc.html, results/fastqc/YAF1_R1_trimmed_fastqc.html, results/fastqc/YAF2_R1_trimmed_fastqc.html, results/fastqc/YAF3_R1_trimmed_fastqc.html, results/fastqc/C1_R2_trimmed_fastqc.html, results/fastqc/C2_R2_trimmed_fastqc.html, results/fastqc/C3_R2_trimmed_fastqc.html, results/fastqc/GFP1_R2_trimmed_fastqc.html, results/fastqc/GFP2_R2_trimmed_fastqc.html, results/fastqc/GFP3_R2_trimmed_fastqc.html, results/fastqc/YAF1_R2_trimmed_fastqc.html, results/fastqc/YAF2_R2_trimmed_fastqc.html, results/fastqc/YAF3_R2_trimmed_fastqc.html, results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam, results/counts/all_samples_counts.txt, results/multiqc/multiqc_report.html
+    jobid: 0
+    reason: Input files updated by another job: results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/multiqc/multiqc_report.html, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/counts/all_samples_counts.txt, results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam
+    resources: mem_mb=32000, mem_mib=30518, disk_mb=107730, disk_mib=102740, tmpdir=/beegfs/scratch/tmp, slurm_partition=workq, runtime=1440, threads=8, nodes=1
+
+[Mon Feb 24 21:39:23 2025]
+Finished job 0.
+13 of 13 steps (100%) done
+Complete log: .snakemake/log/2025-02-24T164048.110594.snakemake.log

@@ -1,0 +1,80 @@
+INFO  @ Tue, 04 Feb 2025 19:38:27: 
+# Command line: callpeak -t results/alignment/SES-V5ChIP-Seq2_S6.dedup.bam -c results/alignment/InputSES-V5ChIP-Seq_S2.dedup.bam -f BAMPE -g hs -n results/peaks/SES-V5ChIP-Seq2_S6_narrow -q 0.05 --nomodel --extsize 200 --keep-dup all --call-summits
+# ARGUMENTS LIST:
+# name = results/peaks/SES-V5ChIP-Seq2_S6_narrow
+# format = BAMPE
+# ChIP-seq file = ['results/alignment/SES-V5ChIP-Seq2_S6.dedup.bam']
+# control file = ['results/alignment/InputSES-V5ChIP-Seq_S2.dedup.bam']
+# effective genome size = 2.70e+09
+# band width = 300
+# model fold = [5, 50]
+# qvalue cutoff = 5.00e-02
+# The maximum gap between significant sites is assigned as the read length/tag size.
+# The minimum length of peaks is assigned as the predicted fragment length "d".
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 1000 bps and 10000 bps
+# Broad region calling is off
+# Paired-End mode is on
+# Searching for subpeak summits is on
+ 
+INFO  @ Tue, 04 Feb 2025 19:38:27: #1 read fragment files... 
+INFO  @ Tue, 04 Feb 2025 19:38:27: #1 read treatment fragments... 
+INFO  @ Tue, 04 Feb 2025 19:38:31:  1000000 
+INFO  @ Tue, 04 Feb 2025 19:38:35:  2000000 
+INFO  @ Tue, 04 Feb 2025 19:38:40:  3000000 
+INFO  @ Tue, 04 Feb 2025 19:38:44:  4000000 
+INFO  @ Tue, 04 Feb 2025 19:38:49:  5000000 
+INFO  @ Tue, 04 Feb 2025 19:38:53:  6000000 
+INFO  @ Tue, 04 Feb 2025 19:38:57:  7000000 
+INFO  @ Tue, 04 Feb 2025 19:39:01:  8000000 
+INFO  @ Tue, 04 Feb 2025 19:39:06:  9000000 
+INFO  @ Tue, 04 Feb 2025 19:39:10:  10000000 
+INFO  @ Tue, 04 Feb 2025 19:39:14:  11000000 
+INFO  @ Tue, 04 Feb 2025 19:39:19:  12000000 
+INFO  @ Tue, 04 Feb 2025 19:39:23:  13000000 
+INFO  @ Tue, 04 Feb 2025 19:39:27:  14000000 
+INFO  @ Tue, 04 Feb 2025 19:39:31:  15000000 
+INFO  @ Tue, 04 Feb 2025 19:39:36:  16000000 
+INFO  @ Tue, 04 Feb 2025 19:39:40:  17000000 
+INFO  @ Tue, 04 Feb 2025 19:39:44:  18000000 
+INFO  @ Tue, 04 Feb 2025 19:39:48:  19000000 
+INFO  @ Tue, 04 Feb 2025 19:39:53:  20000000 
+INFO  @ Tue, 04 Feb 2025 19:39:57:  21000000 
+INFO  @ Tue, 04 Feb 2025 19:39:59: 21414313 fragments have been read. 
+INFO  @ Tue, 04 Feb 2025 19:40:09: #1.2 read input fragments... 
+INFO  @ Tue, 04 Feb 2025 19:40:13:  1000000 
+INFO  @ Tue, 04 Feb 2025 19:40:17:  2000000 
+INFO  @ Tue, 04 Feb 2025 19:40:21:  3000000 
+INFO  @ Tue, 04 Feb 2025 19:40:25:  4000000 
+INFO  @ Tue, 04 Feb 2025 19:40:29:  5000000 
+INFO  @ Tue, 04 Feb 2025 19:40:33:  6000000 
+INFO  @ Tue, 04 Feb 2025 19:40:37:  7000000 
+INFO  @ Tue, 04 Feb 2025 19:40:41:  8000000 
+INFO  @ Tue, 04 Feb 2025 19:40:45:  9000000 
+INFO  @ Tue, 04 Feb 2025 19:40:49:  10000000 
+INFO  @ Tue, 04 Feb 2025 19:40:53:  11000000 
+INFO  @ Tue, 04 Feb 2025 19:40:57:  12000000 
+INFO  @ Tue, 04 Feb 2025 19:41:01:  13000000 
+INFO  @ Tue, 04 Feb 2025 19:41:05:  14000000 
+INFO  @ Tue, 04 Feb 2025 19:41:09:  15000000 
+INFO  @ Tue, 04 Feb 2025 19:41:13:  16000000 
+INFO  @ Tue, 04 Feb 2025 19:41:17:  17000000 
+INFO  @ Tue, 04 Feb 2025 19:41:21:  18000000 
+INFO  @ Tue, 04 Feb 2025 19:41:25:  19000000 
+INFO  @ Tue, 04 Feb 2025 19:41:28: 19669403 fragments have been read. 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #1 mean fragment size is determined as 252.3 bp from treatment 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #1 note: mean fragment size in control is 221.5 bp -- value ignored 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #1 fragment size = 252.3 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #1  total fragments in treatment: 21414313 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #1  total fragments in control: 19669403 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #1 finished! 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #2 Build Peak Model... 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #2 Skipped... 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #3 Call peaks... 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #3 Going to call summits inside each peak ... 
+INFO  @ Tue, 04 Feb 2025 19:41:37: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Tue, 04 Feb 2025 19:43:13: #3 Call peaks for each chromosome... 
+INFO  @ Tue, 04 Feb 2025 19:44:03: #4 Write output xls file... results/peaks/SES-V5ChIP-Seq2_S6_narrow_peaks.xls 
+INFO  @ Tue, 04 Feb 2025 19:44:03: #4 Write peak in narrowPeak format file... results/peaks/SES-V5ChIP-Seq2_S6_narrow_peaks.narrowPeak 
+INFO  @ Tue, 04 Feb 2025 19:44:03: #4 Write summits bed file... results/peaks/SES-V5ChIP-Seq2_S6_narrow_summits.bed 
+INFO  @ Tue, 04 Feb 2025 19:44:03: Done! 

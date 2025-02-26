@@ -3,13 +3,13 @@
 # performs GO enrichment analysis, and generates various visualizations.
 #
 # Input files:
-# - analysis/7_differential_binding/diffbind_broad/all_peaks.rds: GRanges object with all peaks from DiffBind analysis
-# - analysis/7_differential_binding/diffbind_broad/significant_peaks.rds: GRanges object with significant differential peaks
+# - analysis/7_differential_binding/significant_peaks.rds: GRanges object with significant differential peaks
 #
 # Output files:
 # In analysis/8_annotation_and_enrichment/annotation_broad/:
 #   figures/
 #     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
+#     - detailed_pie_chart.pdf: Detailed pie chart with genomic feature distribution
 #     - go_enrichment_plots.pdf: GO term enrichment plots (dotplot, emap, cnet)
 #   tables/
 #     - peak_annotation.csv: Detailed peak annotations
@@ -19,6 +19,11 @@
 # In analysis/8_annotation_and_enrichment/gene_lists_broad/:
 #   - YAF_enriched_genes_broad_full.csv: All enriched genes with details
 #   - YAF_enriched_genes_broad_symbols.txt: List of gene symbols only
+#   - YAF_enriched_genes_broad_promoters.txt: Genes associated with promoter regions
+#   - YAF_enriched_genes_broad_promoters.csv: Genes associated with promoter regions (with details)
+#   - YAF_enriched_genes_broad_promoters_1st_exon_intron.txt: Genes in promoters + 1st exon/intron
+#   - YAF_enriched_genes_broad_distal_intergenic.txt: Genes associated with distal intergenic regions
+#   - YAF_enriched_genes_broad_other_regions.txt: Genes in other genomic regions
 #
 # Dependencies:
 # - ChIPseeker for peak annotation
@@ -26,6 +31,7 @@
 # - org.Hs.eg.db for gene ID mapping
 # - TxDb.Hsapiens.UCSC.hg38.knownGene for genome annotations
 # - ggupset (optional) for upset plots
+# - ggplot2 for custom visualizations
 
 # Load necessary libraries
 suppressPackageStartupMessages({
@@ -35,9 +41,72 @@ suppressPackageStartupMessages({
     library(TxDb.Hsapiens.UCSC.hg38.knownGene)
     library(tidyverse)
     library(GenomicRanges)
+    library(ggplot2)
 })
 
 source("scripts/utils.R")
+
+#' Create a detailed pie chart showing genomic feature distribution
+#' @param peak_anno ChIPseeker annotation object
+#' @return ggplot object with detailed pie chart
+create_detailed_pie_chart <- function(peak_anno) {
+    # Extract annotation data
+    anno_df <- as.data.frame(peak_anno)
+    
+    # Create a more detailed categorization
+    anno_df$detailed_annotation <- NA
+    
+    # Promoter regions with different distances
+    anno_df$detailed_annotation[grepl("Promoter \\(<=1kb\\)", anno_df$annotation)] <- "Promoter (<=1kb)"
+    anno_df$detailed_annotation[grepl("Promoter \\(1-2kb\\)", anno_df$annotation)] <- "Promoter (1-2kb)"
+    anno_df$detailed_annotation[grepl("Promoter \\(2-3kb\\)", anno_df$annotation)] <- "Promoter (2-3kb)"
+    
+    # UTR regions
+    anno_df$detailed_annotation[grepl("5' UTR", anno_df$annotation)] <- "5' UTR"
+    anno_df$detailed_annotation[grepl("3' UTR", anno_df$annotation)] <- "3' UTR"
+    
+    # Exon and Intron regions
+    anno_df$detailed_annotation[grepl("Exon", anno_df$annotation)] <- "Exon"
+    anno_df$detailed_annotation[grepl("Intron", anno_df$annotation)] <- "Intron"
+    
+    # Downstream and intergenic
+    anno_df$detailed_annotation[grepl("Downstream", anno_df$annotation)] <- "Downstream (<=300bp)"
+    anno_df$detailed_annotation[grepl("Distal Intergenic", anno_df$annotation)] <- "Distal Intergenic"
+    
+    # Calculate percentages
+    anno_summary <- anno_df %>%
+        group_by(detailed_annotation) %>%
+        summarise(count = n()) %>%
+        mutate(percentage = count / sum(count) * 100) %>%
+        arrange(desc(percentage))
+    
+    # Define colors similar to the example image
+    color_palette <- c(
+        "Promoter (<=1kb)" = "#A6CEE3",
+        "Promoter (1-2kb)" = "#1F78B4",
+        "Promoter (2-3kb)" = "#B2DF8A",
+        "5' UTR" = "#33A02C",
+        "3' UTR" = "#FB9A99",
+        "Exon" = "#E31A1C",
+        "Intron" = "#FF7F00",
+        "Downstream (<=300bp)" = "#6A3D9A",
+        "Distal Intergenic" = "#FFFF99"
+    )
+    
+    # Create the pie chart
+    pie_chart <- ggplot(anno_summary, aes(x = "", y = percentage, fill = detailed_annotation)) +
+        geom_bar(stat = "identity", width = 1) +
+        coord_polar("y", start = 0) +
+        scale_fill_manual(values = color_palette) +
+        theme_void() +
+        theme(legend.position = "right") +
+        labs(fill = "Genomic Feature") +
+        geom_text(aes(label = paste0(round(percentage, 2), "%")), 
+                  position = position_stack(vjust = 0.5),
+                  size = 3)
+    
+    return(pie_chart)
+}
 
 #' Standardize chromosome names to UCSC style and filter valid chromosomes
 #' @param gr GRanges object to standardize
@@ -63,12 +132,9 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
     log_message(sprintf("Starting annotation and enrichment analysis for %s peaks", peak_type))
 
     # Define input file paths
-    all_peaks_file <- file.path("analysis", "7_differential_binding", paste0("diffbind_", peak_type), "all_peaks.rds")
-    significant_peaks_file <- file.path("analysis", "7_differential_binding", paste0("diffbind_", peak_type), "significant_peaks.rds")
+    significant_peaks_file <- file.path("analysis", "7_differential_binding", "significant_peaks.rds")
 
     # Load peaks
-    log_message(sprintf("Loading peaks from %s and %s", all_peaks_file, significant_peaks_file))
-    all_peaks <- readRDS(all_peaks_file)
     significant_peaks <- readRDS(significant_peaks_file)
 
     # Define output directories
@@ -82,7 +148,6 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
     create_dirs(dirs)
 
     # Standardize chromosome names to UCSC style (e.g., chr1 instead of 1)
-    all_peaks_gr <- standardize_chromosomes(all_peaks)
     significant_peaks_gr <- standardize_chromosomes(significant_peaks)
 
     # Annotate peaks relative to genomic features (promoters, UTRs, exons, etc)
@@ -118,6 +183,9 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
         log_message("Package 'ggupset' not available. Skipping upset plot.", level = "WARNING")
     }
 
+    # Create detailed pie chart
+    plots$detailed_pie <- create_detailed_pie_chart(peak_anno)
+
     annotation_plots_pdf <- file.path(figures_dir, "annotation_plots.pdf")
     pdf(annotation_plots_pdf, width = 10, height = 8)
     print(plots$anno_pie)
@@ -125,6 +193,13 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
     if (!is.null(plots$upset)) {
         print(plots$upset)
     }
+    print(plots$detailed_pie)
+    dev.off()
+
+    # Save detailed pie chart to a separate file for better visibility
+    detailed_pie_pdf <- file.path(figures_dir, "detailed_pie_chart.pdf")
+    pdf(detailed_pie_pdf, width = 10, height = 8)
+    print(plots$detailed_pie)
     dev.off()
 
     # Extract genes associated with YAF-enriched peaks
@@ -148,6 +223,8 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
         distanceToTSS = genes_df$distanceToTSS[valid_indices],
         annotation = genes_df$annotation[valid_indices],
         fold_change = significant_peaks_gr$Fold[valid_indices],
+        p_value = significant_peaks_gr$`p-value`[valid_indices],
+        FDR = significant_peaks_gr$FDR[valid_indices],
         stringsAsFactors = FALSE
     )
 
@@ -166,6 +243,37 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
     writeLines(unique(gene_list$SYMBOL),
         yaf_enriched_genes_symbols_txt
     )
+
+    # Create categorized gene lists as requested
+    log_message("Creating categorized gene lists...")
+    
+    # 1. Promoter regions
+    promoter_genes <- gene_list[grepl("Promoter", gene_list$annotation), ]
+    promoter_genes_file <- file.path(gene_lists_dir, paste0("YAF_enriched_genes_", peak_type, "_promoters.txt"))
+    writeLines(unique(promoter_genes$SYMBOL), promoter_genes_file)
+    promoter_genes_csv <- file.path(gene_lists_dir, paste0("YAF_enriched_genes_", peak_type, "_promoters.csv"))
+    write.csv(promoter_genes, promoter_genes_csv, row.names = FALSE)
+    
+    # 2. Promoters + Exon/Intron
+    promoter_exon_intron_genes <- gene_list[grepl("Promoter|Exon|Intron", gene_list$annotation), ]
+    promoter_exon_intron_file <- file.path(gene_lists_dir, paste0("YAF_enriched_genes_", peak_type, "_promoters_exons_introns.txt"))
+    writeLines(unique(promoter_exon_intron_genes$SYMBOL), promoter_exon_intron_file)
+    promoter_exon_intron_csv <- file.path(gene_lists_dir, paste0("YAF_enriched_genes_", peak_type, "_promoters_exons_introns.csv"))
+    write.csv(promoter_exon_intron_genes, promoter_exon_intron_csv, row.names = FALSE)
+    
+    # 3. Distal intergenic
+    distal_intergenic_genes <- gene_list[grepl("Distal Intergenic", gene_list$annotation), ]
+    distal_intergenic_file <- file.path(gene_lists_dir, paste0("YAF_enriched_genes_", peak_type, "_distal_intergenic.txt"))
+    writeLines(unique(distal_intergenic_genes$SYMBOL), distal_intergenic_file)
+    distal_intergenic_csv <- file.path(gene_lists_dir, paste0("YAF_enriched_genes_", peak_type, "_distal_intergenic.csv"))
+    write.csv(distal_intergenic_genes, distal_intergenic_csv, row.names = FALSE)
+    
+    # 4. Other regions (not in the above categories)
+    other_genes <- gene_list[!grepl("Promoter|Exon|Intron|Distal Intergenic", gene_list$annotation), ]
+    other_genes_file <- file.path(gene_lists_dir, paste0("YAF_enriched_genes_", peak_type, "_other_regions.txt"))
+    writeLines(unique(other_genes$SYMBOL), other_genes_file)
+    other_genes_csv <- file.path(gene_lists_dir, paste0("YAF_enriched_genes_", peak_type, "_other_regions.csv"))
+    write.csv(other_genes, other_genes_csv, row.names = FALSE)
 
     # Perform GO enrichment analysis on YAF-enriched genes
     log_message("Performing GO enrichment analysis...")
@@ -232,7 +340,7 @@ broad_results <- annotate_and_enrich(output_dir, "broad")
 log_message("Creating analysis summary...")
 if (!is.null(broad_results)) {
     # Load the significant peaks to get the total number of peaks
-    significant_peaks_file <- file.path("analysis", "7_differential_binding", "diffbind_broad", "significant_peaks.rds")
+    significant_peaks_file <- file.path("analysis", "7_differential_binding", "significant_peaks.rds")
     significant_peaks <- readRDS(significant_peaks_file)
 
     combined_summary <- data.frame(

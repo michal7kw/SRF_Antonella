@@ -1,0 +1,159 @@
+[2025-02-25 15:24:29] Creating directories...
+[2025-02-25 15:24:29] Activating conda environment...
+[2025-02-25 15:24:31] Checking required input files...
+[2025-02-25 15:24:31] Starting cross-reference analysis...
+[2025-02-25 15:25:03] [INFO] Starting to read V5 broad peaks... 
+[2025-02-25 15:25:03] [DEBUG] Processing V5 replicate rep1: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi/peaks/GSM6008236_SESV5ChIPSeq1S5_broadPeak.bed 
+[2025-02-25 15:25:03] [DEBUG] Reading single peak file... 
+[2025-02-25 15:25:03] [DEBUG] Raw number of lines in file: 2246 
+[2025-02-25 15:25:03] [DEBUG] Number of peaks after initial reading: 2246 
+[2025-02-25 15:25:03] [DEBUG] Number of peaks after standardization: 2057 
+[2025-02-25 15:25:03] [DEBUG] Read 2057 peaks from replicate rep1 
+[2025-02-25 15:25:03] [DEBUG] Processing V5 replicate rep2: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi/peaks/GSM6008237_SESV5ChIPSeq2S6_broadPeak.bed 
+[2025-02-25 15:25:03] [DEBUG] Reading single peak file... 
+[2025-02-25 15:25:03] [DEBUG] Raw number of lines in file: 2539 
+[2025-02-25 15:25:03] [DEBUG] Number of peaks after initial reading: 2539 
+[2025-02-25 15:25:03] [DEBUG] Number of peaks after standardization: 2318 
+[2025-02-25 15:25:03] [DEBUG] Read 2318 peaks from replicate rep2 
+[2025-02-25 15:25:03] [DEBUG] Number of valid V5 replicates: 2 
+[2025-02-25 15:25:03] [DEBUG] Total V5 peaks after merging replicates: 4375 
+[2025-02-25 15:25:03] [DEBUG] Starting peak merging with 4375 peaks 
+[2025-02-25 15:25:03] [DEBUG] Initial width range: 51 - 3772 bp 
+[2025-02-25 15:25:03] [DEBUG] Processing chromosome chr1 with 1325 peaks 
+[2025-02-25 15:26:01] [DEBUG] Processing chromosome chr10 with 359 peaks 
+[2025-02-25 15:26:16] [DEBUG] Processing chromosome chr11 with 121 peaks 
+[2025-02-25 15:26:21] [DEBUG] Processing chromosome chr12 with 33 peaks 
+[2025-02-25 15:26:22] [DEBUG] Processing chromosome chr13 with 501 peaks 
+[2025-02-25 15:26:43] [DEBUG] Processing chromosome chr14 with 14 peaks 
+[2025-02-25 15:26:44] [DEBUG] Processing chromosome chr15 with 55 peaks 
+[2025-02-25 15:26:46] [DEBUG] Processing chromosome chr16 with 82 peaks 
+[2025-02-25 15:26:50] [DEBUG] Processing chromosome chr17 with 179 peaks 
+[2025-02-25 15:26:57] [DEBUG] Processing chromosome chr18 with 57 peaks 
+[2025-02-25 15:27:00] [DEBUG] Processing chromosome chr19 with 48 peaks 
+[2025-02-25 15:27:02] [DEBUG] Processing chromosome chr2 with 123 peaks 
+[2025-02-25 15:27:07] [DEBUG] Processing chromosome chr20 with 194 peaks 
+[2025-02-25 15:27:15] [DEBUG] Processing chromosome chr21 with 59 peaks 
+[2025-02-25 15:27:18] [DEBUG] Processing chromosome chr22 with 58 peaks 
+[2025-02-25 15:27:21] [DEBUG] Processing chromosome chr3 with 145 peaks 
+[2025-02-25 15:27:27] [DEBUG] Processing chromosome chr4 with 135 peaks 
+[2025-02-25 15:27:33] [DEBUG] Processing chromosome chr5 with 140 peaks 
+[2025-02-25 15:27:39] [DEBUG] Processing chromosome chr6 with 158 peaks 
+[2025-02-25 15:27:45] [DEBUG] Processing chromosome chr7 with 124 peaks 
+[2025-02-25 15:27:51] [DEBUG] Processing chromosome chr8 with 115 peaks 
+[2025-02-25 15:27:56] [DEBUG] Processing chromosome chr9 with 142 peaks 
+[2025-02-25 15:28:02] [DEBUG] Processing chromosome chrX with 47 peaks 
+[2025-02-25 15:28:04] [DEBUG] Processing chromosome chrY with 161 peaks 
+[2025-02-25 15:28:10] [DEBUG] Finished merging. Final peak count: 1089 
+[2025-02-25 15:28:10] [DEBUG] Final width range: 501 - 3774 bp 
+[2025-02-25 15:28:10] [DEBUG] Final number of V5 peaks after merging overlaps: 1089 
+[2025-02-25 15:28:10] [INFO] Reading H2AK119Ub broad peaks... 
+[2025-02-25 15:28:10] [DEBUG] Processing file for GFP rep1: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_1_broad_peaks_final.broadPeak 
+[2025-02-25 15:28:11] [DEBUG] Raw number of lines in file: 237744 
+[2025-02-25 15:28:12] [DEBUG] Number of peaks after initial reading: 237744 
+[2025-02-25 15:28:12] [DEBUG] Number of peaks after standardization: 237744 
+[2025-02-25 15:28:13] [DEBUG] Processing file for GFP rep2: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_2_broad_peaks_final.broadPeak 
+[2025-02-25 15:28:14] [DEBUG] Raw number of lines in file: 268344 
+[2025-02-25 15:28:15] [DEBUG] Number of peaks after initial reading: 268344 
+[2025-02-25 15:28:16] [DEBUG] Number of peaks after standardization: 268344 
+[2025-02-25 15:28:16] [DEBUG] Processing file for GFP rep3: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_3_broad_peaks_final.broadPeak 
+[2025-02-25 15:28:17] [DEBUG] Raw number of lines in file: 226063 
+[2025-02-25 15:28:18] [DEBUG] Number of peaks after initial reading: 226063 
+[2025-02-25 15:28:18] [DEBUG] Number of peaks after standardization: 226063 
+[2025-02-25 15:28:19] [DEBUG] Processing file for YAF rep1: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_1_broad_peaks_final.broadPeak 
+[2025-02-25 15:28:20] [DEBUG] Raw number of lines in file: 208076 
+[2025-02-25 15:28:21] [DEBUG] Number of peaks after initial reading: 208076 
+[2025-02-25 15:28:23] [DEBUG] Number of peaks after standardization: 208076 
+[2025-02-25 15:28:23] [DEBUG] Processing file for YAF rep2: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_2_broad_peaks_final.broadPeak 
+[2025-02-25 15:28:23] [DEBUG] Raw number of lines in file: 244353 
+[2025-02-25 15:28:24] [DEBUG] Number of peaks after initial reading: 244353 
+[2025-02-25 15:28:25] [DEBUG] Number of peaks after standardization: 244353 
+[2025-02-25 15:28:25] [DEBUG] Processing file for YAF rep3: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_3_broad_peaks_final.broadPeak 
+[2025-02-25 15:28:26] [DEBUG] Raw number of lines in file: 277706 
+[2025-02-25 15:28:27] [DEBUG] Number of peaks after initial reading: 277706 
+[2025-02-25 15:28:28] [DEBUG] Number of peaks after standardization: 277706 
+[2025-02-25 15:28:31] [INFO] Processing V5 peaks... 
+[2025-02-25 15:28:31] [INFO] Analyzing GFP condition 
+[2025-02-25 15:28:31] [INFO] Performing peak annotation 
+[2025-02-25 15:28:31] [DEBUG] Number of peaks before conversion: 732151 
+[2025-02-25 15:28:31] [DEBUG] Names of h2a_peaks: GFP_peak_1, GFP_peak_2, GFP_peak_3, GFP_peak_4, GFP_peak_5, GFP_peak_6 
+[2025-02-25 15:28:31] [DEBUG] Peaks data frame dimensions: 732151 x 9 
+[2025-02-25 15:28:31] [DEBUG] Existing metadata columns: peak_name, peak_score, condition, replicate 
+[2025-02-25 15:28:31] [DEBUG] Using existing peak names 
+[2025-02-25 15:28:31] [DEBUG] Final GRanges metadata columns: peak_name, peak_score, condition, replicate, peak_id 
+[2025-02-25 15:28:31] [DEBUG] Final GRanges object length: 732151 
+[2025-02-25 15:28:31] [DEBUG] Final GRanges names: GFP_peak_1, GFP_peak_2, GFP_peak_3, GFP_peak_4, GFP_peak_5, GFP_peak_6 
+>> preparing features information...		 2025-02-25 03:28:31 PM 
+>> identifying nearest features...		 2025-02-25 03:28:34 PM 
+>> calculating distance from peak to TSS...	 2025-02-25 03:28:44 PM 
+>> assigning genomic annotation...		 2025-02-25 03:28:44 PM 
+>> adding gene annotation...			 2025-02-25 03:29:22 PM 
+>> assigning chromosome lengths			 2025-02-25 03:29:23 PM 
+>> done...					 2025-02-25 03:29:23 PM 
+[2025-02-25 15:29:25] [INFO] Analyzing peak overlaps 
+[2025-02-25 15:29:26] [INFO] Generating peak profiles 
+[2025-02-25 15:29:26] [INFO] Subsampled peaks to 10000 for profile generation 
+[2025-02-25 15:29:26] [INFO] Generating profiles for 10000 peaks in GFP condition 
+[2025-02-25 15:30:31] [INFO] Processed GFP_1.bw successfully 
+[2025-02-25 15:31:18] [INFO] Processed GFP_2.bw successfully 
+[2025-02-25 15:32:15] [INFO] Processed GFP_3.bw successfully 
+[2025-02-25 15:32:15] [INFO] Analyzing YAF condition 
+[2025-02-25 15:32:15] [INFO] Performing peak annotation 
+[2025-02-25 15:32:15] [DEBUG] Number of peaks before conversion: 730135 
+[2025-02-25 15:32:15] [DEBUG] Names of h2a_peaks: YAF_peak_1, YAF_peak_2, YAF_peak_3, YAF_peak_4, YAF_peak_5, YAF_peak_6 
+[2025-02-25 15:32:15] [DEBUG] Peaks data frame dimensions: 730135 x 9 
+[2025-02-25 15:32:15] [DEBUG] Existing metadata columns: peak_name, peak_score, condition, replicate 
+[2025-02-25 15:32:15] [DEBUG] Using existing peak names 
+[2025-02-25 15:32:16] [DEBUG] Final GRanges metadata columns: peak_name, peak_score, condition, replicate, peak_id 
+[2025-02-25 15:32:16] [DEBUG] Final GRanges object length: 730135 
+[2025-02-25 15:32:16] [DEBUG] Final GRanges names: YAF_peak_1, YAF_peak_2, YAF_peak_3, YAF_peak_4, YAF_peak_5, YAF_peak_6 
+>> preparing features information...		 2025-02-25 03:32:16 PM 
+>> identifying nearest features...		 2025-02-25 03:32:16 PM 
+>> calculating distance from peak to TSS...	 2025-02-25 03:32:22 PM 
+>> assigning genomic annotation...		 2025-02-25 03:32:22 PM 
+>> adding gene annotation...			 2025-02-25 03:32:30 PM 
+>> assigning chromosome lengths			 2025-02-25 03:32:31 PM 
+>> done...					 2025-02-25 03:32:31 PM 
+[2025-02-25 15:32:33] [INFO] Analyzing peak overlaps 
+[2025-02-25 15:32:33] [INFO] Generating peak profiles 
+[2025-02-25 15:32:33] [INFO] Subsampled peaks to 10000 for profile generation 
+[2025-02-25 15:32:33] [INFO] Generating profiles for 10000 peaks in YAF condition 
+[2025-02-25 15:33:17] [INFO] Processed YAF_1.bw successfully 
+[2025-02-25 15:34:22] [INFO] Processed YAF_2.bw successfully 
+[2025-02-25 15:35:21] [INFO] Processed YAF_3.bw successfully 
+[2025-02-25 15:35:22] [INFO] Analyzing initial V5 peaks... 
+[2025-02-25 15:35:22] [INFO] Loading blacklist regions... 
+[2025-02-25 15:35:23] [INFO] Analyzing GFP peaks 
+>> preparing features information...		 2025-02-25 03:35:23 PM 
+>> identifying nearest features...		 2025-02-25 03:35:23 PM 
+>> calculating distance from peak to TSS...	 2025-02-25 03:35:29 PM 
+>> assigning genomic annotation...		 2025-02-25 03:35:29 PM 
+>> adding gene annotation...			 2025-02-25 03:35:37 PM 
+>> assigning chromosome lengths			 2025-02-25 03:35:38 PM 
+>> done...					 2025-02-25 03:35:38 PM 
+$rect
+$rect$w
+[1] 0.9471
+
+$rect$h
+[1] 0.3332571
+
+$rect$left
+[1] 0.02645
+
+$rect$top
+[1] 0.6666286
+
+
+$text
+$text$x
+ [1] 0.17225 0.17225 0.17225 0.17225 0.17225 0.17225 0.17225 0.17225 0.17225
+[10] 0.17225 0.17225
+
+$text$y
+ [1] 0.6388571 0.6110857 0.5833143 0.5555429 0.5277714 0.5000000 0.4722286
+ [8] 0.4444571 0.4166857 0.3889143 0.3611429
+
+
+[2025-02-25 15:35:46] [INFO] Calculating peak overlaps 
+[2025-02-25 15:35:47] [ERROR] ERROR: error in evaluating the argument 'args' in selecting a method for function 'do.call': GRanges objects don't support [[, as.list(), lapply(), or unlist() at
+  the moment 

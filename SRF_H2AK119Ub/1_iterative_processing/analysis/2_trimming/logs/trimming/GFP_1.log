@@ -1,0 +1,7 @@
+TrimmomaticPE: Started with arguments:
+ -threads 16 ../DATA/fastq/GFP_1_R1_001.fastq.gz ../DATA/fastq/GFP_1_R2_001.fastq.gz /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_1_R1_paired.fastq.gz /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_1_R1_unpaired.fastq.gz /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_1_R2_paired.fastq.gz /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_1_R2_unpaired.fastq.gz ILLUMINACLIP:../DATA/TruSeq3-PE.fa:2:30:10 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:25
+Using PrefixPair: 'TACACTCTTTCCCTACACGACGCTCTTCCGATCT' and 'GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT'
+ILLUMINACLIP: Using 1 prefix pairs, 0 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
+Quality encoding detected as phred33
+Input Read Pairs: 85886392 Both Surviving: 85132423 (99.12%) Forward Only Surviving: 737835 (0.86%) Reverse Only Surviving: 15114 (0.02%) Dropped: 1020 (0.00%)
+TrimmomaticPE: Completed successfully

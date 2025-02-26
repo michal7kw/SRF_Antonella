@@ -1,0 +1,43 @@
+[2025-02-26 16:45:50] INFO: Using selected samples with similar peak counts:
+  SampleID    Factor Condition Replicate                             bamReads
+1    GFP_1 H2AK119Ub       GFP         1 analysis/3_alignment/GFP_1.dedup.bam
+2    GFP_3 H2AK119Ub       GFP         3 analysis/3_alignment/GFP_3.dedup.bam
+3    YAF_2 H2AK119Ub       YAF         2 analysis/3_alignment/YAF_2.dedup.bam
+4    YAF_3 H2AK119Ub       YAF         3 analysis/3_alignment/YAF_3.dedup.bam
+                                                      Peaks PeakCaller
+1 analysis/5_peak_calling/GFP_1_broad_peaks_final.broadPeak      broad
+2 analysis/5_peak_calling/GFP_3_broad_peaks_final.broadPeak      broad
+3 analysis/5_peak_calling/YAF_2_broad_peaks_final.broadPeak      broad
+4 analysis/5_peak_calling/YAF_3_broad_peaks_final.broadPeak      broad
+[2025-02-26 16:45:50] INFO: Starting differential binding analysis for broad peaks
+[2025-02-26 16:45:50] INFO: Standardizing chromosome names in analysis/5_peak_calling/GFP_1_broad_peaks_final.broadPeak
+[2025-02-26 16:45:52] INFO: Processed 81643 peaks in analysis/5_peak_calling/GFP_1_broad_peaks_final.broadPeak
+[2025-02-26 16:45:52] INFO: Standardizing chromosome names in analysis/5_peak_calling/GFP_3_broad_peaks_final.broadPeak
+[2025-02-26 16:45:53] INFO: Processed 33860 peaks in analysis/5_peak_calling/GFP_3_broad_peaks_final.broadPeak
+[2025-02-26 16:45:53] INFO: Standardizing chromosome names in analysis/5_peak_calling/YAF_2_broad_peaks_final.broadPeak
+[2025-02-26 16:45:53] INFO: Processed 90947 peaks in analysis/5_peak_calling/YAF_2_broad_peaks_final.broadPeak
+[2025-02-26 16:45:53] INFO: Standardizing chromosome names in analysis/5_peak_calling/YAF_3_broad_peaks_final.broadPeak
+[2025-02-26 16:45:54] INFO: Processed 76799 peaks in analysis/5_peak_calling/YAF_3_broad_peaks_final.broadPeak
+[2025-02-26 16:45:54] INFO: Creating DiffBind object...
+[2025-02-26 16:45:59] INFO: Initial peak counts per sample:
+     ID    Factor Condition Replicate Caller Intervals
+1 GFP_1 H2AK119Ub       GFP         1  broad     81643
+2 GFP_3 H2AK119Ub       GFP         3  broad     33860
+3 YAF_2 H2AK119Ub       YAF         2  broad     90947
+4 YAF_3 H2AK119Ub       YAF         3  broad     76799
+[2025-02-26 16:45:59] INFO: Counting reads...
+[2025-02-26 16:55:26] INFO: After counting - sample statistics:
+     ID    Factor Condition Replicate Caller Intervals    Reads FRiP
+1 GFP_1 H2AK119Ub       GFP         1 counts      7948 28384290 0.26
+2 GFP_3 H2AK119Ub       GFP         3 counts      7948 26365047 0.27
+3 YAF_2 H2AK119Ub       YAF         2 counts      7948 48095918 0.19
+4 YAF_3 H2AK119Ub       YAF         3 counts      7948 34552500 0.18
+[2025-02-26 16:55:26] INFO: Performing differential analysis...
+[2025-02-26 16:58:58] INFO: Contrast information:
+     Factor Group Samples Group2 Samples2
+1 Condition   YAF       2    GFP        2
+[2025-02-26 16:59:02] INFO: Extracting results...
+[2025-02-26 16:59:03] INFO: Saving results...
+[2025-02-26 16:59:04] INFO: Found 7919 differential binding sites
+[2025-02-26 16:59:04] INFO: Annotating peaks...
+[2025-02-26 16:59:41] INFO: Successfully completed differential binding analysis

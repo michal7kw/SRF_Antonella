@@ -1,0 +1,80 @@
+INFO  @ Sat, 22 Feb 2025 08:26:48: 
+# Command line: callpeak -t results/alignment/SRR18590296.dedup.bam -c results/alignment/SRR18590303.dedup.bam -f BAMPE -g hs -n results/peaks/SRR18590296_narrow -q 0.05 --nomodel --extsize 200 --keep-dup all --call-summits
+# ARGUMENTS LIST:
+# name = results/peaks/SRR18590296_narrow
+# format = BAMPE
+# ChIP-seq file = ['results/alignment/SRR18590296.dedup.bam']
+# control file = ['results/alignment/SRR18590303.dedup.bam']
+# effective genome size = 2.70e+09
+# band width = 300
+# model fold = [5, 50]
+# qvalue cutoff = 5.00e-02
+# The maximum gap between significant sites is assigned as the read length/tag size.
+# The minimum length of peaks is assigned as the predicted fragment length "d".
+# Larger dataset will be scaled towards smaller dataset.
+# Range for calculating regional lambda is: 1000 bps and 10000 bps
+# Broad region calling is off
+# Paired-End mode is on
+# Searching for subpeak summits is on
+ 
+INFO  @ Sat, 22 Feb 2025 08:26:48: #1 read fragment files... 
+INFO  @ Sat, 22 Feb 2025 08:26:48: #1 read treatment fragments... 
+INFO  @ Sat, 22 Feb 2025 08:26:53:  1000000 
+INFO  @ Sat, 22 Feb 2025 08:26:59:  2000000 
+INFO  @ Sat, 22 Feb 2025 08:27:04:  3000000 
+INFO  @ Sat, 22 Feb 2025 08:27:09:  4000000 
+INFO  @ Sat, 22 Feb 2025 08:27:14:  5000000 
+INFO  @ Sat, 22 Feb 2025 08:27:19:  6000000 
+INFO  @ Sat, 22 Feb 2025 08:27:24:  7000000 
+INFO  @ Sat, 22 Feb 2025 08:27:29:  8000000 
+INFO  @ Sat, 22 Feb 2025 08:27:34:  9000000 
+INFO  @ Sat, 22 Feb 2025 08:27:39:  10000000 
+INFO  @ Sat, 22 Feb 2025 08:27:44:  11000000 
+INFO  @ Sat, 22 Feb 2025 08:27:49:  12000000 
+INFO  @ Sat, 22 Feb 2025 08:27:54:  13000000 
+INFO  @ Sat, 22 Feb 2025 08:27:59:  14000000 
+INFO  @ Sat, 22 Feb 2025 08:28:04:  15000000 
+INFO  @ Sat, 22 Feb 2025 08:28:09:  16000000 
+INFO  @ Sat, 22 Feb 2025 08:28:14:  17000000 
+INFO  @ Sat, 22 Feb 2025 08:28:19:  18000000 
+INFO  @ Sat, 22 Feb 2025 08:28:24:  19000000 
+INFO  @ Sat, 22 Feb 2025 08:28:29:  20000000 
+INFO  @ Sat, 22 Feb 2025 08:28:34:  21000000 
+INFO  @ Sat, 22 Feb 2025 08:28:36: 21414221 fragments have been read. 
+INFO  @ Sat, 22 Feb 2025 08:28:50: #1.2 read input fragments... 
+INFO  @ Sat, 22 Feb 2025 08:28:54:  1000000 
+INFO  @ Sat, 22 Feb 2025 08:28:59:  2000000 
+INFO  @ Sat, 22 Feb 2025 08:29:04:  3000000 
+INFO  @ Sat, 22 Feb 2025 08:29:08:  4000000 
+INFO  @ Sat, 22 Feb 2025 08:29:13:  5000000 
+INFO  @ Sat, 22 Feb 2025 08:29:18:  6000000 
+INFO  @ Sat, 22 Feb 2025 08:29:23:  7000000 
+INFO  @ Sat, 22 Feb 2025 08:29:27:  8000000 
+INFO  @ Sat, 22 Feb 2025 08:29:32:  9000000 
+INFO  @ Sat, 22 Feb 2025 08:29:37:  10000000 
+INFO  @ Sat, 22 Feb 2025 08:29:42:  11000000 
+INFO  @ Sat, 22 Feb 2025 08:29:46:  12000000 
+INFO  @ Sat, 22 Feb 2025 08:29:51:  13000000 
+INFO  @ Sat, 22 Feb 2025 08:29:56:  14000000 
+INFO  @ Sat, 22 Feb 2025 08:30:00:  15000000 
+INFO  @ Sat, 22 Feb 2025 08:30:05:  16000000 
+INFO  @ Sat, 22 Feb 2025 08:30:10:  17000000 
+INFO  @ Sat, 22 Feb 2025 08:30:14:  18000000 
+INFO  @ Sat, 22 Feb 2025 08:30:19:  19000000 
+INFO  @ Sat, 22 Feb 2025 08:30:22: 19669533 fragments have been read. 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #1 mean fragment size is determined as 252.3 bp from treatment 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #1 note: mean fragment size in control is 221.5 bp -- value ignored 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #1 fragment size = 252.3 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #1  total fragments in treatment: 21414221 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #1  total fragments in control: 19669533 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #1 finished! 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #2 Build Peak Model... 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #2 Skipped... 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #3 Call peaks... 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #3 Going to call summits inside each peak ... 
+INFO  @ Sat, 22 Feb 2025 08:30:34: #3 Pre-compute pvalue-qvalue table... 
+INFO  @ Sat, 22 Feb 2025 08:32:52: #3 Call peaks for each chromosome... 
+INFO  @ Sat, 22 Feb 2025 08:34:02: #4 Write output xls file... results/peaks/SRR18590296_narrow_peaks.xls 
+INFO  @ Sat, 22 Feb 2025 08:34:02: #4 Write peak in narrowPeak format file... results/peaks/SRR18590296_narrow_peaks.narrowPeak 
+INFO  @ Sat, 22 Feb 2025 08:34:02: #4 Write summits bed file... results/peaks/SRR18590296_narrow_summits.bed 
+INFO  @ Sat, 22 Feb 2025 08:34:02: Done! 

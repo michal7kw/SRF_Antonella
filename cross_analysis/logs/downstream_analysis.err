@@ -1,0 +1,23 @@
+Bioconductor version '3.18' is out-of-date; the current release version '3.20'
+  is available with R version '4.4'; see https://bioconductor.org/install
+Bioconductor version 3.18 (BiocManager 1.30.25), R 4.3.3 (2024-02-29)
+Warning message:
+package(s) not installed when version(s) same as or greater than current; use
+  `force = TRUE` to re-install: 'TxDb.Hsapiens.UCSC.hg38.knownGene'
+  'org.Hs.eg.db' 'ChIPseeker' 'clusterProfiler' 'ComplexHeatmap' 
+'select()' returned 1:1 mapping between keys and columns
+'select()' returned 1:many mapping between keys and columns
+'select()' returned 1:1 mapping between keys and columns
+'select()' returned 1:1 mapping between keys and columns
+'select()' returned 1:1 mapping between keys and columns
+Error in seq.default(-uslim, dslim, by = 10) : 
+  'to' must be a finite number
+Calls: main ... plotDistToTSS -> plotDistToTSS.data.frame -> seq -> seq.default
+In addition: Warning messages:
+1: In max(totalFreq$total[totalFreq$sign == 1]) :
+  no non-missing arguments to max; returning -Inf
+2: In value[[3L]](cond) :
+  Error creating TSS distribution plot: 'to' must be a finite number
+3: In max(totalFreq$total[totalFreq$sign == 1]) :
+  no non-missing arguments to max; returning -Inf
+Execution halted

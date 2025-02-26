@@ -51,8 +51,8 @@ samples=(GFP_1 GFP_2 GFP_3 YAF_1 YAF_2 YAF_3)
 # samples=(YAF_3) # This line is commented out, used for testing with a single sample.
 # analysis_types=(broad narrow) # This line is commented out, used for different analysis types.
 analysis_types=(broad) # Currently, only 'broad' analysis type is used.
-sample_idx=$((SLURM_ARRAY_TASK_ID / 2))  # Integer division to get sample index.
-analysis_idx=$((SLURM_ARRAY_TASK_ID % 2))  # Modulo operation to get analysis type index (0 or 1).
+sample_idx=$SLURM_ARRAY_TASK_ID  # Use the array task ID directly as the sample index
+analysis_idx=0  # Always use 'broad' analysis type
 sample=${samples[$sample_idx]}          # Get the sample name based on the SLURM array index.
 analysis_type=${analysis_types[$analysis_idx]}  # Get the analysis type (currently unused, always 'broad').
 

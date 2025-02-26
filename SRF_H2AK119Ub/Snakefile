@@ -83,21 +83,46 @@ rule align:
     log:
         os.path.join(LOGS_DIR, "alignment/{sample}.align.log")
     params:
-        index=os.path.join(GENOME_DIR, "GRCh38")
-    threads: 32
+        index=os.path.join(GENOME_DIR, "GRCh38"),
+        tmp_dir=temp(directory(os.path.join(ANALYSIS_DIR, "tmp_{sample}")))
+    threads: 16  # Increased thread count
     resources:
-        mem_mb=64000,
-        runtime=1440
+        mem_mb=128000,  # Increased memory
+        runtime=1440,
+        nodes=1,
+        slurm_partition="workq"
     shell:
         """
-        bowtie2 -p {threads} \
-            -x {params.index} \
-            --local --very-sensitive-local \
-            --no-mixed --no-discordant \
-            -I 0 -X 1000 \
-            -1 {input.r1} \
-            -2 {input.r2} \
-            -S {output} 2> {log}
+        # Create log directory if it doesn't exist
+        mkdir -p $(dirname {log})
+        
+        # Debug information
+        echo "Starting alignment for {wildcards.sample}" > {log}
+        echo "Current directory: $(pwd)" >> {log}
+        echo "Index path: {params.index}" >> {log}
+        echo "Input files: {input.r1} {input.r2}" >> {log}
+        echo "Output file: {output}" >> {log}
+        echo "Log file: {log}" >> {log}
+        echo "Threads: {threads}" >> {log}
+        echo "Temporary directory: {params.tmp_dir}" >> {log}
+        
+        # Create temporary directory
+        mkdir -p {params.tmp_dir}
+        
+        # Run the external alignment script
+        echo "Running alignment script with arguments:" >> {log}
+        echo "{workflow.basedir}/alignment_script.sh {threads} {params.index} {input.r1} {input.r2} {output} {wildcards.sample} {log} {params.tmp_dir}" >> {log}
+        
+        {workflow.basedir}/alignment_script.sh {threads} {params.index} {input.r1} {input.r2} {output} {wildcards.sample} {log} {params.tmp_dir}
+        
+        # Check script exit status
+        SCRIPT_STATUS=$?
+        if [ $SCRIPT_STATUS -ne 0 ]; then
+            echo "Script failed with exit code $SCRIPT_STATUS" >> {log}
+            exit $SCRIPT_STATUS
+        fi
+        
+        echo "Alignment completed successfully" >> {log}
         """
 
 rule sam_to_bam:

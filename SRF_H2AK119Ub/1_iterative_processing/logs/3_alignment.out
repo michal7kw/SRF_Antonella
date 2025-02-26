@@ -1,0 +1,300 @@
+
+     active environment : snakemake
+    active env location : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake
+            shell level : 2
+       user config file : /home/kubacki.michal/.condarc
+ populated config files : /home/kubacki.michal/.condarc
+          conda version : 24.7.1
+    conda-build version : not installed
+         python version : 3.8.20.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=cascadelake
+                          __conda=24.7.1=0
+                          __glibc=2.28=0
+                          __linux=4.18.0=0
+                          __unix=0=0
+       base environment : /opt/common/tools/ric.cosr/miniconda3  (read only)
+      conda av data dir : /opt/common/tools/ric.cosr/miniconda3/etc/conda
+  conda av metadata url : None
+           channel URLs : https://conda.anaconda.org/conda-forge/linux-64
+                          https://conda.anaconda.org/conda-forge/noarch
+                          https://repo.anaconda.com/pkgs/main/linux-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/linux-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+                          https://conda.anaconda.org/bioconda/linux-64
+                          https://conda.anaconda.org/bioconda/noarch
+          package cache : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_pkgs
+       envs directories : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs
+                          /home/kubacki.michal/.conda/envs
+                          /opt/common/tools/ric.cosr/miniconda3/envs
+               platform : linux-64
+             user-agent : conda/24.7.1 requests/2.32.3 CPython/3.8.20 Linux/4.18.0-553.el8_10.x86_64 rocky/8.10 glibc/2.28 solver/libmamba conda-libmamba-solver/24.9.0 libmambapy/1.5.8
+                UID:GID : 50225:50225
+             netrc file : None
+           offline mode : False
+
+
+
+     active environment : snakemake
+    active env location : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake
+            shell level : 2
+       user config file : /home/kubacki.michal/.condarc
+ populated config files : /home/kubacki.michal/.condarc
+          conda version : 24.7.1
+    conda-build version : not installed
+         python version : 3.8.20.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=cascadelake
+                          __conda=24.7.1=0
+                          __glibc=2.28=0
+                          __linux=4.18.0=0
+                          __unix=0=0
+       base environment : /opt/common/tools/ric.cosr/miniconda3  (read only)
+      conda av data dir : /opt/common/tools/ric.cosr/miniconda3/etc/conda
+  conda av metadata url : None
+           channel URLs : https://conda.anaconda.org/conda-forge/linux-64
+                          https://conda.anaconda.org/conda-forge/noarch
+                          https://repo.anaconda.com/pkgs/main/linux-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/linux-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+                          https://conda.anaconda.org/bioconda/linux-64
+                          https://conda.anaconda.org/bioconda/noarch
+          package cache : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_pkgs
+       envs directories : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs
+                          /home/kubacki.michal/.conda/envs
+                          /opt/common/tools/ric.cosr/miniconda3/envs
+               platform : linux-64
+             user-agent : conda/24.7.1 requests/2.32.3 CPython/3.8.20 Linux/4.18.0-553.el8_10.x86_64 rocky/8.10 glibc/2.28 solver/libmamba conda-libmamba-solver/24.9.0 libmambapy/1.5.8
+                UID:GID : 50225:50225
+             netrc file : None
+           offline mode : False
+
+
+
+     active environment : snakemake
+    active env location : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake
+            shell level : 2
+       user config file : /home/kubacki.michal/.condarc
+ populated config files : /home/kubacki.michal/.condarc
+          conda version : 24.7.1
+    conda-build version : not installed
+         python version : 3.8.20.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=cascadelake
+                          __conda=24.7.1=0
+                          __glibc=2.28=0
+                          __linux=4.18.0=0
+                          __unix=0=0
+       base environment : /opt/common/tools/ric.cosr/miniconda3  (read only)
+      conda av data dir : /opt/common/tools/ric.cosr/miniconda3/etc/conda
+  conda av metadata url : None
+           channel URLs : https://conda.anaconda.org/conda-forge/linux-64
+                          https://conda.anaconda.org/conda-forge/noarch
+                          https://repo.anaconda.com/pkgs/main/linux-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/linux-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+                          https://conda.anaconda.org/bioconda/linux-64
+                          https://conda.anaconda.org/bioconda/noarch
+          package cache : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_pkgs
+       envs directories : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs
+                          /home/kubacki.michal/.conda/envs
+                          /opt/common/tools/ric.cosr/miniconda3/envs
+               platform : linux-64
+             user-agent : conda/24.7.1 requests/2.32.3 CPython/3.8.20 Linux/4.18.0-553.el8_10.x86_64 rocky/8.10 glibc/2.28 solver/libmamba conda-libmamba-solver/24.9.0 libmambapy/1.5.8
+                UID:GID : 50225:50225
+             netrc file : None
+           offline mode : False
+
+
+
+     active environment : snakemake
+    active env location : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake
+            shell level : 2
+       user config file : /home/kubacki.michal/.condarc
+ populated config files : /home/kubacki.michal/.condarc
+          conda version : 24.7.1
+    conda-build version : not installed
+         python version : 3.8.20.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=cascadelake
+                          __conda=24.7.1=0
+                          __glibc=2.28=0
+                          __linux=4.18.0=0
+                          __unix=0=0
+       base environment : /opt/common/tools/ric.cosr/miniconda3  (read only)
+      conda av data dir : /opt/common/tools/ric.cosr/miniconda3/etc/conda
+  conda av metadata url : None
+           channel URLs : https://conda.anaconda.org/conda-forge/linux-64
+                          https://conda.anaconda.org/conda-forge/noarch
+                          https://repo.anaconda.com/pkgs/main/linux-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/linux-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+                          https://conda.anaconda.org/bioconda/linux-64
+                          https://conda.anaconda.org/bioconda/noarch
+          package cache : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_pkgs
+       envs directories : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs
+                          /home/kubacki.michal/.conda/envs
+                          /opt/common/tools/ric.cosr/miniconda3/envs
+               platform : linux-64
+             user-agent : conda/24.7.1 requests/2.32.3 CPython/3.8.20 Linux/4.18.0-553.el8_10.x86_64 rocky/8.10 glibc/2.28 solver/libmamba conda-libmamba-solver/24.9.0 libmambapy/1.5.8
+                UID:GID : 50225:50225
+             netrc file : None
+           offline mode : False
+
+
+
+     active environment : snakemake
+    active env location : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake
+            shell level : 2
+       user config file : /home/kubacki.michal/.condarc
+ populated config files : /home/kubacki.michal/.condarc
+          conda version : 24.7.1
+    conda-build version : not installed
+         python version : 3.8.20.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=cascadelake
+                          __conda=24.7.1=0
+                          __glibc=2.28=0
+                          __linux=4.18.0=0
+                          __unix=0=0
+       base environment : /opt/common/tools/ric.cosr/miniconda3  (read only)
+      conda av data dir : /opt/common/tools/ric.cosr/miniconda3/etc/conda
+  conda av metadata url : None
+           channel URLs : https://conda.anaconda.org/conda-forge/linux-64
+                          https://conda.anaconda.org/conda-forge/noarch
+                          https://repo.anaconda.com/pkgs/main/linux-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/linux-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+                          https://conda.anaconda.org/bioconda/linux-64
+                          https://conda.anaconda.org/bioconda/noarch
+          package cache : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_pkgs
+       envs directories : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs
+                          /home/kubacki.michal/.conda/envs
+                          /opt/common/tools/ric.cosr/miniconda3/envs
+               platform : linux-64
+             user-agent : conda/24.7.1 requests/2.32.3 CPython/3.8.20 Linux/4.18.0-553.el8_10.x86_64 rocky/8.10 glibc/2.28 solver/libmamba conda-libmamba-solver/24.9.0 libmambapy/1.5.8
+                UID:GID : 50225:50225
+             netrc file : None
+           offline mode : False
+
+
+
+     active environment : snakemake
+    active env location : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake
+            shell level : 2
+       user config file : /home/kubacki.michal/.condarc
+ populated config files : /home/kubacki.michal/.condarc
+          conda version : 24.7.1
+    conda-build version : not installed
+         python version : 3.8.20.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=cascadelake
+                          __conda=24.7.1=0
+                          __glibc=2.28=0
+                          __linux=4.18.0=0
+                          __unix=0=0
+       base environment : /opt/common/tools/ric.cosr/miniconda3  (read only)
+      conda av data dir : /opt/common/tools/ric.cosr/miniconda3/etc/conda
+  conda av metadata url : None
+           channel URLs : https://conda.anaconda.org/conda-forge/linux-64
+                          https://conda.anaconda.org/conda-forge/noarch
+                          https://repo.anaconda.com/pkgs/main/linux-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/linux-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+                          https://conda.anaconda.org/bioconda/linux-64
+                          https://conda.anaconda.org/bioconda/noarch
+          package cache : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_pkgs
+       envs directories : /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs
+                          /home/kubacki.michal/.conda/envs
+                          /opt/common/tools/ric.cosr/miniconda3/envs
+               platform : linux-64
+             user-agent : conda/24.7.1 requests/2.32.3 CPython/3.8.20 Linux/4.18.0-553.el8_10.x86_64 rocky/8.10 glibc/2.28 solver/libmamba conda-libmamba-solver/24.9.0 libmambapy/1.5.8
+                UID:GID : 50225:50225
+             netrc file : None
+           offline mode : False
+
+
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bowtie2                   2.5.4                he96a11b_5    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bowtie2                   2.5.4                he96a11b_5    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bowtie2                   2.5.4                he96a11b_5    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bowtie2                   2.5.4                he96a11b_5    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bowtie2                   2.5.4                he96a11b_5    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bowtie2                   2.5.4                he96a11b_5    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bioconductor-rsamtools    2.18.0            r43hf17093f_2    bioconda
+samtools                  1.21                 h96c455f_1    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bioconductor-rsamtools    2.18.0            r43hf17093f_2    bioconda
+samtools                  1.21                 h96c455f_1    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bioconductor-rsamtools    2.18.0            r43hf17093f_2    bioconda
+samtools                  1.21                 h96c455f_1    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bioconductor-rsamtools    2.18.0            r43hf17093f_2    bioconda
+samtools                  1.21                 h96c455f_1    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bioconductor-rsamtools    2.18.0            r43hf17093f_2    bioconda
+samtools                  1.21                 h96c455f_1    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+bioconductor-rsamtools    2.18.0            r43hf17093f_2    bioconda
+samtools                  1.21                 h96c455f_1    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+picard                    3.3.0                hdfd78af_0    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+picard                    3.3.0                hdfd78af_0    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+picard                    3.3.0                hdfd78af_0    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+picard                    3.3.0                hdfd78af_0    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+picard                    3.3.0                hdfd78af_0    bioconda
+# packages in environment at /beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake:
+#
+# Name                    Version                   Build  Channel
+picard                    3.3.0                hdfd78af_0    bioconda

@@ -1,0 +1,13 @@
+Sample	picard_insertsizemetrics-summed_median	picard_insertsizemetrics-summed_mean	picard_mark_duplicates-PERCENT_DUPLICATION	samtools_flagstat-flagstat_total	samtools_flagstat-mapped_passed	samtools_flagstat-mapped_passed_pct
+GFP_1	208	240.806697	55.1785			
+GFP_1_flagstat				126.654832	126.654832	100.0
+GFP_2	205	227.644179	78.6239			
+GFP_2_flagstat				145.099854	145.099854	100.0
+GFP_3	204	227.352973	48.3857			
+GFP_3_flagstat				102.161808	102.161808	100.0
+YAF_1	213	241.908527	82.4306			
+YAF_1_flagstat				120.116812	120.116812	100.0
+YAF_2	202	219.074219	34.3142			
+YAF_2_flagstat				146.442376	146.442376	100.0
+YAF_3	204	221.57212500000003	46.6703			
+YAF_3_flagstat				129.580782	129.580782	100.0

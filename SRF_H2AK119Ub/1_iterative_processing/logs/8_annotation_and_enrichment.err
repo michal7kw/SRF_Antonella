@@ -1,0 +1,9 @@
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+[2025-02-26 19:51:09] Creating output directories...
+[2025-02-26 19:51:09] Checking input files...
+[2025-02-26 19:51:09] Running annotation and enrichment analysis...
+'select()' returned 1:1 mapping between keys and columns
+Warning message:
+ggrepel: 334 unlabeled data points (too many overlaps). Consider increasing max.overlaps 
+[2025-02-26 19:53:08] Annotation and enrichment analysis completed

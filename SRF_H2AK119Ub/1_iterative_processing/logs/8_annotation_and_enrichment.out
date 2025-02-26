@@ -1,0 +1,36 @@
+[2025-02-26 19:51:36] INFO: Starting annotation and enrichment pipeline...
+[2025-02-26 19:51:37] INFO: Starting annotation and enrichment analysis for broad peaks
+[2025-02-26 19:51:37] INFO: Performing peak annotation...
+[2025-02-26 19:52:18] INFO: Generating annotation plots...
+[2025-02-26 19:52:18] WARNING: Package 'ggupset' not available. Skipping upset plot.
+$rect
+$rect$w
+[1] 0.9471
+
+$rect$h
+[1] 0.3332571
+
+$rect$left
+[1] 0.02645
+
+$rect$top
+[1] 0.6666286
+
+
+$text
+$text$x
+ [1] 0.17225 0.17225 0.17225 0.17225 0.17225 0.17225 0.17225 0.17225 0.17225
+[10] 0.17225 0.17225
+
+$text$y
+ [1] 0.6388571 0.6110857 0.5833143 0.5555429 0.5277714 0.5000000 0.4722286
+ [8] 0.4444571 0.4166857 0.3889143 0.3611429
+
+
+[2025-02-26 19:52:19] INFO: Extracting YAF-enriched genes...
+[2025-02-26 19:52:19] INFO: Creating categorized gene lists...
+[2025-02-26 19:52:19] INFO: Performing GO enrichment analysis...
+[2025-02-26 19:53:04] WARNING: Could not create emapplot. Skipping...
+[2025-02-26 19:53:07] INFO: Completed annotation and enrichment analysis for broad peaks
+[2025-02-26 19:53:07] INFO: Creating analysis summary...
+[2025-02-26 19:53:07] INFO: Analysis completed successfully

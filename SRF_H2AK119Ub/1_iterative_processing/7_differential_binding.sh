@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=5_differential_binding
+#SBATCH --job-name=7_differential_binding
 #SBATCH --account=kubacki.michal
 #SBATCH --mem=64GB
 #SBATCH --time=12:00:00
@@ -7,8 +7,8 @@
 #SBATCH --ntasks=8
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/5_differential_binding.err"
-#SBATCH --output="logs/5_differential_binding.out"
+#SBATCH --error="logs/7_differential_binding.err"
+#SBATCH --output="logs/7_differential_binding.out"
 
 # Documentation:
 # This script performs differential binding analysis for CUT&Tag data using DiffBind
@@ -22,13 +22,13 @@
 # Input files:
 # - analysis/5_peak_calling/{sample}_broad_peaks_final.broadPeak: Final peak calls for each sample
 # - analysis/3_alignment/{sample}.dedup.bam: Deduplicated alignment files for each sample
-# - scripts/5_differential_binding.R: R script containing DiffBind analysis code
+# - scripts/7_differential_binding.R: R script containing DiffBind analysis code
 
 # Output files:
 # - analysis/7_differential_binding/: Directory containing DiffBind results
 # - analysis/7_differential_binding/: Directory containing annotated differential binding results
-# - logs/5_differential_binding.out: Standard output log
-# - logs/5_differential_binding.err: Error log
+# - logs/7_differential_binding.out: Standard output log
+# - logs/7_differential_binding.err: Error log
 
 # Error handling
 set -e  # Exit immediately if a command exits with non-zero status
@@ -156,7 +156,7 @@ done
 
 # Run R script for differential binding analysis
 log_message "Running differential binding analysis..."
-if ! Rscript scripts/5_differential_binding.R ${OUTPUT_DIR}; then
+if ! Rscript scripts/7_differential_binding.R ${OUTPUT_DIR}; then
     log_message "ERROR: Differential binding analysis failed"
     exit 1
 fi

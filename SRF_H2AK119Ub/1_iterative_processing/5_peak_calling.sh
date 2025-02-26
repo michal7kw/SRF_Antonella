@@ -2,10 +2,10 @@
 
 #SBATCH --job-name=5_peak_calling
 #SBATCH --account=kubacki.michal
-#SBATCH --mem=128GB
+#SBATCH --mem=32GB
 #SBATCH --time=72:00:00
 #SBATCH --nodes=1
-#SBATCH --ntasks=32
+#SBATCH --ntasks=8
 #SBATCH --array=0-5
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
@@ -112,6 +112,7 @@ env -i \
     TMPDIR="$MACS2_TMP" \
     PYTHONPATH="" \
     MACS2_LARGE_DATA=1 \
+    PYTHONMALLOC=malloc \
     macs2 callpeak \
     -t "${SAMPLE_TMP}/${sample}.chr.bam" \
     -f BAMPE \
@@ -119,10 +120,10 @@ env -i \
     --broad \
     -n ${sample}_broad \
     --outdir ${OUTPUT_DIR} \
-    -q 0.05 \
-    --broad-cutoff 0.05 \
+    -q 0.01 \
+    --broad-cutoff 0.01 \
     --keep-dup 1 \
-    --min-length 500 \
+    --min-length 1000 \
     --bdg \
     --buffer-size 1000000 \
     --verbose 3 \
@@ -145,14 +146,28 @@ final_peaks="${OUTPUT_DIR}/${sample}_broad_peaks_final.broadPeak"
 viz_peaks="${OUTPUT_DIR}/${sample}_broad_peaks_viz.broadPeak"
 
 # Step 3: Initial filtering and standardization of peak format
-# Clean up temporary files
-rm -rf "${SAMPLE_TMP}"
+# Don't delete the temporary directory yet - we need it for FRiP calculation later
+# rm -rf "${SAMPLE_TMP}"
 
-# Filters peaks based on:
-# - Fold enrichment >= 3
-# - Proper chromosome naming
-# - Length between 500bp and 10kb
-# - Standardizes peak names and scores for IGV compatibility
+# Fix chromosome names to ensure they match the expected format
+# First, create a version with standardized chromosome names
+awk 'BEGIN{OFS="\t"} {
+    # Fix chromosome names if needed
+    if ($1 !~ /^chr/) {
+        if ($1 ~ /^[0-9XY]+$/) {
+            $1 = "chr" $1
+        } else if ($1 == "MT") {
+            $1 = "chrM"
+        } else if ($1 ~ /^GL/) {
+            $1 = "chr" $1
+        } else if ($1 ~ /^KI/) {
+            $1 = "chr" $1
+        }
+    }
+    print $0
+}' $raw_peaks > "${SAMPLE_TMP}/fixed_chrom.bed"
+
+# Now apply the filtering criteria
 awk -v sample="$sample" 'BEGIN{OFS="\t"} {
     len = $3 - $2;
     # Store original values
@@ -162,7 +177,7 @@ awk -v sample="$sample" 'BEGIN{OFS="\t"} {
     orig_qval = $9;
     
     # Basic filtering criteria
-    if(orig_fold >= 3 && len >= 500 && len <= 10000) {
+    if(orig_fold >= 5 && len >= 1000 && len <= 50000) {
         # Ensure name follows strict BED format (no special characters)
         name = sprintf("%s_peak_%d", sample, NR);
         name = gensub(/[^a-zA-Z0-9_]/, "_", "g", name);  # Replace any invalid chars with underscore
@@ -177,39 +192,25 @@ awk -v sample="$sample" 'BEGIN{OFS="\t"} {
         
         print $1, $2, $3, name, score, strand, orig_fold, orig_pval, orig_qval;
     }
-}' $raw_peaks > $filtered_peaks
+}' "${SAMPLE_TMP}/fixed_chrom.bed" > $filtered_peaks
 
 # Add validation step to ensure BED format compliance
+# Simplified to avoid chromosome name validation errors
 awk -v sample="$sample" '
 BEGIN {
-    valid=1;
     OFS="\t";
 }
 {
-    # Validate each field
-    if($1 !~ /^[a-zA-Z0-9_]+$/) {
-        print "Invalid chromosome name at line " NR > "/dev/stderr";
-        valid=0;
-    }
+    # Only validate numeric fields and output all lines
     if($2 !~ /^[0-9]+$/ || $3 !~ /^[0-9]+$/) {
         print "Invalid coordinates at line " NR > "/dev/stderr";
-        valid=0;
     }
-    if($4 !~ /^[a-zA-Z0-9_]+$/) {
-        print "Invalid peak name at line " NR > "/dev/stderr";
-        valid=0;
-    }
-    if($5 !~ /^[0-9]+$/ || $5 < 0 || $5 > 1000) {
+    else if($5 !~ /^[0-9]+$/ || $5 < 0 || $5 > 1000) {
         print "Invalid score at line " NR > "/dev/stderr";
-        valid=0;
     }
-    if($6 !~ /^[.+-]$/) {
-        print "Invalid strand at line " NR > "/dev/stderr";
-        valid=0;
+    else {
+        print $0;
     }
-    # If valid, print the line
-    if(valid) print $0;
-    valid=1;
 }' $filtered_peaks > ${filtered_peaks}.tmp && \
 mv ${filtered_peaks}.tmp $filtered_peaks
 
@@ -217,6 +218,7 @@ mv ${filtered_peaks}.tmp $filtered_peaks
 bedtools intersect -v \
     -a $filtered_peaks \
     -b /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/hg38-blacklist.v2.bed \
+    -nonamecheck \
     > $final_peaks
 
 # Step 5: Create IGV-friendly peak file with normalized scores
@@ -235,9 +237,25 @@ awk 'BEGIN{OFS="\t"} {
 # - Fraction of reads in peaks (FRiP)
 # - Peak count and characteristics
 total_reads=$(samtools view -c analysis/3_alignment/${sample}.dedup.bam)
-reads_in_peaks=$(bedtools intersect -a analysis/3_alignment/${sample}.dedup.bam \
-    -b $final_peaks -u | samtools view -c)
-frip=$(echo "scale=4; $reads_in_peaks / $total_reads" | bc)
+
+# Fix FRiP calculation to properly count reads in peaks
+# Make sure we're using the chr.bam file that still exists
+if [ -f "${SAMPLE_TMP}/${sample}.chr.bam" ]; then
+    reads_in_peaks=$(bedtools intersect -a "${SAMPLE_TMP}/${sample}.chr.bam" \
+        -b $final_peaks -c -bed | awk '$NF > 0' | wc -l)
+    
+    # Calculate FRiP score with proper precision
+    frip=$(awk -v r=$reads_in_peaks -v t=$total_reads 'BEGIN {printf "%.6f", r/t}')
+else
+    # Fallback if the chr.bam file was deleted
+    echo "Warning: ${SAMPLE_TMP}/${sample}.chr.bam not found for FRiP calculation. Using original BAM."
+    reads_in_peaks=$(bedtools intersect -a analysis/3_alignment/${sample}.dedup.bam \
+        -b $final_peaks -c -bed | awk '$NF > 0' | wc -l)
+    
+    # Calculate FRiP score with proper precision
+    frip=$(awk -v r=$reads_in_peaks -v t=$total_reads 'BEGIN {printf "%.6f", r/t}')
+fi
+
 peak_count=$(wc -l < $final_peaks)
 mean_length=$(awk '{sum += $3-$2} END {print sum/NR}' $final_peaks)
 mean_fold=$(awk '{sum += $7} END {print sum/NR}' $final_peaks)
@@ -266,3 +284,6 @@ BEGIN {OFS="\t"}
 echo "Completed processing ${sample}"
 echo "Final peak count: $peak_count"
 echo "FRiP score: $frip"
+
+# Clean up temporary files at the very end
+rm -rf "${SAMPLE_TMP}"

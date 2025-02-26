@@ -161,25 +161,23 @@ standardize_chromosomes <- function(gr) {
 
 # Function to read and process peak files from multiple replicates
 read_peaks <- function(peak_files, type) {
-    # For single file input (V5 peaks)
-    if (is.character(peak_files)) {
-        log_message("Reading single peak file...", "DEBUG")
-        log_message(sprintf("File path: %s", peak_files), "DEBUG")
+    # Helper function to read a single peak file
+    read_single_peak_file <- function(peak_file) {
+        if (!file.exists(peak_file)) {
+            stop(sprintf("Peak file not found: %s", peak_file))
+        }
         
         # Generate unique identifier prefix from filename
-        file_prefix <- sub("[.][^.]*$", "", basename(peak_files))
+        file_prefix <- sub("[.][^.]*$", "", basename(peak_file))
         
         # Read raw lines first for counting
-        raw_lines <- readLines(peak_files)
+        raw_lines <- readLines(peak_file)
         log_message(sprintf("Raw number of lines in file: %d", length(raw_lines)), "DEBUG")
         
         peaks <- tryCatch({
             # Parse the file
-            peaks_df <- read.table(peak_files, header = FALSE)
+            peaks_df <- read.table(peak_file, header = FALSE)
             log_message(sprintf("Number of peaks after initial reading: %d", nrow(peaks_df)), "DEBUG")
-            
-            # Add unique row names to peaks_df
-            rownames(peaks_df) <- paste0(file_prefix, "_peak_", seq_len(nrow(peaks_df)))
             
             # Create GRanges
             gr <- GRanges(
@@ -188,103 +186,74 @@ read_peaks <- function(peak_files, type) {
                     start = as.integer(peaks_df$V2),
                     end = as.integer(peaks_df$V3)
                 ),
-                name = paste0(file_prefix, "_peak_", seq_len(nrow(peaks_df))),
-                score = as.numeric(peaks_df$V5),
                 strand = ifelse(peaks_df$V6 == ".", "*", peaks_df$V6)
             )
             
-            log_message(sprintf("Number of peaks after GRanges conversion: %d", length(gr)), "DEBUG")
+            # Add metadata columns with non-reserved names
+            mcols(gr)$peak_name <- paste0(file_prefix, "_peak_", seq_len(nrow(peaks_df)))
+            mcols(gr)$peak_score <- as.numeric(peaks_df$V5)
             
             # Standardize chromosomes
             gr_std <- standardize_chromosomes(gr)
-            log_message(sprintf("Number of peaks after chromosome standardization: %d", length(gr_std)), "DEBUG")
+            log_message(sprintf("Number of peaks after standardization: %d", length(gr_std)), "DEBUG")
             
-            # Print chromosome distribution
-            chrom_counts <- table(seqnames(gr_std))
-            log_message("Chromosome distribution:", "DEBUG")
-            for (chrom in names(chrom_counts)) {
-                log_message(sprintf("  %s: %d peaks", chrom, chrom_counts[chrom]), "DEBUG")
-            }
-            
-            return(gr_std)
-            
+            gr_std
         }, error = function(e) {
-            log_message(sprintf("ERROR reading peaks: %s", e$message), "ERROR")
-            return(GRanges())
+            log_message(sprintf("Error reading peak file %s: %s", peak_file, e$message), "ERROR")
+            stop(e)
         })
+        
         return(peaks)
     }
     
+    # For single file input (V5 peaks)
+    if (is.character(peak_files)) {
+        log_message("Reading single peak file...", "DEBUG")
+        return(read_single_peak_file(peak_files))
+    }
+    
     # For list input (H2AK119Ub peaks)
+    if (!is.list(peak_files) || !type %in% names(peak_files)) {
+        stop("Invalid peak_files input or type not found in peak_files")
+    }
+    
     peaks_list <- list()
     for (condition in names(peak_files[[type]])) {
         condition_peaks <- list()
         for (rep in names(peak_files[[type]][[condition]])) {
             file <- peak_files[[type]][[condition]][[rep]]
             log_message(sprintf("Processing file for %s %s: %s", condition, rep, file), "DEBUG")
+            peaks <- read_single_peak_file(file)
             
-            # Read raw lines first
-            raw_lines <- readLines(file)
-            log_message(sprintf("Raw number of lines: %d", length(raw_lines)), "DEBUG")
-            
-            peaks <- tryCatch({
-                peaks_df <- read.table(file, header = FALSE)
-                log_message(sprintf("Number of peaks after reading: %d", nrow(peaks_df)), "DEBUG")
-                
-                # Use existing peak names from column 4 (V4)
-                peak_ids <- peaks_df$V4
-                
-                gr <- GRanges(
-                    seqnames = peaks_df$V1,
-                    ranges = IRanges(
-                        start = as.integer(peaks_df$V2),
-                        end = as.integer(peaks_df$V3)
-                    ),
-                    name = peak_ids,
-                    score = as.numeric(peaks_df$V5),
-                    strand = ifelse(peaks_df$V6 == ".", "*", peaks_df$V6),
-                    peak_id = peak_ids,
-                    replicate = rep,
-                    condition = condition
-                )
-                
-                # Set names
-                names(gr) <- peak_ids
-                
-                log_message(sprintf("Number of peaks after GRanges conversion: %d", length(gr)), "DEBUG")
-                log_message(sprintf("Sample peak names: %s", paste(head(names(gr)), collapse=", ")), "DEBUG")
-                
-                gr_std <- standardize_chromosomes(gr)
-                log_message(sprintf("Number of peaks after standardization: %d", length(gr_std)), "DEBUG")
-                
-                gr_std
-                
-            }, error = function(e) {
-                log_message(sprintf("ERROR reading file %s: %s", file, e$message), "ERROR")
-                return(GRanges())
-            })
+            # Add condition and replicate metadata
+            mcols(peaks)$condition <- condition
+            mcols(peaks)$replicate <- rep
             
             if (length(peaks) > 0) {
                 condition_peaks[[rep]] <- peaks
             }
         }
-        # Merge replicates for each condition and ensure unique names
-        # Convert GRangesList to list of GRanges first
-        peaks_to_merge <- as.list(condition_peaks)
-        merged_peaks <- do.call(c, peaks_to_merge)
         
-        # Generate new unique names for merged peaks
-        new_names <- paste0(condition, "_merged_peak_", seq_len(length(merged_peaks)))
-        names(merged_peaks) <- new_names
-        mcols(merged_peaks)$original_peak_id <- mcols(merged_peaks)$peak_id  # Save original IDs
-        mcols(merged_peaks)$peak_id <- new_names
-        
-        peaks_list[[condition]] <- merged_peaks
+        if (length(condition_peaks) > 0) {
+            # Convert to GRangesList and merge
+            merged_peaks <- unlist(GRangesList(condition_peaks))
+            
+            # Generate new unique names
+            new_names <- paste0(condition, "_peak_", seq_len(length(merged_peaks)))
+            names(merged_peaks) <- new_names
+            mcols(merged_peaks)$peak_name <- new_names
+            
+            peaks_list[[condition]] <- merged_peaks
+        }
+    }
+    
+    # Return empty GRangesList if no peaks were found
+    if (length(peaks_list) == 0) {
+        return(GRangesList())
     }
     
     # Convert the list to a GRangesList
-    peaks_granges <- GRangesList(peaks_list)
-    return(peaks_granges)
+    return(GRangesList(peaks_list))
 }
 
 # Function to ensure genomic coordinates are valid
@@ -493,8 +462,8 @@ merge_broad_peaks <- function(peaks, min_gap = 1000, min_length = 1000) {
             merged <- range(cluster_peaks)
             
             # Calculate mean score if available
-            if ("score" %in% names(mcols(cluster_peaks))) {
-                mcols(merged)$score <- mean(mcols(cluster_peaks)$score)
+            if ("peak_score" %in% names(mcols(cluster_peaks))) {
+                mcols(merged)$peak_score <- mean(mcols(cluster_peaks)$peak_score)
             }
             
             merged_ranges <- c(merged_ranges, merged)

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=7_visualization
+#SBATCH --job-name=9_visualization
 #SBATCH --account=kubacki.michal
 #SBATCH --mem=64GB
 #SBATCH --time=6:00:00
@@ -7,8 +7,8 @@
 #SBATCH --ntasks=16
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/7_visualization.err"
-#SBATCH --output="logs/7_visualization.out"
+#SBATCH --error="logs/9_visualization.err"
+#SBATCH --output="logs/9_visualization.out"
 
 # Documentation:
 # This script creates visualizations for ChIP-seq peak analysis results.
@@ -56,18 +56,13 @@ cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exi
 
 # Define output directory
 OUTPUT_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/9_visualization"
-
-# Create necessary directories
-log_message "Creating output directories..."
 mkdir -p logs
-mkdir -p ${OUTPUT_DIR}/{peak_analysis,gene_analysis}
-mkdir -p ${OUTPUT_DIR}/summary_statistics
 
 # Check for required input files
 log_message "Checking input files..."
-for type in broad narrow; do
+for type in broad; do
     files=(
-        "analysis/7_differential_binding/diffbind_${type}/significant_peaks.rds"
+        "analysis/7_differential_binding/significant_peaks.rds"
         "analysis/8_annotation_and_enrichment/gene_lists_${type}/YAF_enriched_genes_${type}_full.csv"
     )
     for file in "${files[@]}"; do
@@ -80,6 +75,6 @@ done
 
 # Run R script for visualization
 log_message "Running visualization analysis..."
-Rscript scripts/7_visualization.R ${OUTPUT_DIR}
+Rscript scripts/9_visualization.R ${OUTPUT_DIR}
 
 log_message "Visualization analysis completed"

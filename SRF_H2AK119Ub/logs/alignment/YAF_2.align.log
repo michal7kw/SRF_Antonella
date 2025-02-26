@@ -1,0 +1,36 @@
+[Wed Feb 26 16:24:34 CET 2025] Starting alignment for sample YAF_2
+Host: srcn17
+Working directory: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub
+Available memory:               total        used        free      shared  buff/cache   available
+Mem:          377Gi        45Gi       1.3Gi       341Mi       329Gi       328Gi
+Swap:          31Gi       1.8Gi        30Gi
+Available disk space: Filesystem      Size  Used Avail Use% Mounted on
+beegfs_nodev    1.3P  1.1P  190T  86% /beegfs
+Number of threads: 2
+Input file sizes:
+-rw-rw-r-- 1 kubacki.michal lg_kubacki.michal 6.3G Feb 23 15:03 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/results/trimmed/YAF_2_R1_paired.fastq.gz
+-rw-rw-r-- 1 kubacki.michal lg_kubacki.michal 6.2G Feb 23 15:03 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/results/trimmed/YAF_2_R2_paired.fastq.gz
+Bowtie2 version:
+/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/bin/bowtie2-align-s version 2.5.4
+Checking index files...
+-rw-rw-r-- 1 kubacki.michal lg_kubacki.michal 941M Jan 22 11:37 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/GRCh38.1.bt2
+-rw-rw-r-- 1 kubacki.michal lg_kubacki.michal 703M Jan 22 11:37 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/GRCh38.2.bt2
+-rw-rw-r-- 1 kubacki.michal lg_kubacki.michal 12K Jan 22 11:37 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/GRCh38.3.bt2
+-rw-rw-r-- 1 kubacki.michal lg_kubacki.michal 703M Jan 22 11:37 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/GRCh38.4.bt2
+-rw-rw-r-- 1 kubacki.michal lg_kubacki.michal 941M Jan 22 11:37 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/GRCh38.rev.1.bt2
+-rw-rw-r-- 1 kubacki.michal lg_kubacki.michal 703M Jan 22 11:37 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/GRCh38.rev.2.bt2
+Checking input files...
+[Wed Feb 26 16:24:34 CET 2025] Running bowtie2 command:
+bowtie2 -p 2 \
+    -x /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/GRCh38 \
+    --local --very-sensitive-local \
+    --no-mixed --no-discordant \
+    -I 0 -X 1000 \
+    --rg-id 'YAF_2' \
+    --rg 'SM:YAF_2' \
+    --rg 'PL:ILLUMINA' \
+    --rg 'LB:lib1' \
+    -1 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/results/trimmed/YAF_2_R1_paired.fastq.gz \
+    -2 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/results/trimmed/YAF_2_R2_paired.fastq.gz \
+    -S /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/results/tmp_YAF_2/temp.sam
+[Wed Feb 26 16:24:34 CET 2025] Starting alignment with 82080 second timeout

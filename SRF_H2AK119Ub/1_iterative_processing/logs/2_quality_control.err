@@ -1,0 +1,612 @@
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+WARNING: overwriting environment variables set in the machine
+overwriting variable ['TMPDIR']
+[2025-02-24 15:53:56] Checking required commands...
+[2025-02-24 15:53:56] Creating output directories...
+[2025-02-24 15:53:56] Processing sample: GFP_3
+s...
+[2025-02-24 15:53:56] Running initial FastQC for GFP_3...
+[2025-02-24 15:53:56] Creating output directories...
+[2025-02-24 15:53:56] Processing sample: GFP_1
+[2025-02-24 15:53:56] Running initial FastQC for GFP_1...
+[2025-02-24 15:53:56] Checking required commands...
+[2025-02-24 15:53:56] Creating output directories...
+[2025-02-24 15:53:56] Processing sample: YAF_1
+[2025-02-24 15:53:56] Running initial FastQC for YAF_1...
+[2025-02-24 15:53:56] Checking required commands...
+[2025-02-24 15:53:56] Creating output directories...
+[2025-02-24 15:53:56] Processing sample: GFP_2
+[2025-02-24 15:53:56] Running initial FastQC for GFP_2...
+[2025-02-24 15:53:56] Checking required commands...
+[2025-02-24 15:53:56] Checking required commands...
+[2025-02-24 15:53:56] Creating output directories...
+[2025-02-24 15:53:56] Creating output directories...
+[2025-02-24 15:53:56] Processing sample: YAF_2
+[2025-02-24 15:53:56] Processing sample: YAF_3
+[2025-02-24 15:53:56] Running initial FastQC for YAF_2...
+[2025-02-24 15:53:56] Running initial FastQC for YAF_3...
+Started analysis of GFP_3_R1_001.fastq.gz
+Started analysis of YAF_2_R1_001.fastq.gz
+Started analysis of GFP_2_R1_001.fastq.gz
+Started analysis of YAF_1_R1_001.fastq.gz
+Started analysis of GFP_3_R2_001.fastq.gz
+Started analysis of YAF_1_R2_001.fastq.gz
+Started analysis of YAF_2_R2_001.fastq.gz
+Started analysis of GFP_2_R2_001.fastq.gz
+Approx 5% complete for GFP_3_R2_001.fastq.gz
+Approx 5% complete for GFP_3_R1_001.fastq.gz
+Approx 5% complete for GFP_1_R1_001.fastq.gz
+Approx 5% complete for GFP_1_R2_001.fastq.gz
+Approx 5% complete for YAF_1_R2_001.fastq.gz
+Approx 5% complete for YAF_1_R1_001.fastq.gz
+Approx 5% complete for YAF_3_R2_001.fastq.gz
+Approx 5% complete for YAF_3_R1_001.fastq.gz
+Approx 5% complete for GFP_2_R1_001.fastq.gz
+Approx 5% complete for GFP_2_R2_001.fastq.gz
+Approx 5% complete for YAF_2_R2_001.fastq.gz
+Approx 5% complete for YAF_2_R1_001.fastq.gz
+Approx 10% complete for GFP_3_R2_001.fastq.gz
+Approx 10% complete for GFP_3_R1_001.fastq.gz
+Approx 10% complete for GFP_1_R2_001.fastq.gz
+Approx 10% complete for GFP_1_R1_001.fastq.gz
+Approx 10% complete for YAF_1_R2_001.fastq.gz
+Approx 10% complete for YAF_1_R1_001.fastq.gz
+Approx 10% complete for YAF_3_R2_001.fastq.gz
+Approx 10% complete for YAF_3_R1_001.fastq.gz
+Approx 10% complete for GFP_2_R1_001.fastq.gz
+Approx 10% complete for GFP_2_R2_001.fastq.gz
+Approx 15% complete for GFP_3_R2_001.fastq.gz
+Approx 15% complete for GFP_3_R1_001.fastq.gz
+Approx 15% complete for GFP_1_R1_001.fastq.gz
+Approx 15% complete for GFP_1_R2_001.fastq.gz
+Approx 10% complete for YAF_2_R2_001.fastq.gz
+Approx 10% complete for YAF_2_R1_001.fastq.gz
+Approx 15% complete for YAF_1_R2_001.fastq.gz
+Approx 15% complete for YAF_1_R1_001.fastq.gz
+Approx 15% complete for YAF_3_R2_001.fastq.gz
+Approx 15% complete for YAF_3_R1_001.fastq.gz
+Approx 20% complete for GFP_3_R2_001.fastq.gz
+Approx 20% complete for GFP_3_R1_001.fastq.gz
+Approx 15% complete for GFP_2_R1_001.fastq.gz
+Approx 15% complete for GFP_2_R2_001.fastq.gz
+Approx 20% complete for GFP_1_R2_001.fastq.gz
+Approx 20% complete for GFP_1_R1_001.fastq.gz
+Approx 20% complete for YAF_1_R2_001.fastq.gz
+Approx 25% complete for GFP_3_R2_001.fastq.gz
+Approx 15% complete for YAF_2_R2_001.fastq.gz
+Approx 20% complete for YAF_1_R1_001.fastq.gz
+Approx 25% complete for GFP_3_R1_001.fastq.gz
+Approx 20% complete for YAF_3_R2_001.fastq.gz
+Approx 20% complete for YAF_3_R1_001.fastq.gz
+Approx 15% complete for YAF_2_R1_001.fastq.gz
+Approx 25% complete for GFP_1_R2_001.fastq.gz
+Approx 25% complete for GFP_1_R1_001.fastq.gz
+Approx 20% complete for GFP_2_R1_001.fastq.gz
+Approx 20% complete for GFP_2_R2_001.fastq.gz
+Approx 30% complete for GFP_3_R2_001.fastq.gz
+Approx 30% complete for GFP_3_R1_001.fastq.gz
+Approx 25% complete for YAF_1_R2_001.fastq.gz
+Approx 25% complete for YAF_1_R1_001.fastq.gz
+Approx 25% complete for YAF_3_R2_001.fastq.gz
+Approx 30% complete for GFP_1_R2_001.fastq.gz
+Approx 30% complete for GFP_1_R1_001.fastq.gz
+Approx 25% complete for YAF_3_R1_001.fastq.gz
+Approx 20% complete for YAF_2_R2_001.fastq.gz
+Approx 25% complete for GFP_2_R1_001.fastq.gz
+Approx 35% complete for GFP_3_R2_001.fastq.gz
+Approx 20% complete for YAF_2_R1_001.fastq.gz
+Approx 25% complete for GFP_2_R2_001.fastq.gz
+Approx 35% complete for GFP_3_R1_001.fastq.gz
+Approx 30% complete for YAF_1_R2_001.fastq.gz
+Approx 35% complete for GFP_1_R2_001.fastq.gz
+Approx 35% complete for GFP_1_R1_001.fastq.gz
+Approx 30% complete for YAF_1_R1_001.fastq.gz
+Approx 30% complete for YAF_3_R2_001.fastq.gz
+Approx 30% complete for YAF_3_R1_001.fastq.gz
+Approx 40% complete for GFP_3_R2_001.fastq.gz
+Approx 40% complete for GFP_3_R1_001.fastq.gz
+Approx 30% complete for GFP_2_R1_001.fastq.gz
+Approx 25% complete for YAF_2_R2_001.fastq.gz
+Approx 30% complete for GFP_2_R2_001.fastq.gz
+Approx 40% complete for GFP_1_R2_001.fastq.gz
+Approx 40% complete for GFP_1_R1_001.fastq.gz
+Approx 35% complete for YAF_1_R2_001.fastq.gz
+Approx 25% complete for YAF_2_R1_001.fastq.gz
+Approx 35% complete for YAF_1_R1_001.fastq.gz
+Approx 35% complete for YAF_3_R2_001.fastq.gz
+Approx 45% complete for GFP_3_R2_001.fastq.gz
+Approx 35% complete for YAF_3_R1_001.fastq.gz
+Approx 45% complete for GFP_3_R1_001.fastq.gz
+Approx 45% complete for GFP_1_R2_001.fastq.gz
+Approx 45% complete for GFP_1_R1_001.fastq.gz
+Approx 35% complete for GFP_2_R1_001.fastq.gz
+Approx 35% complete for GFP_2_R2_001.fastq.gz
+Approx 40% complete for YAF_1_R2_001.fastq.gz
+Approx 50% complete for GFP_3_R2_001.fastq.gz
+Approx 30% complete for YAF_2_R2_001.fastq.gz
+Approx 40% complete for YAF_1_R1_001.fastq.gz
+Approx 40% complete for YAF_3_R2_001.fastq.gz
+Approx 50% complete for GFP_3_R1_001.fastq.gz
+Approx 40% complete for YAF_3_R1_001.fastq.gz
+Approx 30% complete for YAF_2_R1_001.fastq.gz
+Approx 50% complete for GFP_1_R2_001.fastq.gz
+Approx 50% complete for GFP_1_R1_001.fastq.gz
+Approx 55% complete for GFP_3_R2_001.fastq.gz
+Approx 40% complete for GFP_2_R1_001.fastq.gz
+Approx 45% complete for YAF_1_R2_001.fastq.gz
+Approx 55% complete for GFP_3_R1_001.fastq.gz
+Approx 40% complete for GFP_2_R2_001.fastq.gz
+Approx 45% complete for YAF_1_R1_001.fastq.gz
+Approx 45% complete for YAF_3_R2_001.fastq.gz
+Approx 55% complete for GFP_1_R2_001.fastq.gz
+Approx 35% complete for YAF_2_R2_001.fastq.gz
+Approx 45% complete for YAF_3_R1_001.fastq.gz
+Approx 55% complete for GFP_1_R1_001.fastq.gz
+Approx 60% complete for GFP_3_R2_001.fastq.gz
+Approx 60% complete for GFP_3_R1_001.fastq.gz
+Approx 35% complete for YAF_2_R1_001.fastq.gz
+Approx 50% complete for YAF_1_R2_001.fastq.gz
+Approx 45% complete for GFP_2_R1_001.fastq.gz
+Approx 45% complete for GFP_2_R2_001.fastq.gz
+Approx 50% complete for YAF_1_R1_001.fastq.gz
+Approx 60% complete for GFP_1_R2_001.fastq.gz
+Approx 50% complete for YAF_3_R2_001.fastq.gz
+Approx 60% complete for GFP_1_R1_001.fastq.gz
+Approx 65% complete for GFP_3_R2_001.fastq.gz
+Approx 50% complete for YAF_3_R1_001.fastq.gz
+Approx 65% complete for GFP_3_R1_001.fastq.gz
+Approx 40% complete for YAF_2_R2_001.fastq.gz
+Approx 55% complete for YAF_1_R2_001.fastq.gz
+Approx 65% complete for GFP_1_R2_001.fastq.gz
+Approx 70% complete for GFP_3_R2_001.fastq.gz
+Approx 65% complete for GFP_1_R1_001.fastq.gz
+Approx 50% complete for GFP_2_R1_001.fastq.gz
+Approx 55% complete for YAF_3_R2_001.fastq.gz
+Approx 40% complete for YAF_2_R1_001.fastq.gz
+Approx 55% complete for YAF_1_R1_001.fastq.gz
+Approx 50% complete for GFP_2_R2_001.fastq.gz
+Approx 70% complete for GFP_3_R1_001.fastq.gz
+Approx 55% complete for YAF_3_R1_001.fastq.gz
+Approx 70% complete for GFP_1_R2_001.fastq.gz
+Approx 75% complete for GFP_3_R2_001.fastq.gz
+Approx 60% complete for YAF_1_R2_001.fastq.gz
+Approx 70% complete for GFP_1_R1_001.fastq.gz
+Approx 45% complete for YAF_2_R2_001.fastq.gz
+Approx 75% complete for GFP_3_R1_001.fastq.gz
+Approx 60% complete for YAF_3_R2_001.fastq.gz
+Approx 60% complete for YAF_1_R1_001.fastq.gz
+Approx 55% complete for GFP_2_R2_001.fastq.gz
+Approx 55% complete for GFP_2_R1_001.fastq.gz
+Approx 60% complete for YAF_3_R1_001.fastq.gz
+Approx 45% complete for YAF_2_R1_001.fastq.gz
+Approx 80% complete for GFP_3_R2_001.fastq.gz
+Approx 75% complete for GFP_1_R2_001.fastq.gz
+Approx 75% complete for GFP_1_R1_001.fastq.gz
+Approx 65% complete for YAF_1_R2_001.fastq.gz
+Approx 80% complete for GFP_3_R1_001.fastq.gz
+Approx 65% complete for YAF_3_R2_001.fastq.gz
+Approx 65% complete for YAF_1_R1_001.fastq.gz
+Approx 60% complete for GFP_2_R2_001.fastq.gz
+Approx 50% complete for YAF_2_R2_001.fastq.gz
+Approx 60% complete for GFP_2_R1_001.fastq.gz
+Approx 85% complete for GFP_3_R2_001.fastq.gz
+Approx 80% complete for GFP_1_R2_001.fastq.gz
+Approx 65% complete for YAF_3_R1_001.fastq.gz
+Approx 80% complete for GFP_1_R1_001.fastq.gz
+Approx 85% complete for GFP_3_R1_001.fastq.gz
+Approx 70% complete for YAF_1_R2_001.fastq.gz
+Approx 50% complete for YAF_2_R1_001.fastq.gz
+Approx 70% complete for YAF_3_R2_001.fastq.gz
+Approx 90% complete for GFP_3_R2_001.fastq.gz
+Approx 70% complete for YAF_1_R1_001.fastq.gz
+Approx 85% complete for GFP_1_R2_001.fastq.gz
+Approx 65% complete for GFP_2_R2_001.fastq.gz
+Approx 65% complete for GFP_2_R1_001.fastq.gz
+Approx 85% complete for GFP_1_R1_001.fastq.gz
+Approx 70% complete for YAF_3_R1_001.fastq.gz
+Approx 90% complete for GFP_3_R1_001.fastq.gz
+Approx 55% complete for YAF_2_R2_001.fastq.gz
+Approx 75% complete for YAF_1_R2_001.fastq.gz
+Approx 95% complete for GFP_3_R2_001.fastq.gz
+Approx 90% complete for GFP_1_R2_001.fastq.gz
+Approx 75% complete for YAF_3_R2_001.fastq.gz
+Approx 75% complete for YAF_1_R1_001.fastq.gz
+Approx 90% complete for GFP_1_R1_001.fastq.gz
+Approx 55% complete for YAF_2_R1_001.fastq.gz
+Approx 95% complete for GFP_3_R1_001.fastq.gz
+Approx 70% complete for GFP_2_R2_001.fastq.gz
+Approx 70% complete for GFP_2_R1_001.fastq.gz
+Approx 75% complete for YAF_3_R1_001.fastq.gz
+Approx 80% complete for YAF_1_R2_001.fastq.gz
+Approx 95% complete for GFP_1_R2_001.fastq.gz
+Approx 60% complete for YAF_2_R2_001.fastq.gz
+Approx 80% complete for YAF_3_R2_001.fastq.gz
+Approx 95% complete for GFP_1_R1_001.fastq.gz
+Approx 80% complete for YAF_1_R1_001.fastq.gz
+[2025-02-24 16:03:21] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/GFP_3_R1_001_fastqc.html (629K)
+[2025-02-24 16:03:21] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/GFP_3_R2_001_fastqc.html (627K)
+[2025-02-24 16:03:21] Trimming GFP_3...
+Approx 75% complete for GFP_2_R2_001.fastq.gz
+Approx 80% complete for YAF_3_R1_001.fastq.gz
+Approx 75% complete for GFP_2_R1_001.fastq.gz
+Approx 60% complete for YAF_2_R1_001.fastq.gz
+Approx 85% complete for YAF_1_R2_001.fastq.gz
+[2025-02-24 16:03:48] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/GFP_1_R1_001_fastqc.html (624K)
+[2025-02-24 16:03:48] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/GFP_1_R2_001_fastqc.html (621K)
+[2025-02-24 16:03:48] Trimming GFP_1...
+Approx 85% complete for YAF_3_R2_001.fastq.gz
+Approx 65% complete for YAF_2_R2_001.fastq.gz
+Approx 85% complete for YAF_1_R1_001.fastq.gz
+Approx 80% complete for GFP_2_R2_001.fastq.gz
+Approx 85% complete for YAF_3_R1_001.fastq.gz
+Approx 80% complete for GFP_2_R1_001.fastq.gz
+Approx 90% complete for YAF_1_R2_001.fastq.gz
+Approx 90% complete for YAF_3_R2_001.fastq.gz
+Approx 65% complete for YAF_2_R1_001.fastq.gz
+Approx 90% complete for YAF_1_R1_001.fastq.gz
+Approx 70% complete for YAF_2_R2_001.fastq.gz
+Approx 85% complete for GFP_2_R2_001.fastq.gz
+Approx 90% complete for YAF_3_R1_001.fastq.gz
+Approx 95% complete for YAF_1_R2_001.fastq.gz
+Approx 85% complete for GFP_2_R1_001.fastq.gz
+Approx 95% complete for YAF_3_R2_001.fastq.gz
+Approx 95% complete for YAF_1_R1_001.fastq.gz
+Approx 70% complete for YAF_2_R1_001.fastq.gz
+Approx 90% complete for GFP_2_R2_001.fastq.gz
+Approx 95% complete for YAF_3_R1_001.fastq.gz
+Approx 75% complete for YAF_2_R2_001.fastq.gz
+Approx 90% complete for GFP_2_R1_001.fastq.gz
+[2025-02-24 16:05:36] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/YAF_1_R1_001_fastqc.html (630K)
+[2025-02-24 16:05:36] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/YAF_1_R2_001_fastqc.html (629K)
+[2025-02-24 16:05:36] Trimming YAF_1...
+Approx 95% complete for GFP_2_R2_001.fastq.gz
+[2025-02-24 16:05:56] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/YAF_3_R1_001_fastqc.html (636K)
+[2025-02-24 16:05:56] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/YAF_3_R2_001_fastqc.html (632K)
+[2025-02-24 16:05:56] Trimming YAF_3...
+Approx 75% complete for YAF_2_R1_001.fastq.gz
+Approx 95% complete for GFP_2_R1_001.fastq.gz
+Approx 80% complete for YAF_2_R2_001.fastq.gz
+[2025-02-24 16:06:42] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/GFP_2_R1_001_fastqc.html (620K)
+[2025-02-24 16:06:42] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/GFP_2_R2_001_fastqc.html (623K)
+[2025-02-24 16:06:42] Trimming GFP_2...
+Approx 80% complete for YAF_2_R1_001.fastq.gz
+Approx 85% complete for YAF_2_R2_001.fastq.gz
+Approx 85% complete for YAF_2_R1_001.fastq.gz
+Approx 90% complete for YAF_2_R2_001.fastq.gz
+Approx 95% complete for YAF_2_R2_001.fastq.gz
+Approx 90% complete for YAF_2_R1_001.fastq.gz
+Approx 95% complete for YAF_2_R1_001.fastq.gz
+[2025-02-24 16:10:02] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/YAF_2_R1_001_fastqc.html (651K)
+[2025-02-24 16:10:02] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/pre_trim/YAF_2_R2_001_fastqc.html (640K)
+[2025-02-24 16:10:03] Trimming YAF_2...
+[2025-02-24 16:44:51] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_3_R1_paired.fastq.gz (4.2G)
+[2025-02-24 16:44:52] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_3_R2_paired.fastq.gz (4.1G)
+[2025-02-24 16:44:52] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/logs/trimming/GFP_3.log (1.5K)
+[2025-02-24 16:44:52] Running post-trim FastQC for GFP_3...
+Started analysis of GFP_3_R1_paired.fastq.gz
+Started analysis of GFP_3_R2_paired.fastq.gz
+Approx 5% complete for GFP_3_R1_paired.fastq.gz
+Approx 5% complete for GFP_3_R2_paired.fastq.gz
+Approx 10% complete for GFP_3_R1_paired.fastq.gz
+Approx 10% complete for GFP_3_R2_paired.fastq.gz
+Approx 15% complete for GFP_3_R1_paired.fastq.gz
+Approx 15% complete for GFP_3_R2_paired.fastq.gz
+Approx 20% complete for GFP_3_R1_paired.fastq.gz
+Approx 20% complete for GFP_3_R2_paired.fastq.gz
+Approx 25% complete for GFP_3_R1_paired.fastq.gz
+Approx 25% complete for GFP_3_R2_paired.fastq.gz
+Approx 30% complete for GFP_3_R1_paired.fastq.gz
+Approx 30% complete for GFP_3_R2_paired.fastq.gz
+Approx 35% complete for GFP_3_R1_paired.fastq.gz
+Approx 35% complete for GFP_3_R2_paired.fastq.gz
+Approx 40% complete for GFP_3_R1_paired.fastq.gz
+Approx 40% complete for GFP_3_R2_paired.fastq.gz
+Approx 45% complete for GFP_3_R1_paired.fastq.gz
+Approx 45% complete for GFP_3_R2_paired.fastq.gz
+Approx 50% complete for GFP_3_R1_paired.fastq.gz
+Approx 50% complete for GFP_3_R2_paired.fastq.gz
+Approx 55% complete for GFP_3_R1_paired.fastq.gz
+Approx 55% complete for GFP_3_R2_paired.fastq.gz
+Approx 60% complete for GFP_3_R1_paired.fastq.gz
+Approx 60% complete for GFP_3_R2_paired.fastq.gz
+Approx 65% complete for GFP_3_R1_paired.fastq.gz
+Approx 65% complete for GFP_3_R2_paired.fastq.gz
+Approx 70% complete for GFP_3_R1_paired.fastq.gz
+Approx 70% complete for GFP_3_R2_paired.fastq.gz
+Approx 75% complete for GFP_3_R1_paired.fastq.gz
+Approx 75% complete for GFP_3_R2_paired.fastq.gz
+Approx 80% complete for GFP_3_R1_paired.fastq.gz
+Approx 80% complete for GFP_3_R2_paired.fastq.gz
+Approx 85% complete for GFP_3_R1_paired.fastq.gz
+Approx 85% complete for GFP_3_R2_paired.fastq.gz
+Approx 90% complete for GFP_3_R1_paired.fastq.gz
+Approx 90% complete for GFP_3_R2_paired.fastq.gz
+Approx 95% complete for GFP_3_R1_paired.fastq.gz
+Approx 95% complete for GFP_3_R2_paired.fastq.gz
+[2025-02-24 16:52:53] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_1_R1_paired.fastq.gz (4.9G)
+[2025-02-24 16:52:53] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_1_R2_paired.fastq.gz (4.7G)
+[2025-02-24 16:52:53] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/logs/trimming/GFP_1.log (1.5K)
+[2025-02-24 16:52:53] Running post-trim FastQC for GFP_1...
+[2025-02-24 16:52:53] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/GFP_3_R1_paired_fastqc.html (634K)
+[2025-02-24 16:52:53] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/GFP_3_R2_paired_fastqc.html (635K)
+[2025-02-24 16:52:53] Calculating statistics for GFP_3...
+Started analysis of GFP_1_R1_paired.fastq.gz
+Started analysis of GFP_1_R2_paired.fastq.gz
+Approx 5% complete for GFP_1_R1_paired.fastq.gz
+Approx 5% complete for GFP_1_R2_paired.fastq.gz
+Approx 10% complete for GFP_1_R1_paired.fastq.gz
+Approx 10% complete for GFP_1_R2_paired.fastq.gz
+Approx 15% complete for GFP_1_R1_paired.fastq.gz
+Approx 15% complete for GFP_1_R2_paired.fastq.gz
+Approx 20% complete for GFP_1_R1_paired.fastq.gz
+Approx 20% complete for GFP_1_R2_paired.fastq.gz
+Approx 25% complete for GFP_1_R1_paired.fastq.gz
+Approx 25% complete for GFP_1_R2_paired.fastq.gz
+Approx 30% complete for GFP_1_R1_paired.fastq.gz
+Approx 30% complete for GFP_1_R2_paired.fastq.gz
+Approx 35% complete for GFP_1_R1_paired.fastq.gz
+Approx 35% complete for GFP_1_R2_paired.fastq.gz
+Approx 40% complete for GFP_1_R1_paired.fastq.gz
+Approx 40% complete for GFP_1_R2_paired.fastq.gz
+Approx 45% complete for GFP_1_R1_paired.fastq.gz
+Approx 45% complete for GFP_1_R2_paired.fastq.gz
+[2025-02-24 16:57:22] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/YAF_3_R1_paired.fastq.gz (5.1G)
+[2025-02-24 16:57:22] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/YAF_3_R2_paired.fastq.gz (5.0G)
+[2025-02-24 16:57:22] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/logs/trimming/YAF_3.log (1.5K)
+[2025-02-24 16:57:22] Running post-trim FastQC for YAF_3...
+Started analysis of YAF_3_R1_paired.fastq.gz
+Started analysis of YAF_3_R2_paired.fastq.gz
+Approx 50% complete for GFP_1_R1_paired.fastq.gz
+Approx 50% complete for GFP_1_R2_paired.fastq.gz
+Approx 55% complete for GFP_1_R1_paired.fastq.gz
+Approx 55% complete for GFP_1_R2_paired.fastq.gz
+Approx 5% complete for YAF_3_R1_paired.fastq.gz
+Approx 5% complete for YAF_3_R2_paired.fastq.gz
+Approx 60% complete for GFP_1_R1_paired.fastq.gz
+Approx 60% complete for GFP_1_R2_paired.fastq.gz
+Approx 10% complete for YAF_3_R1_paired.fastq.gz
+Approx 10% complete for YAF_3_R2_paired.fastq.gz
+[2025-02-24 16:58:30] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/YAF_1_R1_paired.fastq.gz (5.2G)
+[2025-02-24 16:58:30] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/YAF_1_R2_paired.fastq.gz (5.0G)
+[2025-02-24 16:58:30] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/logs/trimming/YAF_1.log (1.5K)
+[2025-02-24 16:58:30] Running post-trim FastQC for YAF_1...
+Started analysis of YAF_1_R1_paired.fastq.gz
+Started analysis of YAF_1_R2_paired.fastq.gz
+Approx 65% complete for GFP_1_R1_paired.fastq.gz
+Approx 65% complete for GFP_1_R2_paired.fastq.gz
+Approx 15% complete for YAF_3_R1_paired.fastq.gz
+Approx 15% complete for YAF_3_R2_paired.fastq.gz
+Approx 5% complete for YAF_1_R2_paired.fastq.gz
+Approx 5% complete for YAF_1_R1_paired.fastq.gz
+Approx 70% complete for GFP_1_R1_paired.fastq.gz
+Approx 70% complete for GFP_1_R2_paired.fastq.gz
+Approx 20% complete for YAF_3_R1_paired.fastq.gz
+Approx 75% complete for GFP_1_R1_paired.fastq.gz
+Approx 20% complete for YAF_3_R2_paired.fastq.gz
+Approx 10% complete for YAF_1_R2_paired.fastq.gz
+Approx 75% complete for GFP_1_R2_paired.fastq.gz
+Approx 10% complete for YAF_1_R1_paired.fastq.gz
+Approx 80% complete for GFP_1_R1_paired.fastq.gz
+Approx 80% complete for GFP_1_R2_paired.fastq.gz
+Approx 25% complete for YAF_3_R1_paired.fastq.gz
+Approx 15% complete for YAF_1_R2_paired.fastq.gz
+Approx 15% complete for YAF_1_R1_paired.fastq.gz
+Approx 25% complete for YAF_3_R2_paired.fastq.gz
+Approx 85% complete for GFP_1_R1_paired.fastq.gz
+Approx 85% complete for GFP_1_R2_paired.fastq.gz
+Approx 30% complete for YAF_3_R1_paired.fastq.gz
+Approx 20% complete for YAF_1_R1_paired.fastq.gz
+Approx 20% complete for YAF_1_R2_paired.fastq.gz
+Approx 30% complete for YAF_3_R2_paired.fastq.gz
+Approx 90% complete for GFP_1_R1_paired.fastq.gz
+Approx 90% complete for GFP_1_R2_paired.fastq.gz
+Approx 25% complete for YAF_1_R1_paired.fastq.gz
+Approx 25% complete for YAF_1_R2_paired.fastq.gz
+Approx 35% complete for YAF_3_R1_paired.fastq.gz
+Approx 35% complete for YAF_3_R2_paired.fastq.gz
+Approx 95% complete for GFP_1_R1_paired.fastq.gz
+Approx 95% complete for GFP_1_R2_paired.fastq.gz
+Approx 30% complete for YAF_1_R1_paired.fastq.gz
+Approx 30% complete for YAF_1_R2_paired.fastq.gz
+Approx 40% complete for YAF_3_R1_paired.fastq.gz
+Approx 40% complete for YAF_3_R2_paired.fastq.gz
+[2025-02-24 17:01:45] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/GFP_1_R1_paired_fastqc.html (634K)
+[2025-02-24 17:01:45] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/GFP_1_R2_paired_fastqc.html (630K)
+[2025-02-24 17:01:46] Calculating statistics for GFP_1...
+[2025-02-24 17:02:01] Statistics for GFP_3:
+[2025-02-24 17:02:01]   Raw R1 reads: 76072069
+[2025-02-24 17:02:01]   Raw R2 reads: 76072069
+[2025-02-24 17:02:01]   Clean R1 reads: 75300228
+[2025-02-24 17:02:01]   Clean R2 reads: 75300228
+[2025-02-24 17:02:01]   Retention rate: 98.00%
+[2025-02-24 17:02:01] Quality control completed for GFP_3
+Approx 35% complete for YAF_1_R1_paired.fastq.gz
+Approx 35% complete for YAF_1_R2_paired.fastq.gz
+Approx 45% complete for YAF_3_R1_paired.fastq.gz
+Approx 45% complete for YAF_3_R2_paired.fastq.gz
+Approx 40% complete for YAF_1_R1_paired.fastq.gz
+Approx 40% complete for YAF_1_R2_paired.fastq.gz
+Approx 50% complete for YAF_3_R1_paired.fastq.gz
+Approx 50% complete for YAF_3_R2_paired.fastq.gz
+[2025-02-24 17:02:59] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_2_R1_paired.fastq.gz (5.4G)
+[2025-02-24 17:02:59] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/GFP_2_R2_paired.fastq.gz (5.1G)
+[2025-02-24 17:02:59] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/logs/trimming/GFP_2.log (1.5K)
+[2025-02-24 17:02:59] Running post-trim FastQC for GFP_2...
+Started analysis of GFP_2_R1_paired.fastq.gz
+Started analysis of GFP_2_R2_paired.fastq.gz
+Approx 45% complete for YAF_1_R1_paired.fastq.gz
+Approx 45% complete for YAF_1_R2_paired.fastq.gz
+Approx 55% complete for YAF_3_R1_paired.fastq.gz
+Approx 55% complete for YAF_3_R2_paired.fastq.gz
+Approx 50% complete for YAF_1_R1_paired.fastq.gz
+Approx 50% complete for YAF_1_R2_paired.fastq.gz
+Approx 5% complete for GFP_2_R2_paired.fastq.gz
+Approx 5% complete for GFP_2_R1_paired.fastq.gz
+Approx 60% complete for YAF_3_R1_paired.fastq.gz
+Approx 60% complete for YAF_3_R2_paired.fastq.gz
+Approx 55% complete for YAF_1_R1_paired.fastq.gz
+Approx 55% complete for YAF_1_R2_paired.fastq.gz
+Approx 10% complete for GFP_2_R2_paired.fastq.gz
+Approx 10% complete for GFP_2_R1_paired.fastq.gz
+Approx 65% complete for YAF_3_R1_paired.fastq.gz
+Approx 65% complete for YAF_3_R2_paired.fastq.gz
+Approx 60% complete for YAF_1_R1_paired.fastq.gz
+Approx 60% complete for YAF_1_R2_paired.fastq.gz
+Approx 15% complete for GFP_2_R2_paired.fastq.gz
+Approx 70% complete for YAF_3_R1_paired.fastq.gz
+Approx 15% complete for GFP_2_R1_paired.fastq.gz
+Approx 70% complete for YAF_3_R2_paired.fastq.gz
+Approx 65% complete for YAF_1_R1_paired.fastq.gz
+Approx 65% complete for YAF_1_R2_paired.fastq.gz
+Approx 75% complete for YAF_3_R1_paired.fastq.gz
+Approx 20% complete for GFP_2_R2_paired.fastq.gz
+Approx 20% complete for GFP_2_R1_paired.fastq.gz
+Approx 75% complete for YAF_3_R2_paired.fastq.gz
+Approx 70% complete for YAF_1_R1_paired.fastq.gz
+Approx 70% complete for YAF_1_R2_paired.fastq.gz
+Approx 80% complete for YAF_3_R1_paired.fastq.gz
+Approx 25% complete for GFP_2_R2_paired.fastq.gz
+Approx 25% complete for GFP_2_R1_paired.fastq.gz
+Approx 80% complete for YAF_3_R2_paired.fastq.gz
+Approx 75% complete for YAF_1_R1_paired.fastq.gz
+Approx 75% complete for YAF_1_R2_paired.fastq.gz
+Approx 85% complete for YAF_3_R1_paired.fastq.gz
+Approx 30% complete for GFP_2_R2_paired.fastq.gz
+Approx 80% complete for YAF_1_R1_paired.fastq.gz
+Approx 30% complete for GFP_2_R1_paired.fastq.gz
+Approx 85% complete for YAF_3_R2_paired.fastq.gz
+Approx 80% complete for YAF_1_R2_paired.fastq.gz
+Approx 90% complete for YAF_3_R1_paired.fastq.gz
+Approx 85% complete for YAF_1_R1_paired.fastq.gz
+Approx 35% complete for GFP_2_R2_paired.fastq.gz
+Approx 90% complete for YAF_3_R2_paired.fastq.gz
+Approx 85% complete for YAF_1_R2_paired.fastq.gz
+Approx 35% complete for GFP_2_R1_paired.fastq.gz
+Approx 95% complete for YAF_3_R1_paired.fastq.gz
+Approx 90% complete for YAF_1_R1_paired.fastq.gz
+Approx 90% complete for YAF_1_R2_paired.fastq.gz
+Approx 95% complete for YAF_3_R2_paired.fastq.gz
+Approx 40% complete for GFP_2_R2_paired.fastq.gz
+Approx 40% complete for GFP_2_R1_paired.fastq.gz
+Approx 95% complete for YAF_1_R1_paired.fastq.gz
+Approx 95% complete for YAF_1_R2_paired.fastq.gz
+Approx 45% complete for GFP_2_R2_paired.fastq.gz
+[2025-02-24 17:07:58] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/YAF_3_R1_paired_fastqc.html (640K)
+[2025-02-24 17:07:58] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/YAF_3_R2_paired_fastqc.html (640K)
+[2025-02-24 17:07:58] Calculating statistics for YAF_3...
+Approx 45% complete for GFP_2_R1_paired.fastq.gz
+[2025-02-24 17:08:21] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/YAF_1_R1_paired_fastqc.html (635K)
+[2025-02-24 17:08:21] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/YAF_1_R2_paired_fastqc.html (638K)
+[2025-02-24 17:08:21] Calculating statistics for YAF_1...
+Approx 50% complete for GFP_2_R2_paired.fastq.gz
+Approx 50% complete for GFP_2_R1_paired.fastq.gz
+Approx 55% complete for GFP_2_R2_paired.fastq.gz
+Approx 55% complete for GFP_2_R1_paired.fastq.gz
+Approx 60% complete for GFP_2_R2_paired.fastq.gz
+[2025-02-24 17:09:40] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/YAF_2_R1_paired.fastq.gz (6.2G)
+[2025-02-24 17:09:40] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/YAF_2_R2_paired.fastq.gz (6.2G)
+[2025-02-24 17:09:40] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/logs/trimming/YAF_2.log (1.5K)
+[2025-02-24 17:09:40] Running post-trim FastQC for YAF_2...
+Started analysis of YAF_2_R1_paired.fastq.gz
+Approx 60% complete for GFP_2_R1_paired.fastq.gz
+Started analysis of YAF_2_R2_paired.fastq.gz
+Approx 65% complete for GFP_2_R2_paired.fastq.gz
+Approx 65% complete for GFP_2_R1_paired.fastq.gz
+Approx 5% complete for YAF_2_R1_paired.fastq.gz
+Approx 5% complete for YAF_2_R2_paired.fastq.gz
+Approx 70% complete for GFP_2_R2_paired.fastq.gz
+Approx 70% complete for GFP_2_R1_paired.fastq.gz
+Approx 10% complete for YAF_2_R1_paired.fastq.gz
+Approx 10% complete for YAF_2_R2_paired.fastq.gz
+Approx 75% complete for GFP_2_R2_paired.fastq.gz
+Approx 75% complete for GFP_2_R1_paired.fastq.gz
+Approx 15% complete for YAF_2_R1_paired.fastq.gz
+Approx 15% complete for YAF_2_R2_paired.fastq.gz
+Approx 80% complete for GFP_2_R2_paired.fastq.gz
+Approx 80% complete for GFP_2_R1_paired.fastq.gz
+Approx 20% complete for YAF_2_R1_paired.fastq.gz
+[2025-02-24 17:12:12] Statistics for GFP_1:
+[2025-02-24 17:12:12]   Raw R1 reads: 85886392
+[2025-02-24 17:12:12]   Raw R2 reads: 85886392
+[2025-02-24 17:12:12]   Clean R1 reads: 85132423
+[2025-02-24 17:12:12]   Clean R2 reads: 85132423
+[2025-02-24 17:12:12]   Retention rate: 99.00%
+[2025-02-24 17:12:12] Quality control completed for GFP_1
+Approx 85% complete for GFP_2_R2_paired.fastq.gz
+Approx 85% complete for GFP_2_R1_paired.fastq.gz
+Approx 20% complete for YAF_2_R2_paired.fastq.gz
+Approx 25% complete for YAF_2_R1_paired.fastq.gz
+Approx 90% complete for GFP_2_R2_paired.fastq.gz
+Approx 90% complete for GFP_2_R1_paired.fastq.gz
+Approx 25% complete for YAF_2_R2_paired.fastq.gz
+Approx 95% complete for GFP_2_R2_paired.fastq.gz
+Approx 30% complete for YAF_2_R1_paired.fastq.gz
+Approx 95% complete for GFP_2_R1_paired.fastq.gz
+Approx 30% complete for YAF_2_R2_paired.fastq.gz
+[2025-02-24 17:14:02] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/GFP_2_R1_paired_fastqc.html (630K)
+[2025-02-24 17:14:02] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/GFP_2_R2_paired_fastqc.html (633K)
+[2025-02-24 17:14:02] Calculating statistics for GFP_2...
+Approx 35% complete for YAF_2_R1_paired.fastq.gz
+Approx 35% complete for YAF_2_R2_paired.fastq.gz
+Approx 40% complete for YAF_2_R1_paired.fastq.gz
+Approx 40% complete for YAF_2_R2_paired.fastq.gz
+Approx 45% complete for YAF_2_R1_paired.fastq.gz
+Approx 45% complete for YAF_2_R2_paired.fastq.gz
+Approx 50% complete for YAF_2_R1_paired.fastq.gz
+Approx 50% complete for YAF_2_R2_paired.fastq.gz
+Approx 55% complete for YAF_2_R1_paired.fastq.gz
+Approx 60% complete for YAF_2_R1_paired.fastq.gz
+Approx 55% complete for YAF_2_R2_paired.fastq.gz
+Approx 65% complete for YAF_2_R1_paired.fastq.gz
+Approx 60% complete for YAF_2_R2_paired.fastq.gz
+Approx 70% complete for YAF_2_R1_paired.fastq.gz
+Approx 65% complete for YAF_2_R2_paired.fastq.gz
+Approx 75% complete for YAF_2_R1_paired.fastq.gz
+[2025-02-24 17:19:14] Statistics for YAF_3:
+[2025-02-24 17:19:14]   Raw R1 reads: 94268086
+[2025-02-24 17:19:14]   Raw R2 reads: 94268086
+[2025-02-24 17:19:14]   Clean R1 reads: 93388546
+[2025-02-24 17:19:14]   Clean R2 reads: 93388546
+[2025-02-24 17:19:14]   Retention rate: 99.00%
+[2025-02-24 17:19:14] Quality control completed for YAF_3
+Approx 70% complete for YAF_2_R2_paired.fastq.gz
+[2025-02-24 17:19:21] Statistics for YAF_1:
+[2025-02-24 17:19:21]   Raw R1 reads: 90582312
+[2025-02-24 17:19:21]   Raw R2 reads: 90582312
+[2025-02-24 17:19:21]   Clean R1 reads: 89688324
+[2025-02-24 17:19:21]   Clean R2 reads: 89688324
+[2025-02-24 17:19:21]   Retention rate: 99.00%
+[2025-02-24 17:19:21] Quality control completed for YAF_1
+Approx 80% complete for YAF_2_R1_paired.fastq.gz
+Approx 75% complete for YAF_2_R2_paired.fastq.gz
+Approx 85% complete for YAF_2_R1_paired.fastq.gz
+Approx 80% complete for YAF_2_R2_paired.fastq.gz
+Approx 90% complete for YAF_2_R1_paired.fastq.gz
+Approx 85% complete for YAF_2_R2_paired.fastq.gz
+Approx 95% complete for YAF_2_R1_paired.fastq.gz
+Approx 90% complete for YAF_2_R2_paired.fastq.gz
+Approx 95% complete for YAF_2_R2_paired.fastq.gz
+[2025-02-24 17:23:24] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/YAF_2_R1_paired_fastqc.html (650K)
+[2025-02-24 17:23:24] Successfully created: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/2_trimming/fastqc/post_trim/YAF_2_R2_paired_fastqc.html (651K)
+[2025-02-24 17:23:24] Calculating statistics for YAF_2...
+[2025-02-24 17:25:33] Statistics for GFP_2:
+[2025-02-24 17:25:33]   Raw R1 reads: 90868183
+[2025-02-24 17:25:33]   Raw R2 reads: 90868183
+[2025-02-24 17:25:33]   Clean R1 reads: 90007541
+[2025-02-24 17:25:33]   Clean R2 reads: 90007541
+[2025-02-24 17:25:33]   Retention rate: 99.00%
+[2025-02-24 17:25:33] Quality control completed for GFP_2
+[2025-02-24 17:38:32] Statistics for YAF_2:
+[2025-02-24 17:38:32]   Raw R1 reads: 132932421
+[2025-02-24 17:38:32]   Raw R2 reads: 132932421
+[2025-02-24 17:38:32]   Clean R1 reads: 131961898
+[2025-02-24 17:38:32]   Clean R2 reads: 131961898
+[2025-02-24 17:38:32]   Retention rate: 99.00%
+[2025-02-24 17:38:32] Quality control completed for YAF_2

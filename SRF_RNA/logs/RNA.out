@@ -1,0 +1,182 @@
+Performing dry-run to validate workflow...
+host: srcn02
+Building DAG of jobs...
+Job stats:
+job              count
+-------------  -------
+all                  1
+featurecounts        1
+multiqc              1
+star_align           9
+star_index           1
+total               13
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_index:
+    input: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf
+    output: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    log: logs/star_index/star_index.log
+    jobid: 29
+    reason: Missing output files: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/YAF2_R1_trimmed.fastq.gz, results/trimmed/YAF2_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Log.final.out
+    log: logs/star/YAF2.log
+    jobid: 36
+    reason: Missing output files: results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=YAF2
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/C1_R1_trimmed.fastq.gz, results/trimmed/C1_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C1/C1_Log.final.out
+    log: logs/star/C1.log
+    jobid: 28
+    reason: Missing output files: results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C1/C1_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=C1
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/C3_R1_trimmed.fastq.gz, results/trimmed/C3_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Log.final.out
+    log: logs/star/C3.log
+    jobid: 31
+    reason: Missing output files: results/star/C3/C3_Log.final.out, results/star/C3/C3_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=C3
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/GFP2_R1_trimmed.fastq.gz, results/trimmed/GFP2_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Log.final.out
+    log: logs/star/GFP2.log
+    jobid: 33
+    reason: Missing output files: results/star/GFP2/GFP2_Log.final.out, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=GFP2
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/YAF1_R1_trimmed.fastq.gz, results/trimmed/YAF1_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Log.final.out
+    log: logs/star/YAF1.log
+    jobid: 35
+    reason: Missing output files: results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=YAF1
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/YAF3_R1_trimmed.fastq.gz, results/trimmed/YAF3_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Log.final.out
+    log: logs/star/YAF3.log
+    jobid: 37
+    reason: Missing output files: results/star/YAF3/YAF3_Log.final.out, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=YAF3
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/C2_R1_trimmed.fastq.gz, results/trimmed/C2_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Log.final.out
+    log: logs/star/C2.log
+    jobid: 30
+    reason: Missing output files: results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Log.final.out; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=C2
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/GFP1_R1_trimmed.fastq.gz, results/trimmed/GFP1_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Log.final.out
+    log: logs/star/GFP1.log
+    jobid: 32
+    reason: Missing output files: results/star/GFP1/GFP1_Log.final.out, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=GFP1
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule star_align:
+    input: results/trimmed/GFP3_R1_trimmed.fastq.gz, results/trimmed/GFP3_R2_trimmed.fastq.gz, /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    output: results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Log.final.out
+    log: logs/star/GFP3.log
+    jobid: 34
+    reason: Missing output files: results/star/GFP3/GFP3_Log.final.out, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam; Input files updated by another job: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
+    wildcards: sample=GFP3
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule featurecounts:
+    input: results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam
+    output: results/counts/all_samples_counts.txt, results/counts/all_samples_counts.txt.summary
+    log: logs/featurecounts/all_samples.log
+    jobid: 38
+    reason: Missing output files: results/counts/all_samples_counts.txt, results/counts/all_samples_counts.txt.summary; Input files updated by another job: results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/C1/C1_Aligned.sortedByCoord.out.bam
+    threads: 2
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule multiqc:
+    input: results/fastqc/C1_L001_R1_001_fastqc.zip, results/fastqc/C2_L001_R1_001_fastqc.zip, results/fastqc/C3_L001_R1_001_fastqc.zip, results/fastqc/GFP1_L001_R1_001_fastqc.zip, results/fastqc/GFP2_L001_R1_001_fastqc.zip, results/fastqc/GFP3_L001_R1_001_fastqc.zip, results/fastqc/YAF1_L001_R1_001_fastqc.zip, results/fastqc/YAF2_L001_R1_001_fastqc.zip, results/fastqc/YAF3_L001_R1_001_fastqc.zip, results/fastqc/C1_L001_R2_001_fastqc.zip, results/fastqc/C2_L001_R2_001_fastqc.zip, results/fastqc/C3_L001_R2_001_fastqc.zip, results/fastqc/GFP1_L001_R2_001_fastqc.zip, results/fastqc/GFP2_L001_R2_001_fastqc.zip, results/fastqc/GFP3_L001_R2_001_fastqc.zip, results/fastqc/YAF1_L001_R2_001_fastqc.zip, results/fastqc/YAF2_L001_R2_001_fastqc.zip, results/fastqc/YAF3_L001_R2_001_fastqc.zip, results/fastqc/C1_R1_trimmed_fastqc.zip, results/fastqc/C2_R1_trimmed_fastqc.zip, results/fastqc/C3_R1_trimmed_fastqc.zip, results/fastqc/GFP1_R1_trimmed_fastqc.zip, results/fastqc/GFP2_R1_trimmed_fastqc.zip, results/fastqc/GFP3_R1_trimmed_fastqc.zip, results/fastqc/YAF1_R1_trimmed_fastqc.zip, results/fastqc/YAF2_R1_trimmed_fastqc.zip, results/fastqc/YAF3_R1_trimmed_fastqc.zip, results/fastqc/C1_R2_trimmed_fastqc.zip, results/fastqc/C2_R2_trimmed_fastqc.zip, results/fastqc/C3_R2_trimmed_fastqc.zip, results/fastqc/GFP1_R2_trimmed_fastqc.zip, results/fastqc/GFP2_R2_trimmed_fastqc.zip, results/fastqc/GFP3_R2_trimmed_fastqc.zip, results/fastqc/YAF1_R2_trimmed_fastqc.zip, results/fastqc/YAF2_R2_trimmed_fastqc.zip, results/fastqc/YAF3_R2_trimmed_fastqc.zip, results/star/C1/C1_Log.final.out, results/star/C2/C2_Log.final.out, results/star/C3/C3_Log.final.out, results/star/GFP1/GFP1_Log.final.out, results/star/GFP2/GFP2_Log.final.out, results/star/GFP3/GFP3_Log.final.out, results/star/YAF1/YAF1_Log.final.out, results/star/YAF2/YAF2_Log.final.out, results/star/YAF3/YAF3_Log.final.out, results/counts/all_samples_counts.txt.summary
+    output: results/multiqc/multiqc_report.html
+    log: logs/multiqc/multiqc.log
+    jobid: 39
+    reason: Missing output files: results/multiqc/multiqc_report.html; Input files updated by another job: results/star/GFP2/GFP2_Log.final.out, results/star/C2/C2_Log.final.out, results/star/C3/C3_Log.final.out, results/star/C1/C1_Log.final.out, results/star/YAF1/YAF1_Log.final.out, results/star/GFP1/GFP1_Log.final.out, results/counts/all_samples_counts.txt.summary, results/star/YAF3/YAF3_Log.final.out, results/star/GFP3/GFP3_Log.final.out, results/star/YAF2/YAF2_Log.final.out
+    resources: tmpdir=<TBD>
+
+
+[Mon Feb 24 16:40:46 2025]
+rule all:
+    input: results/fastqc/C1_L001_R1_001_fastqc.html, results/fastqc/C2_L001_R1_001_fastqc.html, results/fastqc/C3_L001_R1_001_fastqc.html, results/fastqc/GFP1_L001_R1_001_fastqc.html, results/fastqc/GFP2_L001_R1_001_fastqc.html, results/fastqc/GFP3_L001_R1_001_fastqc.html, results/fastqc/YAF1_L001_R1_001_fastqc.html, results/fastqc/YAF2_L001_R1_001_fastqc.html, results/fastqc/YAF3_L001_R1_001_fastqc.html, results/fastqc/C1_L001_R2_001_fastqc.html, results/fastqc/C2_L001_R2_001_fastqc.html, results/fastqc/C3_L001_R2_001_fastqc.html, results/fastqc/GFP1_L001_R2_001_fastqc.html, results/fastqc/GFP2_L001_R2_001_fastqc.html, results/fastqc/GFP3_L001_R2_001_fastqc.html, results/fastqc/YAF1_L001_R2_001_fastqc.html, results/fastqc/YAF2_L001_R2_001_fastqc.html, results/fastqc/YAF3_L001_R2_001_fastqc.html, results/fastqc/C1_R1_trimmed_fastqc.html, results/fastqc/C2_R1_trimmed_fastqc.html, results/fastqc/C3_R1_trimmed_fastqc.html, results/fastqc/GFP1_R1_trimmed_fastqc.html, results/fastqc/GFP2_R1_trimmed_fastqc.html, results/fastqc/GFP3_R1_trimmed_fastqc.html, results/fastqc/YAF1_R1_trimmed_fastqc.html, results/fastqc/YAF2_R1_trimmed_fastqc.html, results/fastqc/YAF3_R1_trimmed_fastqc.html, results/fastqc/C1_R2_trimmed_fastqc.html, results/fastqc/C2_R2_trimmed_fastqc.html, results/fastqc/C3_R2_trimmed_fastqc.html, results/fastqc/GFP1_R2_trimmed_fastqc.html, results/fastqc/GFP2_R2_trimmed_fastqc.html, results/fastqc/GFP3_R2_trimmed_fastqc.html, results/fastqc/YAF1_R2_trimmed_fastqc.html, results/fastqc/YAF2_R2_trimmed_fastqc.html, results/fastqc/YAF3_R2_trimmed_fastqc.html, results/star/C1/C1_Aligned.sortedByCoord.out.bam, results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam, results/counts/all_samples_counts.txt, results/multiqc/multiqc_report.html
+    jobid: 0
+    reason: Input files updated by another job: results/counts/all_samples_counts.txt, results/star/C2/C2_Aligned.sortedByCoord.out.bam, results/star/GFP3/GFP3_Aligned.sortedByCoord.out.bam, results/star/C3/C3_Aligned.sortedByCoord.out.bam, results/star/YAF1/YAF1_Aligned.sortedByCoord.out.bam, results/star/GFP1/GFP1_Aligned.sortedByCoord.out.bam, results/multiqc/multiqc_report.html, results/star/YAF3/YAF3_Aligned.sortedByCoord.out.bam, results/star/GFP2/GFP2_Aligned.sortedByCoord.out.bam, results/star/YAF2/YAF2_Aligned.sortedByCoord.out.bam, results/star/C1/C1_Aligned.sortedByCoord.out.bam
+    resources: tmpdir=<TBD>
+
+Job stats:
+job              count
+-------------  -------
+all                  1
+featurecounts        1
+multiqc              1
+star_align           9
+star_index           1
+total               13
+
+Reasons:
+    (check individual jobs above for details)
+    input files updated by another job:
+        all, featurecounts, multiqc, star_align
+    output files have to be generated:
+        featurecounts, multiqc, star_align, star_index
+9 jobs have missing provenance/metadata so that it in part cannot be used to trigger re-runs.
+Rules with missing metadata: fastqc_raw
+
+This was a dry-run (flag -n). The order of jobs does not reflect the order of execution.
+Dry-run successful, starting actual run...

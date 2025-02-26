@@ -1,5 +1,5 @@
 # Directories to ignore
-logs/
+# logs/
 Archive/
 .snakemake/
 COMMON_DATA/
@@ -49,9 +49,9 @@ SRF_SES_V5/results/qc/fastqc/
 *.tar
 
 # Log and temporary files
-*.log
-*.err
-*.out
+# *.log
+# *.err
+# *.out
 *.tmp
 *.tmp*
 

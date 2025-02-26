@@ -1,0 +1,116 @@
+
+        ==========     _____ _    _ ____  _____  ______          _____  
+        =====         / ____| |  | |  _ \|  __ \|  ____|   /\   |  __ \ 
+          =====      | (___ | |  | | |_) | |__) | |__     /  \  | |  | |
+            ====      \___ \| |  | |  _ <|  _  /|  __|   / /\ \ | |  | |
+              ====    ____) | |__| | |_) | | \ \| |____ / ____ \| |__| |
+        ==========   |_____/ \____/|____/|_|  \_\______/_/    \_\_____/
+	  v2.0.6
+
+//========================== featureCounts setting ===========================\\
+||                                                                            ||
+||             Input files : 9 BAM files                                      ||
+||                                                                            ||
+||                           C1_Aligned.sortedByCoord.out.bam                 ||
+||                           C2_Aligned.sortedByCoord.out.bam                 ||
+||                           C3_Aligned.sortedByCoord.out.bam                 ||
+||                           GFP1_Aligned.sortedByCoord.out.bam               ||
+||                           GFP2_Aligned.sortedByCoord.out.bam               ||
+||                           GFP3_Aligned.sortedByCoord.out.bam               ||
+||                           YAF1_Aligned.sortedByCoord.out.bam               ||
+||                           YAF2_Aligned.sortedByCoord.out.bam               ||
+||                           YAF3_Aligned.sortedByCoord.out.bam               ||
+||                                                                            ||
+||             Output file : all_samples_counts.txt                           ||
+||                 Summary : all_samples_counts.txt.summary                   ||
+||              Paired-end : yes                                              ||
+||        Count read pairs : no                                               ||
+||              Annotation : gencode.v43.basic.annotation.nochr.gtf (GTF)     ||
+||      Dir for temp files : results/counts                                   ||
+||                                                                            ||
+||                 Threads : 2                                                ||
+||                   Level : meta-feature level                               ||
+||      Multimapping reads : not counted                                      ||
+|| Multi-overlapping reads : not counted                                      ||
+||   Min overlapping bases : 1                                                ||
+||                                                                            ||
+\\============================================================================//
+
+//================================= Running ==================================\\
+||                                                                            ||
+|| Load annotation file gencode.v43.basic.annotation.nochr.gtf ...            ||
+||    Features : 853536                                                       ||
+||    Meta-features : 62703                                                   ||
+||    Chromosomes/contigs : 25                                                ||
+||                                                                            ||
+|| Process BAM file C1_Aligned.sortedByCoord.out.bam...                       ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 161575651                                            ||
+||    Successfully assigned alignments : 61792918 (38.2%)                     ||
+||    Running time : 2.48 minutes                                             ||
+||                                                                            ||
+|| Process BAM file C2_Aligned.sortedByCoord.out.bam...                       ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 135552724                                            ||
+||    Successfully assigned alignments : 47801477 (35.3%)                     ||
+||    Running time : 2.06 minutes                                             ||
+||                                                                            ||
+|| Process BAM file C3_Aligned.sortedByCoord.out.bam...                       ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 97257607                                             ||
+||    Successfully assigned alignments : 34327536 (35.3%)                     ||
+||    Running time : 1.49 minutes                                             ||
+||                                                                            ||
+|| Process BAM file GFP1_Aligned.sortedByCoord.out.bam...                     ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 101695052                                            ||
+||    Successfully assigned alignments : 37965742 (37.3%)                     ||
+||    Running time : 1.55 minutes                                             ||
+||                                                                            ||
+|| Process BAM file GFP2_Aligned.sortedByCoord.out.bam...                     ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 107052832                                            ||
+||    Successfully assigned alignments : 38246951 (35.7%)                     ||
+||    Running time : 1.63 minutes                                             ||
+||                                                                            ||
+|| Process BAM file GFP3_Aligned.sortedByCoord.out.bam...                     ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 81122154                                             ||
+||    Successfully assigned alignments : 28902584 (35.6%)                     ||
+||    Running time : 1.25 minutes                                             ||
+||                                                                            ||
+|| Process BAM file YAF1_Aligned.sortedByCoord.out.bam...                     ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 148393788                                            ||
+||    Successfully assigned alignments : 52728069 (35.5%)                     ||
+||    Running time : 2.28 minutes                                             ||
+||                                                                            ||
+|| Process BAM file YAF2_Aligned.sortedByCoord.out.bam...                     ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 159284650                                            ||
+||    Successfully assigned alignments : 51428865 (32.3%)                     ||
+||    Running time : 2.43 minutes                                             ||
+||                                                                            ||
+|| Process BAM file YAF3_Aligned.sortedByCoord.out.bam...                     ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 111010654                                            ||
+||    Successfully assigned alignments : 26411275 (23.8%)                     ||
+||    Running time : 1.65 minutes                                             ||
+||                                                                            ||
+|| Write the final count table.                                               ||
+|| Write the read assignment summary.                                         ||
+||                                                                            ||
+|| Summary of counting results can be found in file "results/counts/all_samp  ||
+|| les_counts.txt.summary"                                                    ||
+||                                                                            ||
+\\============================================================================//
+
