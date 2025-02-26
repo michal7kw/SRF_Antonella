@@ -82,3 +82,4 @@ COMMON_DATA/genome_star/
 
 # R and analysis files
 *.json
+.git.bak/
