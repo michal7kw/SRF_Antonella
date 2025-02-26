@@ -37,6 +37,11 @@ SRF_SES_V5/results/qc/fastqc/
 *.bt2
 *Peak
 
+# Large table files
+cross_analysis/results/tables/GFP_peak_annotation.txt
+**/tables/*.txt size>80M
+**/results/tables/*.txt size>80M
+
 # Quality control and statistics
 *flagstat.*
 *.flagstat
