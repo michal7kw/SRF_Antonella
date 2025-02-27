@@ -105,7 +105,7 @@ MACS2_TMP="${SAMPLE_TMP}/macs2_tmp_${RANDOM}"
 mkdir -p "$MACS2_TMP"
 chmod 777 "$MACS2_TMP"
 
-# Run MACS2 with optimized settings and explicit environment
+# Run MACS2 with the specified parameters
 env -i \
     HOME="$HOME" \
     PATH="$PATH" \
@@ -116,22 +116,20 @@ env -i \
     macs2 callpeak \
     -t "${SAMPLE_TMP}/${sample}.chr.bam" \
     -f BAMPE \
-    -g hs \
     --broad \
+    -g hs \
+    --broad-cutoff 0.1 \
+    --nomodel \
+    --extsize 50 \
+    --down-sample \
+    -q 0.2 \
     -n ${sample}_broad \
     --outdir ${OUTPUT_DIR} \
-    -q 0.01 \
-    --broad-cutoff 0.01 \
     --keep-dup 1 \
-    --min-length 1000 \
     --bdg \
     --buffer-size 1000000 \
     --verbose 3 \
-    --tempdir "$MACS2_TMP" \
-    --nomodel \
-    --nolambda \
-    --slocal 1000 \
-    --llocal 10000
+    --tempdir "$MACS2_TMP"
 
 # Verify MACS2 output
 if [ ! -s ${OUTPUT_DIR}/${sample}_broad_peaks.broadPeak ]; then

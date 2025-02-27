@@ -68,8 +68,8 @@ v5_dir <- file.path(base_dir, "SRF_SES_V5")
 output_dir <- file.path(base_dir, "cross_analysis", "results")
 
 # H2AK119Ub file paths
-h2a_peaks_dir <- file.path(h2a_dir, "1_iterative_processing", "analysis", "5_peak_calling")
-h2a_bigwig_dir <- file.path(h2a_dir, "1_iterative_processing", "analysis", "OLD", "visualization")
+h2a_peaks_dir <- file.path(h2a_dir, "1_iterative_processing", "analysis", "5_peak_calling_old")
+h2a_bigwig_dir <- file.path(h2a_dir, "1_iterative_processing", "analysis", "6_bigwig")
 
 # V5 file paths
 v5_peaks_dir <- file.path(v5_dir, "results_data_from_ncbi", "peaks")
@@ -582,7 +582,7 @@ filter_blacklist_regions <- function(peaks, blacklist) {
     blacklist_widths <- width(blacklist)[subjectHits(overlaps)]
     overlap_widths <- width(pintersect(peaks[queryHits(overlaps)], blacklist[subjectHits(overlaps)]))
     
-    # Calculate percentage of peak overlapping with blacklist
+    # Calculate percentage of peak overlapping with blacklist (>50% overlap)
     overlap_percent <- overlap_widths / peak_widths
     
     # Only remove peaks that overlap significantly with blacklist (>50% overlap)
@@ -607,113 +607,12 @@ normalize_bigwig_signal <- function(chip_bw_list, input_bw, scaling_factor = 1, 
     # Validate input files
     if (!file.exists(input_bw)) stop(sprintf("Input bigwig file not found: %s", input_bw))
     
-    # Import input signal
-    input_signal <- import(input_bw, as="RleList")
-    
-    # Process each replicate
-    normalized_signals <- lapply(chip_bw_list, function(chip_bw) {
-        if (!file.exists(chip_bw)) stop(sprintf("ChIP bigwig file not found: %s", chip_bw))
-        
-        # Import ChIP signal
-        chip_signal <- import(chip_bw, as="RleList")
-        
-        # Standardize chromosome names
-        std_chromosomes <- paste0("chr", c(1:22, "X", "Y"))
-        
-        # Add 'chr' prefix if missing
-        names(chip_signal) <- ifelse(!grepl("^chr", names(chip_signal)), 
-                                   paste0("chr", names(chip_signal)), 
-                                   names(chip_signal))
-        names(input_signal) <- ifelse(!grepl("^chr", names(input_signal)), 
-                                    paste0("chr", names(input_signal)), 
-                                    names(input_signal))
-        
-        # Keep only standard chromosomes
-        chip_signal <- chip_signal[names(chip_signal) %in% std_chromosomes]
-        input_signal <- input_signal[names(input_signal) %in% std_chromosomes]
-        
-        # Ensure signals have matching chromosomes
-        common_chroms <- intersect(names(chip_signal), names(input_signal))
-        chip_signal <- chip_signal[common_chroms]
-        input_signal <- input_signal[common_chroms]
-        
-        # Handle missing values
-        chip_signal[is.na(chip_signal)] <- 0
-        input_signal[is.na(input_signal)] <- 0
-        
-        # Apply minimum read count threshold
-        input_signal[input_signal < min_reads] <- min_reads
-        
-        # Calculate normalized signal
-        normalized <- (chip_signal + 1)/(input_signal + 1)
-        normalized <- normalized * scaling_factor
-        
-        return(normalized)
-    })
-    
-    # Average the replicates
-    averaged_signal <- Reduce("+", normalized_signals) / length(normalized_signals)
-    
-    return(averaged_signal)
-}
-
-# Function to categorize peaks based on overlaps
-get_peak_categories <- function(v5_peaks, h2a_peaks, prefix) {
-    # Find overlaps between V5 and H2AK119Ub peaks
-    overlaps <- findOverlaps(v5_peaks, h2a_peaks)
-    
-    # V5 peaks with H2AK119Ub
-    v5_with_h2a <- v5_peaks[unique(queryHits(overlaps))]
-    
-    # V5 peaks without H2AK119Ub
-    v5_only <- v5_peaks[-unique(queryHits(overlaps))]
-    
-    # H2AK119Ub peaks with V5
-    h2a_with_v5 <- h2a_peaks[unique(subjectHits(overlaps))]
-    
-    # H2AK119Ub peaks without V5
-    h2a_only <- h2a_peaks[-unique(subjectHits(overlaps))]
-    
-    # Create list of categorized peaks
-    categorized_peaks <- list(
-        v5_with_h2a = v5_with_h2a,
-        v5_only = v5_only,
-        h2a_with_v5 = h2a_with_v5,
-        h2a_only = h2a_only
-    )
-    
-    # Save categorized peaks
-    saveRDS(categorized_peaks, 
-            file = file.path(output_dir, sprintf("%s_categorized_peaks.rds", prefix)))
-    
-    return(categorized_peaks)
-}
-
-# Update the validate_inputs function - remove the malformed line
-validate_inputs <- function(chip_bw_list, input_bw) {
-    # Check input file
-    if (!file.exists(input_bw)) stop(sprintf("Input bigwig file not found: %s", input_bw))
-    
     # Check each ChIP replicate file
     for (chip_bw in chip_bw_list) {
         if (!file.exists(chip_bw)) stop(sprintf("ChIP bigwig file not found: %s", chip_bw))
     }
     
     return(TRUE)
-}
-
-# Enhanced log_message function with debug levels
-log_message <- function(msg, level = "INFO", log_connection = NULL) {
-    timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
-    message <- sprintf("[%s] [%s] %s", timestamp, level, msg)
-    
-    # Write to log file if connection is provided
-    if (!is.null(log_connection)) {
-        cat(message, "\n", file = log_connection, append = TRUE)
-    }
-    
-    # Also print to console
-    cat(message, "\n")
 }
 
 # Function to validate peak characteristics
@@ -877,37 +776,74 @@ generate_filtering_summary <- function(original, filtered, step_name) {
     return(summary)
 }
 
-# Function to generate overlap analysis report
-generate_overlap_report <- function(v5_peaks, h2a_peaks, condition) {
+# Function to analyze peak overlaps and generate comprehensive statistics
+analyze_overlaps <- function(v5_peaks, h2a_peaks, condition) {
+    # Ensure v5_peaks is a GRanges object
+    if (is.list(v5_peaks) && !is(v5_peaks, "GRanges")) {
+        log_message("Converting v5_peaks from list to GRanges", "DEBUG")
+        if (length(v5_peaks) == 1 && is(v5_peaks[[1]], "GRanges")) {
+            v5_peaks <- v5_peaks[[1]]
+        } else {
+            stop("v5_peaks must be a GRanges object or a list containing a single GRanges object")
+        }
+    }
+    
+    # Ensure h2a_peaks is a GRanges object
+    if (is.list(h2a_peaks) && !is(h2a_peaks, "GRanges")) {
+        log_message("Converting h2a_peaks from list to GRanges", "DEBUG")
+        if (length(h2a_peaks) == 1 && is(h2a_peaks[[1]], "GRanges")) {
+            h2a_peaks <- h2a_peaks[[1]]
+        } else {
+            stop("h2a_peaks must be a GRanges object or a list containing a single GRanges object")
+        }
+    }
+    
+    # Find overlaps
     overlaps <- findOverlaps(v5_peaks, h2a_peaks)
     v5_with_h2a <- unique(queryHits(overlaps))
     h2a_with_v5 <- unique(subjectHits(overlaps))
     
-    # Calculate overlap widths
-    overlap_widths <- width(pintersect(v5_peaks[queryHits(overlaps)], 
-                                     h2a_peaks[subjectHits(overlaps)]))
+    # Calculate overlap statistics
+    n_v5_peaks <- length(v5_peaks)
+    n_h2a_peaks <- length(h2a_peaks)
+    n_overlaps <- length(unique(queryHits(overlaps)))
     
-    report <- sprintf("\n=== Overlap Analysis: V5 vs H2AK119Ub %s ===\n", condition)
-    report <- paste0(report, sprintf("\nOverall Statistics:\n"))
-    report <- paste0(report, sprintf("- Total V5 peaks: %d\n", length(v5_peaks)))
-    report <- paste0(report, sprintf("- Total H2AK119Ub peaks: %d\n", length(h2a_peaks)))
-    report <- paste0(report, sprintf("- V5 peaks with overlap: %d (%.1f%%)\n",
-                                   length(v5_with_h2a),
-                                   100 * length(v5_with_h2a)/length(v5_peaks)))
-    report <- paste0(report, sprintf("- H2AK119Ub peaks with overlap: %d (%.2f%%)\n",
-                                   length(h2a_with_v5),
-                                   100 * length(h2a_with_v5)/length(h2a_peaks)))
+    # Create Venn diagram data
+    v5_name <- "V5 Peaks"
+    h2a_name <- paste0(condition, " H2AK119Ub Peaks")
     
-    if (length(overlap_widths) > 0) {
-        report <- paste0(report, "\nOverlap Width Statistics:\n")
-        report <- paste0(report, sprintf("- Mean: %.1f bp\n", mean(overlap_widths)))
-        report <- paste0(report, sprintf("- Median: %.1f bp\n", median(overlap_widths)))
-        report <- paste0(report, sprintf("- Range: %d - %d bp\n",
-                                       min(overlap_widths),
-                                       max(overlap_widths)))
-    }
+    # Set up colors
+    colors <- brewer.pal(3, "Set2")[1:2]
     
-    return(report)
+    # Create Venn diagram
+    venn_plot <- draw.pairwise.venn(
+        area1 = n_v5_peaks,
+        area2 = n_h2a_peaks,
+        cross.area = n_overlaps,
+        category = c(v5_name, h2a_name),
+        lty = "blank",
+        fill = colors,
+        alpha = 0.5,
+        cat.pos = c(0, 0),
+        cat.dist = c(0.025, 0.025),
+        cat.cex = 1,
+        cex = 1.5,
+        cat.col = colors,
+        scaled = TRUE
+    )
+    
+    # Return overlap statistics
+    return(list(
+        stats = list(
+            v5_peaks = n_v5_peaks,
+            h2a_peaks = n_h2a_peaks,
+            overlapping_peaks = n_overlaps,
+            percent_v5_overlap = 100 * n_overlaps / n_v5_peaks,
+            percent_h2a_overlap = 100 * n_overlaps / n_h2a_peaks
+        ),
+        overlaps = overlaps,
+        plot = venn_plot
+    ))
 }
 
 # Add required libraries for plotting
@@ -916,6 +852,7 @@ suppressPackageStartupMessages({
     library(gridExtra)
     library(RColorBrewer)
     library(scales)
+    library(grid)             # For grid graphics (required for Venn diagrams)
 })
 
 # Function to plot peak width distributions
@@ -941,22 +878,123 @@ plot_peak_width_distribution <- function(peaks_list, names, title = "Peak Width 
     
     return(p)
 }
+# Function to plot overlap analysis between V5 and H2AK119Ub peaks
+plot_overlap_analysis <- function(v5_peaks, h2a_peaks, condition) {
+  # Ensure both inputs are GRanges objects
+  if (!is(v5_peaks, "GRanges") || !is(h2a_peaks, "GRanges")) {
+    log_message("Both inputs must be GRanges objects", "ERROR")
+    return(NULL)
+  }
+  
+  # Find overlaps
+  overlaps <- findOverlaps(v5_peaks, h2a_peaks)
+  v5_with_h2a <- unique(queryHits(overlaps))
+  h2a_with_v5 <- unique(subjectHits(overlaps))
+  
+  # Calculate statistics
+  n_v5_peaks <- length(v5_peaks)
+  n_h2a_peaks <- length(h2a_peaks)
+  n_overlaps <- length(v5_with_h2a)
+  
+  # Create data for summary plot
+  summary_data <- data.frame(
+    Category = c("V5 Peaks", paste0(condition, " H2AK119Ub Peaks")),
+    Total = c(n_v5_peaks, n_h2a_peaks),
+    Overlapping = c(n_overlaps, length(h2a_with_v5)),
+    Percent = c(100 * n_overlaps / n_v5_peaks, 
+                100 * length(h2a_with_v5) / n_h2a_peaks)
+  )
+  
+  # Create summary plot
+  summary_plot <- ggplot(summary_data, aes(x = Category, y = Total)) +
+    geom_bar(stat = "identity", fill = "lightblue") +
+    geom_bar(aes(y = Overlapping), stat = "identity", fill = "darkblue") +
+    geom_text(aes(label = sprintf("%.1f%%", Percent), y = Total + max(Total) * 0.05), 
+              size = 4) +
+    theme_bw() +
+    labs(title = paste0("Peak Overlap Summary - ", condition),
+         x = "", y = "Number of Peaks") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  # Create width distribution plot for overlapping peaks
+  width_dist_plot <- NULL
+  if (n_overlaps > 0) {
+    overlapping_v5_peaks <- v5_peaks[v5_with_h2a]
+    overlapping_h2a_peaks <- h2a_peaks[h2a_with_v5]
+    
+    width_data <- data.frame(
+      Width = c(width(overlapping_v5_peaks), width(overlapping_h2a_peaks)),
+      Type = c(rep("V5 Peaks", length(overlapping_v5_peaks)),
+               rep(paste0(condition, " H2AK119Ub"), length(overlapping_h2a_peaks)))
+    )
+    
+    width_dist_plot <- ggplot(width_data, aes(x = Width, fill = Type)) +
+      geom_density(alpha = 0.5) +
+      scale_x_log10(labels = comma) +
+      theme_bw() +
+      labs(title = paste0("Width Distribution of Overlapping Peaks - ", condition),
+           x = "Peak Width (bp)", y = "Density") +
+      theme(legend.position = "bottom")
+  }
+  
+  # Return plots
+  return(list(
+    summary = summary_plot,
+    width_dist = width_dist_plot
+  ))
+}
+
 
 # Function to plot chromosome distribution
 plot_chromosome_distribution <- function(peaks_list, names, title = "Peak Distribution by Chromosome") {
+    # Check if peaks_list is a list or a single GRanges object
+    if (!is.list(peaks_list)) {
+        # If it's a single object, convert it to a list
+        peaks_list <- list(peaks_list)
+        if (length(names) == 1) {
+            names <- c(names)
+        } else {
+            names <- c("Peaks")
+        }
+    }
+    
     # Combine chromosome counts from all peak sets
-    plot_data <- do.call(rbind, lapply(seq_along(peaks_list), function(i) {
-        chrom_counts <- table(seqnames(peaks_list[[i]]))
-        data.frame(
-            chromosome = names(chrom_counts),
-            count = as.numeric(chrom_counts),
-            dataset = names[i]
-        )
-    }))
+    plot_data <- NULL
+    
+    # Process each element in the list separately
+    for (i in seq_along(peaks_list)) {
+        # Get the current peaks object
+        current_peaks <- peaks_list[[i]]
+        
+        # Check if it's a GRanges object
+        if (is(current_peaks, "GRanges")) {
+            chrom_counts <- table(seqnames(current_peaks))
+            
+            df <- data.frame(
+                chromosome = names(chrom_counts),
+                count = as.numeric(chrom_counts),
+                dataset = names[i]
+            )
+            
+            if (is.null(plot_data)) {
+                plot_data <- df
+            } else {
+                plot_data <- rbind(plot_data, df)
+            }
+        } else {
+            warning(sprintf("Item %d in peaks_list is not a GRanges object and will be skipped", i))
+        }
+    }
+    
+    # If no valid data was found, return NULL
+    if (is.null(plot_data) || nrow(plot_data) == 0) {
+        warning("No valid GRanges objects found in peaks_list")
+        return(NULL)
+    }
     
     # Order chromosomes naturally
     plot_data$chromosome <- factor(plot_data$chromosome, 
-                                 levels = paste0("chr", c(1:22, "X", "Y")))
+                                  levels = paste0("chr", c(1:22, "X", "Y")))
     
     # Create bar plot
     p <- ggplot(plot_data, aes(x = chromosome, y = count, fill = dataset)) +
@@ -969,168 +1007,6 @@ plot_chromosome_distribution <- function(peaks_list, names, title = "Peak Distri
     return(p)
 }
 
-# Function to analyze peak overlaps and generate comprehensive statistics
-analyze_overlaps <- function(v5_peaks, h2a_peaks, condition) {
-    # Find overlaps
-    overlaps <- findOverlaps(v5_peaks, h2a_peaks)
-    v5_with_h2a <- unique(queryHits(overlaps))
-    h2a_with_v5 <- unique(subjectHits(overlaps))
-    
-    # Calculate overlap statistics
-    overlap_stats <- list(
-        total_v5 = length(v5_peaks),
-        total_h2a = length(h2a_peaks),
-        overlapping_peaks = length(v5_with_h2a),
-        percent_v5_overlap = 100 * length(v5_with_h2a) / length(v5_peaks),
-        percent_h2a_overlap = 100 * length(h2a_with_v5) / length(h2a_peaks)
-    )
-    
-    # Calculate overlap widths
-    if (length(overlaps) > 0) {
-        overlap_widths <- width(pintersect(v5_peaks[queryHits(overlaps)], 
-                                         h2a_peaks[subjectHits(overlaps)]))
-        overlap_stats$width_stats <- list(
-            min = min(overlap_widths),
-            max = max(overlap_widths),
-            mean = mean(overlap_widths),
-            median = median(overlap_widths),
-            sd = sd(overlap_widths)
-        )
-    }
-    
-    # Create summary plot focusing on overlapping peaks
-    summary_data <- data.frame(
-        category = c("Total Peaks", "Overlapping Peaks"),
-        V5 = c(length(v5_peaks), length(v5_with_h2a)),
-        H2AK119Ub = c(length(h2a_peaks), length(h2a_with_v5))
-    )
-    
-    # Melt data for plotting
-    plot_data <- reshape2::melt(summary_data, id.vars = "category")
-    
-    p <- ggplot(plot_data, aes(x = category, y = value, fill = variable)) +
-        geom_bar(stat = "identity", position = "dodge") +
-        scale_y_log10(labels = comma) +
-        theme_bw() +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-        labs(x = "", y = "Number of Peaks",
-             title = sprintf("Peak Analysis Summary - %s", condition),
-             fill = "Peak Type")
-    
-    return(list(stats = overlap_stats, plot = p))
-}
-
-# Function to generate and analyze peak profiles with improved methodology
-generate_peak_profiles <- function(peaks, signal_files, condition, window_size = 2000, bin_size = 50, 
-                                      max_peaks = 10000, chunk_size = 1000) {
-    if (length(peaks) == 0) {
-        log_message("No peaks provided for profile generation", "WARNING")
-        return(NULL)
-    }
-    
-    # Ensure peaks is a GRanges object
-    if (!is(peaks, "GRanges")) {
-        stop("Input 'peaks' must be a GRanges object")
-    }
-    
-    # Subsample peaks if there are too many
-    if (length(peaks) > max_peaks) {
-        set.seed(42)  # For reproducibility
-        idx <- sample(length(peaks), max_peaks)
-        peaks <- peaks[idx]
-        log_message(sprintf("Subsampled peaks to %d for profile generation", max_peaks), "INFO")
-    }
-    
-    log_message(sprintf("Generating profiles for %d peaks in %s condition", 
-                       length(peaks), condition), "INFO")
-    
-    # Center peaks and create windows
-    peak_windows <- resize(peaks, width = window_size * 2, fix = "center")
-    
-    # Process each signal file
-    profile_data <- list()
-    for (signal_file in signal_files) {
-        if (!file.exists(signal_file)) {
-            log_message(sprintf("Signal file not found: %s", signal_file), "WARNING")
-            next
-        }
-        
-        tryCatch({
-            # Import and process signal
-            signal <- import.bw(signal_file)
-            signal <- standardize_chromosomes(signal)
-            
-            # Calculate coverage matrix using GenomicRanges methods
-            coverage_mat <- normalizeToMatrix(signal, peak_windows,
-                                            value_column = "score",
-                                            mean_mode = "w0",
-                                            w = bin_size,
-                                            extend = 0,
-                                            smooth = TRUE)
-            
-            if (all(is.na(coverage_mat)) || all(coverage_mat == 0)) {
-                log_message(sprintf("No signal detected in %s", basename(signal_file)), "WARNING")
-                next
-            }
-            
-            # Calculate summary statistics
-            profile_mean <- colMeans(coverage_mat, na.rm = TRUE)
-            profile_sd <- apply(coverage_mat, 2, sd, na.rm = TRUE)
-            
-            profile_data[[basename(signal_file)]] <- list(
-                matrix = coverage_mat,
-                mean = profile_mean,
-                sd = profile_sd
-            )
-            
-            log_message(sprintf("Processed %s successfully", basename(signal_file)), "INFO")
-        }, error = function(e) {
-            log_message(sprintf("Error processing %s: %s", basename(signal_file), e$message), "ERROR")
-        })
-    }
-    
-    if (length(profile_data) == 0) {
-        log_message("No valid profiles generated", "WARNING")
-        return(NULL)
-    }
-    
-    return(profile_data)
-}
-
-# Function to create profile plots from profile data
-create_profile_plot <- function(profile_data, condition) {
-    # Prepare data for plotting
-    plot_data <- lapply(names(profile_data), function(sample) {
-        data <- profile_data[[sample]]
-        positions <- seq(-1000, 1000, length.out = length(data$mean))
-        
-        data.frame(
-            position = positions,
-            signal = data$mean,
-            sd_low = data$mean - data$sd,
-            sd_high = data$mean + data$sd,
-            sample = sample
-        )
-    })
-    
-    plot_data <- do.call(rbind, plot_data)
-    
-    # Create plot
-    p <- ggplot(plot_data, aes(x = position, y = signal, color = sample)) +
-        geom_line(size = 1) +
-        geom_ribbon(aes(ymin = sd_low, ymax = sd_high, fill = sample),
-                    alpha = 0.2, color = NA) +
-        theme_bw() +
-        labs(x = "Distance from Peak Center (bp)",
-             y = "Average Signal",
-             title = sprintf("%s Peak Profiles", condition)) +
-        theme(legend.position = "bottom",
-              plot.title = element_text(hjust = 0.5))
-    
-    return(p)
-}
-
-# Main analysis function with enhanced documentation
 # Main analysis function incorporating best practices for ChIP-seq analysis
 main_analysis <- function(narrow_peaks, broad_peaks, v5_narrow_peaks, v5_broad_peaks) {
     tryCatch({
@@ -1142,137 +1018,142 @@ main_analysis <- function(narrow_peaks, broad_peaks, v5_narrow_peaks, v5_broad_p
         
         # Write analysis header
         cat("ChIP-seq Cross-reference Analysis Report\n",
-            "=====================================\n\n",
-            sprintf("Analysis Date: %s\n\n", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+            "=====================================\n", file = report_connection)
+        cat("===========================================\n", file = report_connection)
+        cat("ChIP-seq Cross-Reference Analysis Report\n", file = report_connection)
+        cat("===========================================\n\n", file = report_connection)
+        cat(sprintf("Analysis Date: %s\n\n", format(Sys.time(), "%Y-%m-%d %H:%M:%S")), 
             file = report_connection)
         
-        # Process V5 peaks
-        log_message("Processing V5 peaks...", "INFO")
-        v5_peaks <- v5_broad_peaks  # Using broad peaks as per best practices
+        # Initial V5 peak analysis
+        log_message("Analyzing initial V5 peaks...", "INFO", log_connection)
+        v5_initial_stats <- generate_peak_stats(v5_broad_peaks, "Initial V5")
+        cat(v5_initial_stats$text, file = report_connection)
         
-        # Write V5 peak statistics
-        cat("\nV5 Peak Statistics:\n",
-            "------------------\n",
-            sprintf("Total peaks: %d\n", length(v5_peaks)),
-            sprintf("Width range: %d - %d bp\n", min(width(v5_peaks)), max(width(v5_peaks))),
-            sprintf("Median width: %d bp\n", median(width(v5_peaks))),
-            file = report_connection)
+        # Get blacklist regions
+        log_message("Loading blacklist regions...", "INFO", log_connection)
+        blacklist <- get_blacklist_regions()
         
-        # Analyze peaks by condition
+        # Filter V5 peaks against blacklist
+        # log_message("Filtering V5 peaks against blacklist...", "INFO", log_connection)
+        # v5_filtered <- filter_blacklist_regions(v5_broad_peaks, blacklist)
+        v5_filtered <- v5_broad_peaks
+        filtering_summary <- generate_filtering_summary(v5_broad_peaks, v5_filtered, "Blacklist")
+        cat(filtering_summary, file = report_connection)
+        
+        # Analyze filtered V5 peaks
+        v5_filtered_stats <- generate_peak_stats(v5_filtered, "Filtered V5")
+        cat(v5_filtered_stats$text, file = report_connection)
+        
+        # Create plots directory
+        plots_dir <- file.path(output_dir, "plots")
+        dir.create(plots_dir, showWarnings = FALSE, recursive = TRUE)
+        
+        # Plot V5 peak width distribution before and after filtering
+        width_dist <- plot_peak_width_distribution(
+            list(v5_broad_peaks, v5_filtered),
+            c("Original", "Filtered"),
+            "V5 Peak Width Distribution"
+        )
+        ggsave(file.path(plots_dir, "v5_peak_width_distribution.pdf"), width_dist,
+               width = 8, height = 6)
+        
+        # Plot V5 chromosome distribution
+        chrom_dist <- plot_chromosome_distribution(
+            list(v5_broad_peaks, v5_filtered),
+            c("Original", "Filtered"),
+            "V5 Peak Distribution by Chromosome"
+        )
+        ggsave(file.path(plots_dir, "v5_chromosome_distribution.pdf"), chrom_dist,
+               width = 10, height = 6)
+        
+        # Process each H2AK119Ub condition with plots
         for (condition in names(broad_peaks)) {
-            log_message(sprintf("Analyzing %s condition", condition), "INFO")
-            
-            cat(sprintf("\n%s Analysis:\n", condition),
-                sprintf("%s\n", paste(rep("-", nchar(condition) + 10), collapse = "")),
+            cat(sprintf("\n\n=== Analysis for %s condition ===\n", condition), 
                 file = report_connection)
             
-            # Get H2AK119Ub peaks for this condition
-            h2a_peaks <- broad_peaks[[condition]]
+            # Perform peak annotation and overlap analysis
+            log_message(sprintf("Analyzing %s peaks", condition), "INFO")
             
-            # Annotate peaks
-            log_message("Performing peak annotation", "INFO")
+            # Annotate peaks using ChIPseeker
             txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
-            
-            # Debug peak object before conversion
-            log_message(sprintf("Number of peaks before conversion: %d", length(h2a_peaks)), "DEBUG")
-            log_message(sprintf("Names of h2a_peaks: %s", paste(head(names(h2a_peaks)), collapse=", ")), "DEBUG")
-            
-            # Convert peaks to data frame preserving ALL metadata
-            peaks_df <- as.data.frame(h2a_peaks)
-            original_metadata <- mcols(h2a_peaks)
-            log_message(sprintf("Peaks data frame dimensions: %d x %d", nrow(peaks_df), ncol(peaks_df)), "DEBUG")
-            
-            # Check for existing metadata
-            existing_mcols <- colnames(original_metadata)
-            log_message(sprintf("Existing metadata columns: %s", paste(existing_mcols, collapse=", ")), "DEBUG")
-            
-            # Preserve or generate peak IDs
-            if ("peak_id" %in% existing_mcols && 
-                !all(is.na(original_metadata$peak_id)) && 
-                !all(original_metadata$peak_id == "")) {
-                # Use existing peak IDs
-                peak_ids <- original_metadata$peak_id
-                log_message("Using existing peak IDs from metadata", "DEBUG")
-            } else if (!is.null(names(h2a_peaks)) && 
-                       !all(is.na(names(h2a_peaks))) && 
-                       !all(names(h2a_peaks) == "")) {
-                # Use existing names
-                peak_ids <- names(h2a_peaks)
-                log_message("Using existing peak names", "DEBUG")
-            } else {
-                # Generate new unique IDs
-                peak_ids <- paste0(condition, "_peak_", seq_len(nrow(peaks_df)))
-                log_message("Generating new peak IDs", "DEBUG")
-            }
-            
-            # Ensure peak IDs are unique
-            if (length(unique(peak_ids)) != length(peak_ids)) {
-                log_message("WARNING: Duplicate peak IDs found, generating new unique IDs", "WARNING")
-                peak_ids <- make.unique(peak_ids)
-            }
-            
-            # Create GRanges preserving ALL metadata
-            peaks_gr <- makeGRangesFromDataFrame(peaks_df, keep.extra.columns=TRUE)
-            
-            # Copy over ALL original metadata
-            if (length(existing_mcols) > 0) {
-                for (col in existing_mcols) {
-                    mcols(peaks_gr)[[col]] <- original_metadata[[col]]
-                }
-            }
-            
-            # Update/add required metadata
-            mcols(peaks_gr)$peak_id <- peak_ids
-            mcols(peaks_gr)$condition <- condition
-            names(peaks_gr) <- peak_ids
-            
-            # Validate final object
-            stopifnot(
-                length(peaks_gr) == length(h2a_peaks),
-                length(unique(names(peaks_gr))) == length(peaks_gr),
-                !any(is.na(names(peaks_gr))),
-                !any(names(peaks_gr) == "")
-            )
-            
-            # Debug final object
-            log_message(sprintf("Final GRanges metadata columns: %s", 
-                paste(colnames(mcols(peaks_gr)), collapse=", ")), "DEBUG")
-            
-            log_message(sprintf("Final GRanges object length: %d", length(peaks_gr)), "DEBUG")
-            log_message(sprintf("Final GRanges names: %s", paste(head(names(peaks_gr)), collapse=", ")), "DEBUG")
-            
-            # Perform peak annotation
+            peaks_gr <- as(broad_peaks[[condition]], "GRanges")
             peak_annot <- annotatePeak(peaks_gr, TxDb=txdb,
                                       annoDb="org.Hs.eg.db")
             
-            # Write annotation summary
-            annot_summary <- as.data.frame(peak_annot)
-            cat(sprintf("\nPeak Annotation Summary:\n"),
-                sprintf("Total peaks: %d\n", nrow(annot_summary)),
-                sprintf("Promoter peaks: %d (%.1f%%)\n", 
-                        sum(grepl("Promoter", annot_summary$annotation)),
-                        100 * sum(grepl("Promoter", annot_summary$annotation)) / nrow(annot_summary)),
-                file = report_connection)
+            # Write annotation results
+            annot_file <- file.path(output_dir, "tables", 
+                                   sprintf("%s_peak_annotation.txt", condition))
+            write.table(as.data.frame(peak_annot), annot_file,
+                        sep="\t", quote=FALSE, row.names=FALSE)
+            
+            # Generate annotation summary
+            annot_summary <- plotAnnoPie(peak_annot)
+            pdf(file.path(output_dir, "plots", 
+                         sprintf("%s_annotation_summary.pdf", condition)))
+            print(annot_summary)
+            dev.off()
+            
+            # Calculate overlap with V5 peaks
+            log_message("Calculating peak overlaps", "INFO")
+            
+            # Ensure v5_broad_peaks is a GRanges object, not a list
+            if (is.list(v5_broad_peaks) && !is(v5_broad_peaks, "GRanges")) {
+                log_message("Converting v5_broad_peaks from list to GRanges", "DEBUG")
+                # If it's a list with a single GRanges object, extract it
+                if (length(v5_broad_peaks) == 1 && is(v5_broad_peaks[[1]], "GRanges")) {
+                    v5_peaks_gr <- v5_broad_peaks[[1]]
+                } else {
+                    # Otherwise, try to create a GRanges object from the list
+                    v5_peaks_gr <- tryCatch({
+                        as(v5_broad_peaks, "GRanges")
+                    }, error = function(e) {
+                        log_message(sprintf("Error converting v5_broad_peaks to GRanges: %s", e$message), "ERROR")
+                        NULL
+                    })
+                }
+            } else {
+                v5_peaks_gr <- v5_broad_peaks
+            }
+            
+            # Only proceed if we have a valid GRanges object
+            if (!is.null(v5_peaks_gr) && is(v5_peaks_gr, "GRanges")) {
+                overlaps <- findOverlaps(peaks_gr, v5_peaks_gr)
+                n_overlaps <- length(unique(queryHits(overlaps)))
+                
+                # Write overlap statistics to report
+                cat(sprintf("\nPeak Statistics for %s:\n", condition),
+                    sprintf("Total peaks: %.0f\n", length(peaks_gr)),
+                    sprintf("Peaks overlapping with V5: %.0f (%.1f%%)\n",
+                            n_overlaps, 100 * n_overlaps/length(peaks_gr)),
+                    file=report_connection)
+            } else {
+                log_message("Unable to calculate overlaps: v5_broad_peaks is not a valid GRanges object", "ERROR")
+                cat(sprintf("\nPeak Statistics for %s:\n", condition),
+                    sprintf("Total peaks: %.0f\n", length(peaks_gr)),
+                    sprintf("Peaks overlapping with V5: Unable to calculate\n"),
+                    file=report_connection)
+            }
             
             # Analyze overlaps
             log_message("Analyzing peak overlaps", "INFO")
-            overlap_analysis <- analyze_overlaps(v5_peaks, h2a_peaks, condition)
+            overlap_analysis <- analyze_overlaps(v5_filtered, broad_peaks[[condition]], condition)
             
             # Write overlap statistics
             cat("\nOverlap Analysis:\n",
-                sprintf("V5 peaks overlapping with H2AK119Ub: %d (%.1f%%)\n",
+                sprintf("V5 peaks overlapping with H2AK119Ub: %.0f (%.1f%%)\n",
                         overlap_analysis$stats$overlapping_peaks,
                         overlap_analysis$stats$percent_v5_overlap),
-                sprintf("H2AK119Ub peaks overlapping with V5: %d (%.1f%%)\n",
+                sprintf("H2AK119Ub peaks overlapping with V5: %.0f (%.2f%%)\n",
                         overlap_analysis$stats$overlapping_peaks,
                         overlap_analysis$stats$percent_h2a_overlap),
                 file = report_connection)
             
             if (!is.null(overlap_analysis$stats$width_stats)) {
                 cat("\nOverlap Width Statistics:\n",
-                    sprintf("Median width: %d bp\n", overlap_analysis$stats$width_stats$median),
+                    sprintf("Median width: %.0f bp\n", overlap_analysis$stats$width_stats$median),
                     sprintf("Mean width: %.1f bp\n", overlap_analysis$stats$width_stats$mean),
-                    sprintf("Width range: %d - %d bp\n",
+                    sprintf("Width range: %.0f - %.0f bp\n",
                             overlap_analysis$stats$width_stats$min,
                             overlap_analysis$stats$width_stats$max),
                     file = report_connection)
@@ -1283,20 +1164,20 @@ main_analysis <- function(narrow_peaks, broad_peaks, v5_narrow_peaks, v5_broad_p
             print(overlap_analysis$plot)
             dev.off()
             
-            # Generate peak profiles
-            log_message("Generating peak profiles", "INFO")
-            profile_data <- generate_peak_profiles(h2a_peaks, 
-                                                 h2a_bigwig_files[[condition]], 
-                                                 condition)
+            # # Generate peak profiles
+            # log_message("Generating peak profiles", "INFO")
+            # profile_data <- generate_peak_profiles(broad_peaks[[condition]], 
+            #                                      h2a_bigwig_files[[condition]], 
+            #                                      condition)
             
-            if (!is.null(profile_data)) {
-                # Create profile plot
-                profile_plot <- create_profile_plot(profile_data, condition)
-                pdf(file.path(output_dir, "plots", 
-                             sprintf("%s_peak_profiles.pdf", condition)))
-                print(profile_plot)
-                dev.off()
-            }
+            # if (!is.null(profile_data)) {
+            #     # Create profile plot
+            #     profile_plot <- create_profile_plot(profile_data, condition)
+            #     pdf(file.path(output_dir, "plots", 
+            #                  sprintf("%s_peak_profiles.pdf", condition)))
+            #     print(profile_plot)
+            #     dev.off()
+            # }
         }
         report_connection <- file(report_file, open = "wt")
         on.exit({
@@ -1387,8 +1268,8 @@ main_analysis <- function(narrow_peaks, broad_peaks, v5_narrow_peaks, v5_broad_p
             
             # Write overlap statistics to report
             cat(sprintf("\nPeak Statistics for %s:\n", condition),
-                sprintf("Total peaks: %d\n", length(peaks_gr)),
-                sprintf("Peaks overlapping with V5: %d (%.1f%%)\n",
+                sprintf("Total peaks: %.0f\n", length(peaks_gr)),
+                sprintf("Peaks overlapping with V5: %.0f (%.1f%%)\n",
                         n_overlaps, 100 * n_overlaps/length(peaks_gr)),
                 file=report_connection)
             
@@ -1422,15 +1303,15 @@ main_analysis <- function(narrow_peaks, broad_peaks, v5_narrow_peaks, v5_broad_p
                    overlap_plots$summary,
                    width = 8, height = 6)
             
-            # Generate and save peak profile plot
-            profile_plot <- plot_peak_profiles(v5_filtered, h2a_filtered, condition)
-            if (!is.null(profile_plot)) {
-                ggsave(file.path(plots_dir, 
-                               sprintf("peak_profiles_%s.pdf", 
-                                     tolower(condition))),
-                       profile_plot,
-                       width = 8, height = 6)
-            }
+            # # Generate and save peak profile plot
+            # profile_plot <- plot_peak_profiles(v5_filtered, h2a_filtered, condition)
+            # if (!is.null(profile_plot)) {
+            #     ggsave(file.path(plots_dir, 
+            #                    sprintf("peak_profiles_%s.pdf", 
+            #                          tolower(condition))),
+            #            profile_plot,
+            #            width = 8, height = 6)
+            # }
             
             # Create combined plot for the condition
             plots_to_combine <- list(
@@ -1469,97 +1350,157 @@ options(mc.cores = parallel::detectCores() - 1)   # Use all but one core
 options(scipen = 999)                           # Avoid scientific notation
 options(datatable.optimize = 1)                 # Enable data.table optimization
 
-# Function to plot peak profiles
-plot_peak_profiles <- function(peaks, signal_data, condition, window_size = 2000) {
-    # Calculate profile matrix
-    profile_matrix <- do.call(cbind, lapply(signal_data, function(x) x$profile))
+# Function to generate peak profiles
+generate_peak_profiles <- function(peaks, bigwig_files, condition, window_size = 2000) {
+    # Input validation
+    if (length(peaks) == 0) {
+        log_message("No peaks provided for profile generation", "WARN")
+        return(NULL)
+    }
     
-    # Calculate mean profile
-    mean_profile <- rowMeans(profile_matrix, na.rm = TRUE)
+    # Ensure peaks have valid coordinates
+    peaks <- ensure_valid_ranges(peaks)
     
-    # Calculate standard error
-    se_profile <- apply(profile_matrix, 1, function(x) sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x))))
+    # Create windows around peak centers
+    peak_centers <- resize(peaks, width = 1, fix = "center")
+    windows <- resize(peak_centers, width = 2 * window_size + 1, fix = "center")
     
-    # Create position vector for x-axis
-    positions <- seq(-window_size, window_size, length.out = length(mean_profile))
+    # Process each bigwig file
+    profiles <- list()
     
-    # Create data frame for plotting
-    plot_data <- data.frame(
-        Position = positions,
-        Mean = mean_profile,
-        SE_plus = mean_profile + se_profile,
-        SE_minus = mean_profile - se_profile
-    )
+    for (rep_name in names(bigwig_files)) {
+        bigwig_file <- bigwig_files[[rep_name]]
+        
+        if (!file.exists(bigwig_file)) {
+            log_message(sprintf("BigWig file not found: %s", bigwig_file), "WARN")
+            next
+        }
+        
+        # Import signal
+        signal <- tryCatch({
+            import(bigwig_file, as = "RleList")
+        }, error = function(e) {
+            log_message(sprintf("Error importing bigwig file %s: %s", bigwig_file, e$message), "ERROR")
+            return(NULL)
+        })
+        
+        if (is.null(signal)) {
+            next
+        }
+        
+        # Standardize chromosome names
+        names(signal) <- sub("^chr", "", names(signal))
+        names(signal) <- paste0("chr", names(signal))
+        
+        # Keep only standard chromosomes
+        std_chroms <- paste0("chr", c(1:22, "X", "Y"))
+        signal <- signal[names(signal) %in% std_chroms]
+        
+        # Calculate profile
+        profile <- tryCatch({
+            computeMatrix(signal, windows, bin_size = 10)
+        }, error = function(e) {
+            log_message(sprintf("Error computing matrix: %s", e$message), "ERROR")
+            return(NULL)
+        })
+        
+        if (!is.null(profile)) {
+            profiles[[rep_name]] <- list(
+                profile = rowMeans(profile, na.rm = TRUE),
+                replicate = rep_name
+            )
+        }
+    }
     
-    # Create plot
-    p <- ggplot(plot_data, aes(x = Position)) +
-        geom_ribbon(aes(ymin = SE_minus, ymax = SE_plus), fill = "grey70", alpha = 0.3) +
-        geom_line(aes(y = Mean), color = "blue", size = 1) +
-        labs(x = "Distance from peak center (bp)",
-             y = "Average signal",
-             title = paste0(condition, " Peak Profiles")) +
-        theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5))
-    
-    # Save plot
-    ggsave(file.path(output_dir, "plots", paste0(condition, "_peak_profiles.pdf")),
-           p, width = 8, height = 6)
-    
-    return(p)
+    return(profiles)
 }
 
-# Function to plot peak overlap analysis
-plot_overlap_analysis <- function(v5_peaks, h2a_peaks, condition) {
-    # Calculate overlaps
-    overlaps <- findOverlaps(v5_peaks, h2a_peaks)
+# Function to compute signal matrix around genomic regions
+computeMatrix <- function(signal, regions, bin_size = 10) {
+    # Ensure regions have valid coordinates
+    regions <- ensure_valid_ranges(regions)
     
-    # Calculate overlap statistics
-    n_v5_peaks <- length(v5_peaks)
-    n_h2a_peaks <- length(h2a_peaks)
-    n_overlaps <- length(unique(queryHits(overlaps)))
+    # Calculate number of bins
+    region_width <- median(width(regions))
+    n_bins <- ceiling(region_width / bin_size)
     
-    # Create Venn diagram data
-    v5_name <- "V5 Peaks"
-    h2a_name <- paste0(condition, " H2AK119Ub Peaks")
+    # Initialize matrix
+    result_matrix <- matrix(NA, nrow = length(regions), ncol = n_bins)
     
-    # Set up colors
-    colors <- brewer.pal(3, "Set2")[1:2]
+    # Process each region
+    for (i in seq_along(regions)) {
+        region <- regions[i]
+        chrom <- as.character(seqnames(region))
+        
+        # Skip if chromosome not in signal
+        if (!chrom %in% names(signal)) {
+            next
+        }
+        
+        # Create bins
+        bins <- seq(start(region), end(region), length.out = n_bins + 1)
+        bins <- bins[-length(bins)]  # Remove last point
+        
+        # Extract signal for each bin
+        for (j in 1:n_bins) {
+            bin_start <- floor(bins[j])
+            bin_end <- ifelse(j < n_bins, floor(bins[j+1]) - 1, end(region))
+            
+            if (bin_start <= bin_end) {
+                bin_range <- IRanges(start = bin_start, end = bin_end)
+                bin_signal <- tryCatch({
+                    mean(signal[[chrom]][bin_start:bin_end], na.rm = TRUE)
+                }, error = function(e) {
+                    NA
+                })
+                
+                result_matrix[i, j] <- bin_signal
+            }
+        }
+    }
     
-    # Create Venn diagram
-    venn_plot <- draw.pairwise.venn(
-        area1 = n_v5_peaks,
-        area2 = n_h2a_peaks,
-        cross.area = n_overlaps,
-        category = c(v5_name, h2a_name),
-        lty = "blank",
-        fill = colors,
-        alpha = 0.5,
-        cat.pos = c(0, 0),
-        cat.dist = c(0.025, 0.025),
-        cat.cex = 1,
-        cex = 1.5,
-        cat.col = colors,
-        scaled = TRUE
-    )
-    
-    # Save the plot
-    pdf(file.path(output_dir, "plots", paste0(condition, "_overlap_analysis.pdf")),
-        width = 8, height = 6)
-    grid.draw(venn_plot)
-    dev.off()
-    
-    # Return overlap statistics
-    return(list(
-        stats = list(
-            v5_peaks = n_v5_peaks,
-            h2a_peaks = n_h2a_peaks,
-            overlapping_peaks = n_overlaps,
-            percent_v5_overlap = 100 * n_overlaps / n_v5_peaks,
-            percent_h2a_overlap = 100 * n_overlaps / n_h2a_peaks
-        ),
-        overlaps = overlaps
-    ))
+    return(result_matrix)
 }
+
+# Function to create profile plot
+# create_profile_plot <- function(profile_data, condition) {
+#     # Check if profile data is available
+#     if (is.null(profile_data) || length(profile_data) == 0) {
+#         log_message("No profile data available for plotting", "WARN")
+#         return(NULL)
+#     }
+    
+#     # Extract profiles and calculate mean and standard error
+#     profiles <- lapply(profile_data, function(x) x$profile)
+#     profile_matrix <- do.call(rbind, profiles)
+    
+#     mean_profile <- colMeans(profile_matrix, na.rm = TRUE)
+#     se_profile <- apply(profile_matrix, 2, function(x) sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x))))
+    
+#     # Create position vector
+#     n_points <- length(mean_profile)
+#     positions <- seq(-n_points/2, n_points/2, length.out = n_points)
+    
+#     # Create data frame for plotting
+#     plot_data <- data.frame(
+#         Position = positions,
+#         Mean = mean_profile,
+#         SE_plus = mean_profile + se_profile,
+#         SE_minus = mean_profile - se_profile
+#     )
+    
+#     # Create plot
+#     p <- ggplot(plot_data, aes(x = Position)) +
+#         geom_ribbon(aes(ymin = SE_minus, ymax = SE_plus), fill = "grey70", alpha = 0.3) +
+#         geom_line(aes(y = Mean), color = "blue", size = 1) +
+#         labs(x = "Distance from peak center (bp)",
+#              y = "Average signal",
+#              title = paste0(condition, " Peak Profiles")) +
+#         theme_minimal() +
+#         theme(plot.title = element_text(hjust = 0.5))
+    
+#     return(p)
+# }
 
 # Main execution block
 main <- function() {
@@ -1601,6 +1542,20 @@ main <- function() {
     
     # Execute main analysis
     main_analysis(NULL, broad_peaks, NULL, v5_broad_peaks)
+}
+
+# Enhanced log_message function with debug levels
+log_message <- function(msg, level = "INFO", log_connection = NULL) {
+    timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    message <- sprintf("[%s] [%s] %s", timestamp, level, msg)
+    
+    # Write to log file if connection is provided
+    if (!is.null(log_connection)) {
+        cat(message, "\n", file = log_connection, append = TRUE)
+    }
+    
+    # Also print to console
+    cat(message, "\n")
 }
 
 # Execute the main function

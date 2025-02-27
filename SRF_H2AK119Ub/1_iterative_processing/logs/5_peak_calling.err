@@ -1,749 +1,260 @@
 WARNING: overwriting environment variables set in the machine
 overwriting variable ['TMPDIR']
-WARNING: overwriting environment variables set in the machine
-overwriting variable ['TMPDIR']
-WARNING: overwriting environment variables set in the machine
-overwriting variable ['TMPDIR']
-WARNING: overwriting environment variables set in the machine
-overwriting variable ['TMPDIR']
-WARNING: overwriting environment variables set in the machine
-overwriting variable ['TMPDIR']
-WARNING: overwriting environment variables set in the machine
-overwriting variable ['TMPDIR']
-INFO  @ Wed, 26 Feb 2025 16:26:05: 
-# Command line: callpeak -t /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_3_4233591/YAF_1/YAF_1.chr.bam -f BAMPE -g hs --broad -n YAF_1_broad --outdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling -q 0.01 --broad-cutoff 0.01 --keep-dup 1 --min-length 1000 --bdg --buffer-size 1000000 --verbose 3 --tempdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_3_4233591/YAF_1/macs2_tmp_5929 --nomodel --nolambda --slocal 1000 --llocal 10000
-# ARGUMENTS LIST:
-# name = YAF_1_broad
-# format = BAMPE
-# ChIP-seq file = ['/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_3_4233591/YAF_1/YAF_1.chr.bam']
-# control file = None
-# effective genome size = 2.70e+09
-# band width = 300
-# model fold = [5, 50]
-# qvalue cutoff for narrow/strong regions = 1.00e-02
-# qvalue cutoff for broad/weak regions = 1.00e-02
-# The maximum gap between significant sites is assigned as the read length/tag size.
-# The minimum length of peaks = 1000
-# Larger dataset will be scaled towards smaller dataset.
-# Range for calculating regional lambda is: 10000 bps
-# Broad region calling is on
-# Paired-End mode is on
- 
-INFO  @ Wed, 26 Feb 2025 16:26:05: #1 read fragment files... 
-INFO  @ Wed, 26 Feb 2025 16:26:05: #1 read treatment fragments... 
-INFO  @ Wed, 26 Feb 2025 16:26:06: 
-# Command line: callpeak -t /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_2_4233590/GFP_3/GFP_3.chr.bam -f BAMPE -g hs --broad -n GFP_3_broad --outdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling -q 0.01 --broad-cutoff 0.01 --keep-dup 1 --min-length 1000 --bdg --buffer-size 1000000 --verbose 3 --tempdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_2_4233590/GFP_3/macs2_tmp_910 --nomodel --nolambda --slocal 1000 --llocal 10000
-# ARGUMENTS LIST:
-# name = GFP_3_broad
-# format = BAMPE
-# ChIP-seq file = ['/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_2_4233590/GFP_3/GFP_3.chr.bam']
-# control file = None
-# effective genome size = 2.70e+09
-# band width = 300
-# model fold = [5, 50]
-# qvalue cutoff for narrow/strong regions = 1.00e-02
-# qvalue cutoff for broad/weak regions = 1.00e-02
-# The maximum gap between significant sites is assigned as the read length/tag size.
-# The minimum length of peaks = 1000
-# Larger dataset will be scaled towards smaller dataset.
-# Range for calculating regional lambda is: 10000 bps
-# Broad region calling is on
-# Paired-End mode is on
- 
-INFO  @ Wed, 26 Feb 2025 16:26:06: #1 read fragment files... 
-INFO  @ Wed, 26 Feb 2025 16:26:06: #1 read treatment fragments... 
-INFO  @ Wed, 26 Feb 2025 16:26:09:  1000000 
-INFO  @ Wed, 26 Feb 2025 16:26:09:  1000000 
-INFO  @ Wed, 26 Feb 2025 16:26:12:  2000000 
-INFO  @ Wed, 26 Feb 2025 16:26:12:  2000000 
-INFO  @ Wed, 26 Feb 2025 16:26:12: 
-# Command line: callpeak -t /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_0_4233588/GFP_1/GFP_1.chr.bam -f BAMPE -g hs --broad -n GFP_1_broad --outdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling -q 0.01 --broad-cutoff 0.01 --keep-dup 1 --min-length 1000 --bdg --buffer-size 1000000 --verbose 3 --tempdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_0_4233588/GFP_1/macs2_tmp_20995 --nomodel --nolambda --slocal 1000 --llocal 10000
-# ARGUMENTS LIST:
-# name = GFP_1_broad
-# format = BAMPE
-# ChIP-seq file = ['/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_0_4233588/GFP_1/GFP_1.chr.bam']
-# control file = None
-# effective genome size = 2.70e+09
-# band width = 300
-# model fold = [5, 50]
-# qvalue cutoff for narrow/strong regions = 1.00e-02
-# qvalue cutoff for broad/weak regions = 1.00e-02
-# The maximum gap between significant sites is assigned as the read length/tag size.
-# The minimum length of peaks = 1000
-# Larger dataset will be scaled towards smaller dataset.
-# Range for calculating regional lambda is: 10000 bps
-# Broad region calling is on
-# Paired-End mode is on
- 
-INFO  @ Wed, 26 Feb 2025 16:26:12: #1 read fragment files... 
-INFO  @ Wed, 26 Feb 2025 16:26:12: #1 read treatment fragments... 
-INFO  @ Wed, 26 Feb 2025 16:26:13: 
-# Command line: callpeak -t /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_1_4233589/GFP_2/GFP_2.chr.bam -f BAMPE -g hs --broad -n GFP_2_broad --outdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling -q 0.01 --broad-cutoff 0.01 --keep-dup 1 --min-length 1000 --bdg --buffer-size 1000000 --verbose 3 --tempdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_1_4233589/GFP_2/macs2_tmp_13118 --nomodel --nolambda --slocal 1000 --llocal 10000
-# ARGUMENTS LIST:
-# name = GFP_2_broad
-# format = BAMPE
-# ChIP-seq file = ['/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_1_4233589/GFP_2/GFP_2.chr.bam']
-# control file = None
-# effective genome size = 2.70e+09
-# band width = 300
-# model fold = [5, 50]
-# qvalue cutoff for narrow/strong regions = 1.00e-02
-# qvalue cutoff for broad/weak regions = 1.00e-02
-# The maximum gap between significant sites is assigned as the read length/tag size.
-# The minimum length of peaks = 1000
-# Larger dataset will be scaled towards smaller dataset.
-# Range for calculating regional lambda is: 10000 bps
-# Broad region calling is on
-# Paired-End mode is on
- 
-INFO  @ Wed, 26 Feb 2025 16:26:13: #1 read fragment files... 
-INFO  @ Wed, 26 Feb 2025 16:26:13: #1 read treatment fragments... 
-INFO  @ Wed, 26 Feb 2025 16:26:15:  3000000 
-INFO  @ Wed, 26 Feb 2025 16:26:15:  1000000 
-INFO  @ Wed, 26 Feb 2025 16:26:15:  3000000 
-INFO  @ Wed, 26 Feb 2025 16:26:16: 
-# Command line: callpeak -t /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4233587/YAF_3/YAF_3.chr.bam -f BAMPE -g hs --broad -n YAF_3_broad --outdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling -q 0.01 --broad-cutoff 0.01 --keep-dup 1 --min-length 1000 --bdg --buffer-size 1000000 --verbose 3 --tempdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4233587/YAF_3/macs2_tmp_26470 --nomodel --nolambda --slocal 1000 --llocal 10000
+INFO  @ Thu, 27 Feb 2025 15:31:04:  8000000 
+INFO  @ Thu, 27 Feb 2025 15:31:08:  9000000 
+INFO  @ Thu, 27 Feb 2025 15:31:12:  10000000 
+INFO  @ Thu, 27 Feb 2025 15:31:15:  11000000 
+INFO  @ Thu, 27 Feb 2025 15:31:19:  12000000 
+INFO  @ Thu, 27 Feb 2025 15:31:22:  13000000 
+INFO  @ Thu, 27 Feb 2025 15:31:26:  14000000 
+INFO  @ Thu, 27 Feb 2025 15:31:29:  15000000 
+INFO  @ Thu, 27 Feb 2025 15:31:33:  16000000 
+INFO  @ Thu, 27 Feb 2025 15:31:36: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_2_broad_peaks.xls 
+INFO  @ Thu, 27 Feb 2025 15:31:36:  17000000 
+INFO  @ Thu, 27 Feb 2025 15:31:38: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_2_broad_peaks.broadPeak 
+INFO  @ Thu, 27 Feb 2025 15:31:39: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_2_broad_peaks.gappedPeak 
+INFO  @ Thu, 27 Feb 2025 15:31:40:  18000000 
+INFO  @ Thu, 27 Feb 2025 15:31:40: Done! 
+INFO  @ Thu, 27 Feb 2025 15:31:42: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_1_broad_peaks.xls 
+INFO  @ Thu, 27 Feb 2025 15:31:43: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_1_broad_peaks.broadPeak 
+INFO  @ Thu, 27 Feb 2025 15:31:44:  19000000 
+INFO  @ Thu, 27 Feb 2025 15:31:44: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_1_broad_peaks.gappedPeak 
+INFO  @ Thu, 27 Feb 2025 15:31:45: Done! 
+INFO  @ Thu, 27 Feb 2025 15:31:47:  20000000 
+DEBUG @ Thu, 27 Feb 2025 15:31:49: access pq hash for 145873848 times 
+INFO  @ Thu, 27 Feb 2025 15:31:49: #3 In the peak calling step, the following will be performed simultaneously: 
+INFO  @ Thu, 27 Feb 2025 15:31:49: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... GFP_3_broad_treat_pileup.bdg 
+INFO  @ Thu, 27 Feb 2025 15:31:49: #3   Write bedGraph files for control lambda (after scaling if necessary)... GFP_3_broad_control_lambda.bdg 
+INFO  @ Thu, 27 Feb 2025 15:31:49: #3 Call peaks for each chromosome... 
+INFO  @ Thu, 27 Feb 2025 15:31:51:  21000000 
+INFO  @ Thu, 27 Feb 2025 15:31:54:  22000000 
+INFO  @ Thu, 27 Feb 2025 15:31:58:  23000000 
+INFO  @ Thu, 27 Feb 2025 15:32:01:  24000000 
+INFO  @ Thu, 27 Feb 2025 15:32:04: 
+# Command line: callpeak -t /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4237188/YAF_3/YAF_3.chr.bam -f BAMPE --broad -g hs --broad-cutoff 0.1 --nomodel --extsize 50 --down-sample -q 0.2 -n YAF_3_broad --outdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling --keep-dup 1 --bdg --buffer-size 1000000 --verbose 3 --tempdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4237188/YAF_3/macs2_tmp_18684
 # ARGUMENTS LIST:
 # name = YAF_3_broad
 # format = BAMPE
-# ChIP-seq file = ['/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4233587/YAF_3/YAF_3.chr.bam']
+# ChIP-seq file = ['/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4237188/YAF_3/YAF_3.chr.bam']
 # control file = None
 # effective genome size = 2.70e+09
 # band width = 300
 # model fold = [5, 50]
-# qvalue cutoff for narrow/strong regions = 1.00e-02
-# qvalue cutoff for broad/weak regions = 1.00e-02
+# qvalue cutoff for narrow/strong regions = 2.00e-01
+# qvalue cutoff for broad/weak regions = 1.00e-01
 # The maximum gap between significant sites is assigned as the read length/tag size.
-# The minimum length of peaks = 1000
-# Larger dataset will be scaled towards smaller dataset.
+# The minimum length of peaks is assigned as the predicted fragment length "d".
+# Larger dataset will be randomly sampled towards smaller dataset.
 # Range for calculating regional lambda is: 10000 bps
 # Broad region calling is on
 # Paired-End mode is on
  
-INFO  @ Wed, 26 Feb 2025 16:26:16: #1 read fragment files... 
-INFO  @ Wed, 26 Feb 2025 16:26:16: #1 read treatment fragments... 
-INFO  @ Wed, 26 Feb 2025 16:26:16:  1000000 
-INFO  @ Wed, 26 Feb 2025 16:26:18:  4000000 
-INFO  @ Wed, 26 Feb 2025 16:26:18:  2000000 
-INFO  @ Wed, 26 Feb 2025 16:26:19:  4000000 
-INFO  @ Wed, 26 Feb 2025 16:26:19:  2000000 
-INFO  @ Wed, 26 Feb 2025 16:26:19:  1000000 
-INFO  @ Wed, 26 Feb 2025 16:26:21:  5000000 
-INFO  @ Wed, 26 Feb 2025 16:26:22:  3000000 
-INFO  @ Wed, 26 Feb 2025 16:26:22:  3000000 
-INFO  @ Wed, 26 Feb 2025 16:26:22:  5000000 
-INFO  @ Wed, 26 Feb 2025 16:26:22:  2000000 
-INFO  @ Wed, 26 Feb 2025 16:26:24: 
-# Command line: callpeak -t /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_4_4233592/YAF_2/YAF_2.chr.bam -f BAMPE -g hs --broad -n YAF_2_broad --outdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling -q 0.01 --broad-cutoff 0.01 --keep-dup 1 --min-length 1000 --bdg --buffer-size 1000000 --verbose 3 --tempdir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_4_4233592/YAF_2/macs2_tmp_14876 --nomodel --nolambda --slocal 1000 --llocal 10000
-# ARGUMENTS LIST:
-# name = YAF_2_broad
-# format = BAMPE
-# ChIP-seq file = ['/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_4_4233592/YAF_2/YAF_2.chr.bam']
-# control file = None
-# effective genome size = 2.70e+09
-# band width = 300
-# model fold = [5, 50]
-# qvalue cutoff for narrow/strong regions = 1.00e-02
-# qvalue cutoff for broad/weak regions = 1.00e-02
-# The maximum gap between significant sites is assigned as the read length/tag size.
-# The minimum length of peaks = 1000
-# Larger dataset will be scaled towards smaller dataset.
-# Range for calculating regional lambda is: 10000 bps
-# Broad region calling is on
-# Paired-End mode is on
- 
-INFO  @ Wed, 26 Feb 2025 16:26:24: #1 read fragment files... 
-INFO  @ Wed, 26 Feb 2025 16:26:24: #1 read treatment fragments... 
-INFO  @ Wed, 26 Feb 2025 16:26:24:  6000000 
-INFO  @ Wed, 26 Feb 2025 16:26:25:  4000000 
-INFO  @ Wed, 26 Feb 2025 16:26:25:  4000000 
-INFO  @ Wed, 26 Feb 2025 16:26:25:  6000000 
-INFO  @ Wed, 26 Feb 2025 16:26:26:  3000000 
-INFO  @ Wed, 26 Feb 2025 16:26:27:  7000000 
-INFO  @ Wed, 26 Feb 2025 16:26:27:  1000000 
-INFO  @ Wed, 26 Feb 2025 16:26:28:  5000000 
-INFO  @ Wed, 26 Feb 2025 16:26:28:  5000000 
-INFO  @ Wed, 26 Feb 2025 16:26:29:  7000000 
-INFO  @ Wed, 26 Feb 2025 16:26:29:  4000000 
-INFO  @ Wed, 26 Feb 2025 16:26:30:  8000000 
-INFO  @ Wed, 26 Feb 2025 16:26:30:  2000000 
-INFO  @ Wed, 26 Feb 2025 16:26:31:  6000000 
-INFO  @ Wed, 26 Feb 2025 16:26:31:  6000000 
-INFO  @ Wed, 26 Feb 2025 16:26:32:  8000000 
-INFO  @ Wed, 26 Feb 2025 16:26:32:  5000000 
-INFO  @ Wed, 26 Feb 2025 16:26:33:  9000000 
-INFO  @ Wed, 26 Feb 2025 16:26:34:  3000000 
-INFO  @ Wed, 26 Feb 2025 16:26:34:  7000000 
-INFO  @ Wed, 26 Feb 2025 16:26:35:  7000000 
-INFO  @ Wed, 26 Feb 2025 16:26:35:  9000000 
-INFO  @ Wed, 26 Feb 2025 16:26:36:  6000000 
-INFO  @ Wed, 26 Feb 2025 16:26:36:  10000000 
-INFO  @ Wed, 26 Feb 2025 16:26:37:  4000000 
-INFO  @ Wed, 26 Feb 2025 16:26:37:  8000000 
-INFO  @ Wed, 26 Feb 2025 16:26:38:  8000000 
-INFO  @ Wed, 26 Feb 2025 16:26:38:  10000000 
-INFO  @ Wed, 26 Feb 2025 16:26:39:  7000000 
-INFO  @ Wed, 26 Feb 2025 16:26:39:  11000000 
-INFO  @ Wed, 26 Feb 2025 16:26:40:  9000000 
-INFO  @ Wed, 26 Feb 2025 16:26:40:  5000000 
-INFO  @ Wed, 26 Feb 2025 16:26:41:  9000000 
-INFO  @ Wed, 26 Feb 2025 16:26:42:  11000000 
-INFO  @ Wed, 26 Feb 2025 16:26:42:  8000000 
-INFO  @ Wed, 26 Feb 2025 16:26:42:  12000000 
-INFO  @ Wed, 26 Feb 2025 16:26:43:  10000000 
-INFO  @ Wed, 26 Feb 2025 16:26:44:  6000000 
-INFO  @ Wed, 26 Feb 2025 16:26:45:  10000000 
-INFO  @ Wed, 26 Feb 2025 16:26:45:  12000000 
-INFO  @ Wed, 26 Feb 2025 16:26:45:  13000000 
-INFO  @ Wed, 26 Feb 2025 16:26:46:  9000000 
-INFO  @ Wed, 26 Feb 2025 16:26:46:  11000000 
-INFO  @ Wed, 26 Feb 2025 16:26:47:  7000000 
-INFO  @ Wed, 26 Feb 2025 16:26:48:  11000000 
-INFO  @ Wed, 26 Feb 2025 16:26:49:  14000000 
-INFO  @ Wed, 26 Feb 2025 16:26:49:  13000000 
-INFO  @ Wed, 26 Feb 2025 16:26:49:  10000000 
-INFO  @ Wed, 26 Feb 2025 16:26:49:  12000000 
-INFO  @ Wed, 26 Feb 2025 16:26:50:  8000000 
-INFO  @ Wed, 26 Feb 2025 16:26:51:  12000000 
-INFO  @ Wed, 26 Feb 2025 16:26:52:  15000000 
-INFO  @ Wed, 26 Feb 2025 16:26:52:  14000000 
-INFO  @ Wed, 26 Feb 2025 16:26:52:  11000000 
-INFO  @ Wed, 26 Feb 2025 16:26:52:  13000000 
-INFO  @ Wed, 26 Feb 2025 16:26:54:  9000000 
-INFO  @ Wed, 26 Feb 2025 16:26:54:  13000000 
-INFO  @ Wed, 26 Feb 2025 16:26:55:  16000000 
-INFO  @ Wed, 26 Feb 2025 16:26:55:  15000000 
-INFO  @ Wed, 26 Feb 2025 16:26:56:  14000000 
-INFO  @ Wed, 26 Feb 2025 16:26:56:  12000000 
-INFO  @ Wed, 26 Feb 2025 16:26:57:  10000000 
-INFO  @ Wed, 26 Feb 2025 16:26:58:  14000000 
-INFO  @ Wed, 26 Feb 2025 16:26:58:  17000000 
-INFO  @ Wed, 26 Feb 2025 16:26:58:  16000000 
-INFO  @ Wed, 26 Feb 2025 16:26:59:  15000000 
-INFO  @ Wed, 26 Feb 2025 16:26:59:  13000000 
-INFO  @ Wed, 26 Feb 2025 16:27:00:  11000000 
-INFO  @ Wed, 26 Feb 2025 16:27:01:  15000000 
-INFO  @ Wed, 26 Feb 2025 16:27:01:  18000000 
-INFO  @ Wed, 26 Feb 2025 16:27:02:  16000000 
-INFO  @ Wed, 26 Feb 2025 16:27:02:  17000000 
-INFO  @ Wed, 26 Feb 2025 16:27:02:  14000000 
-INFO  @ Wed, 26 Feb 2025 16:27:04:  12000000 
-INFO  @ Wed, 26 Feb 2025 16:27:04:  19000000 
-INFO  @ Wed, 26 Feb 2025 16:27:04:  16000000 
-INFO  @ Wed, 26 Feb 2025 16:27:05:  17000000 
-INFO  @ Wed, 26 Feb 2025 16:27:05:  18000000 
-INFO  @ Wed, 26 Feb 2025 16:27:06:  15000000 
-INFO  @ Wed, 26 Feb 2025 16:27:07:  20000000 
-INFO  @ Wed, 26 Feb 2025 16:27:07:  13000000 
-INFO  @ Wed, 26 Feb 2025 16:27:07:  17000000 
-INFO  @ Wed, 26 Feb 2025 16:27:08:  18000000 
-INFO  @ Wed, 26 Feb 2025 16:27:08:  19000000 
-INFO  @ Wed, 26 Feb 2025 16:27:09:  16000000 
-INFO  @ Wed, 26 Feb 2025 16:27:10:  21000000 
-INFO  @ Wed, 26 Feb 2025 16:27:10:  14000000 
-INFO  @ Wed, 26 Feb 2025 16:27:11:  18000000 
-INFO  @ Wed, 26 Feb 2025 16:27:11:  19000000 
-INFO  @ Wed, 26 Feb 2025 16:27:11:  20000000 
-INFO  @ Wed, 26 Feb 2025 16:27:13:  17000000 
-INFO  @ Wed, 26 Feb 2025 16:27:13:  22000000 
-INFO  @ Wed, 26 Feb 2025 16:27:14:  15000000 
-INFO  @ Wed, 26 Feb 2025 16:27:14:  19000000 
-INFO  @ Wed, 26 Feb 2025 16:27:14:  20000000 
-INFO  @ Wed, 26 Feb 2025 16:27:15:  21000000 
-INFO  @ Wed, 26 Feb 2025 16:27:16:  18000000 
-INFO  @ Wed, 26 Feb 2025 16:27:16:  23000000 
-INFO  @ Wed, 26 Feb 2025 16:27:17:  21000000 
-INFO  @ Wed, 26 Feb 2025 16:27:17:  16000000 
-INFO  @ Wed, 26 Feb 2025 16:27:17:  20000000 
-INFO  @ Wed, 26 Feb 2025 16:27:18:  22000000 
-INFO  @ Wed, 26 Feb 2025 16:27:19:  19000000 
-INFO  @ Wed, 26 Feb 2025 16:27:19:  24000000 
-INFO  @ Wed, 26 Feb 2025 16:27:20:  22000000 
-INFO  @ Wed, 26 Feb 2025 16:27:20:  21000000 
-INFO  @ Wed, 26 Feb 2025 16:27:20:  17000000 
-INFO  @ Wed, 26 Feb 2025 16:27:21:  23000000 
-INFO  @ Wed, 26 Feb 2025 16:27:22:  25000000 
-INFO  @ Wed, 26 Feb 2025 16:27:23:  20000000 
-INFO  @ Wed, 26 Feb 2025 16:27:23:  23000000 
-INFO  @ Wed, 26 Feb 2025 16:27:24:  22000000 
-INFO  @ Wed, 26 Feb 2025 16:27:24:  18000000 
-INFO  @ Wed, 26 Feb 2025 16:27:25:  24000000 
-INFO  @ Wed, 26 Feb 2025 16:27:26:  26000000 
-INFO  @ Wed, 26 Feb 2025 16:27:26:  21000000 
-INFO  @ Wed, 26 Feb 2025 16:27:26:  24000000 
-INFO  @ Wed, 26 Feb 2025 16:27:27:  23000000 
-INFO  @ Wed, 26 Feb 2025 16:27:27:  19000000 
-INFO  @ Wed, 26 Feb 2025 16:27:28:  25000000 
-INFO  @ Wed, 26 Feb 2025 16:27:29:  27000000 
-INFO  @ Wed, 26 Feb 2025 16:27:29:  22000000 
-INFO  @ Wed, 26 Feb 2025 16:27:29:  25000000 
-INFO  @ Wed, 26 Feb 2025 16:27:30:  24000000 
-INFO  @ Wed, 26 Feb 2025 16:27:31:  20000000 
-INFO  @ Wed, 26 Feb 2025 16:27:31:  26000000 
-INFO  @ Wed, 26 Feb 2025 16:27:32:  28000000 
-INFO  @ Wed, 26 Feb 2025 16:27:32:  26000000 
-INFO  @ Wed, 26 Feb 2025 16:27:32:  23000000 
-INFO  @ Wed, 26 Feb 2025 16:27:33:  25000000 
-INFO  @ Wed, 26 Feb 2025 16:27:34:  21000000 
-INFO  @ Wed, 26 Feb 2025 16:27:34:  27000000 
-INFO  @ Wed, 26 Feb 2025 16:27:35:  29000000 
-INFO  @ Wed, 26 Feb 2025 16:27:35:  27000000 
-INFO  @ Wed, 26 Feb 2025 16:27:36:  24000000 
-INFO  @ Wed, 26 Feb 2025 16:27:36:  26000000 
-INFO  @ Wed, 26 Feb 2025 16:27:37:  22000000 
-INFO  @ Wed, 26 Feb 2025 16:27:38:  30000000 
-INFO  @ Wed, 26 Feb 2025 16:27:38:  28000000 
-INFO  @ Wed, 26 Feb 2025 16:27:38:  28000000 
-INFO  @ Wed, 26 Feb 2025 16:27:39:  25000000 
-INFO  @ Wed, 26 Feb 2025 16:27:40:  27000000 
-INFO  @ Wed, 26 Feb 2025 16:27:41:  23000000 
-INFO  @ Wed, 26 Feb 2025 16:27:41:  31000000 
-INFO  @ Wed, 26 Feb 2025 16:27:41:  29000000 
-INFO  @ Wed, 26 Feb 2025 16:27:41:  29000000 
-INFO  @ Wed, 26 Feb 2025 16:27:42:  26000000 
-INFO  @ Wed, 26 Feb 2025 16:27:43:  28000000 
-INFO  @ Wed, 26 Feb 2025 16:27:44:  24000000 
-INFO  @ Wed, 26 Feb 2025 16:27:44:  32000000 
-INFO  @ Wed, 26 Feb 2025 16:27:44:  30000000 
-INFO  @ Wed, 26 Feb 2025 16:27:45:  30000000 
-INFO  @ Wed, 26 Feb 2025 16:27:46:  27000000 
-INFO  @ Wed, 26 Feb 2025 16:27:46:  29000000 
-INFO  @ Wed, 26 Feb 2025 16:27:47:  33000000 
-INFO  @ Wed, 26 Feb 2025 16:27:47:  25000000 
-INFO  @ Wed, 26 Feb 2025 16:27:48:  31000000 
-INFO  @ Wed, 26 Feb 2025 16:27:48:  31000000 
-INFO  @ Wed, 26 Feb 2025 16:27:49:  28000000 
-INFO  @ Wed, 26 Feb 2025 16:27:49:  30000000 
-INFO  @ Wed, 26 Feb 2025 16:27:50:  34000000 
-INFO  @ Wed, 26 Feb 2025 16:27:50:  26000000 
-INFO  @ Wed, 26 Feb 2025 16:27:51:  32000000 
-INFO  @ Wed, 26 Feb 2025 16:27:51:  32000000 
-INFO  @ Wed, 26 Feb 2025 16:27:52:  29000000 
-INFO  @ Wed, 26 Feb 2025 16:27:53:  31000000 
-INFO  @ Wed, 26 Feb 2025 16:27:53:  35000000 
-INFO  @ Wed, 26 Feb 2025 16:27:54:  33000000 
-INFO  @ Wed, 26 Feb 2025 16:27:54:  27000000 
-INFO  @ Wed, 26 Feb 2025 16:27:54:  33000000 
-INFO  @ Wed, 26 Feb 2025 16:27:56:  30000000 
-INFO  @ Wed, 26 Feb 2025 16:27:56:  32000000 
-INFO  @ Wed, 26 Feb 2025 16:27:56:  36000000 
-INFO  @ Wed, 26 Feb 2025 16:27:57:  34000000 
-INFO  @ Wed, 26 Feb 2025 16:27:57:  28000000 
-INFO  @ Wed, 26 Feb 2025 16:27:58:  34000000 
-INFO  @ Wed, 26 Feb 2025 16:27:59:  33000000 
-INFO  @ Wed, 26 Feb 2025 16:27:59:  31000000 
-INFO  @ Wed, 26 Feb 2025 16:27:59:  37000000 
-INFO  @ Wed, 26 Feb 2025 16:28:00:  35000000 
-INFO  @ Wed, 26 Feb 2025 16:28:00:  29000000 
-INFO  @ Wed, 26 Feb 2025 16:28:01:  35000000 
-INFO  @ Wed, 26 Feb 2025 16:28:02:  34000000 
-INFO  @ Wed, 26 Feb 2025 16:28:02:  38000000 
-INFO  @ Wed, 26 Feb 2025 16:28:02:  32000000 
-INFO  @ Wed, 26 Feb 2025 16:28:03:  36000000 
-INFO  @ Wed, 26 Feb 2025 16:28:04:  30000000 
-INFO  @ Wed, 26 Feb 2025 16:28:04:  36000000 
-INFO  @ Wed, 26 Feb 2025 16:28:05:  39000000 
-INFO  @ Wed, 26 Feb 2025 16:28:06:  35000000 
-INFO  @ Wed, 26 Feb 2025 16:28:06:  33000000 
-INFO  @ Wed, 26 Feb 2025 16:28:06:  37000000 
-INFO  @ Wed, 26 Feb 2025 16:28:07:  31000000 
-INFO  @ Wed, 26 Feb 2025 16:28:08:  37000000 
-INFO  @ Wed, 26 Feb 2025 16:28:09:  40000000 
-INFO  @ Wed, 26 Feb 2025 16:28:09:  36000000 
-INFO  @ Wed, 26 Feb 2025 16:28:09:  38000000 
-INFO  @ Wed, 26 Feb 2025 16:28:09:  34000000 
-INFO  @ Wed, 26 Feb 2025 16:28:10:  32000000 
-INFO  @ Wed, 26 Feb 2025 16:28:11:  38000000 
-INFO  @ Wed, 26 Feb 2025 16:28:12:  41000000 
-INFO  @ Wed, 26 Feb 2025 16:28:12:  39000000 
-INFO  @ Wed, 26 Feb 2025 16:28:12:  37000000 
-INFO  @ Wed, 26 Feb 2025 16:28:12:  35000000 
-INFO  @ Wed, 26 Feb 2025 16:28:14:  33000000 
-INFO  @ Wed, 26 Feb 2025 16:28:14:  39000000 
-INFO  @ Wed, 26 Feb 2025 16:28:15:  42000000 
-INFO  @ Wed, 26 Feb 2025 16:28:15:  40000000 
-INFO  @ Wed, 26 Feb 2025 16:28:15:  38000000 
-INFO  @ Wed, 26 Feb 2025 16:28:16:  36000000 
-INFO  @ Wed, 26 Feb 2025 16:28:17:  34000000 
-INFO  @ Wed, 26 Feb 2025 16:28:18:  40000000 
-INFO  @ Wed, 26 Feb 2025 16:28:18:  43000000 
-INFO  @ Wed, 26 Feb 2025 16:28:18:  41000000 
-INFO  @ Wed, 26 Feb 2025 16:28:19:  39000000 
-INFO  @ Wed, 26 Feb 2025 16:28:19:  37000000 
-INFO  @ Wed, 26 Feb 2025 16:28:20:  35000000 
-INFO  @ Wed, 26 Feb 2025 16:28:21:  44000000 
-INFO  @ Wed, 26 Feb 2025 16:28:21:  41000000 
-INFO  @ Wed, 26 Feb 2025 16:28:21:  42000000 
-INFO  @ Wed, 26 Feb 2025 16:28:22:  40000000 
-INFO  @ Wed, 26 Feb 2025 16:28:22:  38000000 
-INFO  @ Wed, 26 Feb 2025 16:28:24:  36000000 
-INFO  @ Wed, 26 Feb 2025 16:28:24:  45000000 
-INFO  @ Wed, 26 Feb 2025 16:28:24:  42000000 
-INFO  @ Wed, 26 Feb 2025 16:28:24:  43000000 
-INFO  @ Wed, 26 Feb 2025 16:28:25:  41000000 
-INFO  @ Wed, 26 Feb 2025 16:28:26:  39000000 
-INFO  @ Wed, 26 Feb 2025 16:28:27:  37000000 
-INFO  @ Wed, 26 Feb 2025 16:28:27:  46000000 
-INFO  @ Wed, 26 Feb 2025 16:28:27:  44000000 
-INFO  @ Wed, 26 Feb 2025 16:28:28:  43000000 
-INFO  @ Wed, 26 Feb 2025 16:28:28:  42000000 
-INFO  @ Wed, 26 Feb 2025 16:28:29:  40000000 
-INFO  @ Wed, 26 Feb 2025 16:28:30:  47000000 
-INFO  @ Wed, 26 Feb 2025 16:28:30:  38000000 
-INFO  @ Wed, 26 Feb 2025 16:28:31:  45000000 
-INFO  @ Wed, 26 Feb 2025 16:28:31:  44000000 
-INFO  @ Wed, 26 Feb 2025 16:28:32:  43000000 
-INFO  @ Wed, 26 Feb 2025 16:28:33:  41000000 
-INFO  @ Wed, 26 Feb 2025 16:28:33:  48000000 
-INFO  @ Wed, 26 Feb 2025 16:28:34:  46000000 
-INFO  @ Wed, 26 Feb 2025 16:28:34:  39000000 
-INFO  @ Wed, 26 Feb 2025 16:28:34:  45000000 
-INFO  @ Wed, 26 Feb 2025 16:28:35:  44000000 
-INFO  @ Wed, 26 Feb 2025 16:28:36:  42000000 
-INFO  @ Wed, 26 Feb 2025 16:28:36:  49000000 
-INFO  @ Wed, 26 Feb 2025 16:28:37:  47000000 
-INFO  @ Wed, 26 Feb 2025 16:28:37:  40000000 
-INFO  @ Wed, 26 Feb 2025 16:28:38:  46000000 
-INFO  @ Wed, 26 Feb 2025 16:28:39:  45000000 
-INFO  @ Wed, 26 Feb 2025 16:28:39:  43000000 
-INFO  @ Wed, 26 Feb 2025 16:28:39:  50000000 
-INFO  @ Wed, 26 Feb 2025 16:28:40:  48000000 
-INFO  @ Wed, 26 Feb 2025 16:28:40:  41000000 
-INFO  @ Wed, 26 Feb 2025 16:28:41:  47000000 
-INFO  @ Wed, 26 Feb 2025 16:28:42:  46000000 
-INFO  @ Wed, 26 Feb 2025 16:28:42:  51000000 
-INFO  @ Wed, 26 Feb 2025 16:28:43:  44000000 
-INFO  @ Wed, 26 Feb 2025 16:28:43:  49000000 
-INFO  @ Wed, 26 Feb 2025 16:28:44:  42000000 
-INFO  @ Wed, 26 Feb 2025 16:28:44:  48000000 
-INFO  @ Wed, 26 Feb 2025 16:28:45:  47000000 
-INFO  @ Wed, 26 Feb 2025 16:28:45:  52000000 
-INFO  @ Wed, 26 Feb 2025 16:28:46:  50000000 
-INFO  @ Wed, 26 Feb 2025 16:28:46:  45000000 
-INFO  @ Wed, 26 Feb 2025 16:28:47:  43000000 
-INFO  @ Wed, 26 Feb 2025 16:28:48:  49000000 
-INFO  @ Wed, 26 Feb 2025 16:28:49:  53000000 
-INFO  @ Wed, 26 Feb 2025 16:28:49:  48000000 
-INFO  @ Wed, 26 Feb 2025 16:28:49:  51000000 
-INFO  @ Wed, 26 Feb 2025 16:28:50:  46000000 
-INFO  @ Wed, 26 Feb 2025 16:28:50:  44000000 
-INFO  @ Wed, 26 Feb 2025 16:28:51:  50000000 
-INFO  @ Wed, 26 Feb 2025 16:28:52:  54000000 
-INFO  @ Wed, 26 Feb 2025 16:28:52:  49000000 
-INFO  @ Wed, 26 Feb 2025 16:28:52:  52000000 
-INFO  @ Wed, 26 Feb 2025 16:28:53:  47000000 
-INFO  @ Wed, 26 Feb 2025 16:28:54:  45000000 
-INFO  @ Wed, 26 Feb 2025 16:28:54:  51000000 
-INFO  @ Wed, 26 Feb 2025 16:28:55: 51080904 fragments have been read. 
-INFO  @ Wed, 26 Feb 2025 16:28:55:  55000000 
-INFO  @ Wed, 26 Feb 2025 16:28:55:  53000000 
-INFO  @ Wed, 26 Feb 2025 16:28:55:  50000000 
-INFO  @ Wed, 26 Feb 2025 16:28:56:  48000000 
-INFO  @ Wed, 26 Feb 2025 16:28:57:  46000000 
-INFO  @ Wed, 26 Feb 2025 16:28:58:  56000000 
-INFO  @ Wed, 26 Feb 2025 16:28:58:  54000000 
-INFO  @ Wed, 26 Feb 2025 16:28:59:  51000000 
-INFO  @ Wed, 26 Feb 2025 16:29:00:  49000000 
-INFO  @ Wed, 26 Feb 2025 16:29:00:  47000000 
-INFO  @ Wed, 26 Feb 2025 16:29:01:  57000000 
-INFO  @ Wed, 26 Feb 2025 16:29:01:  55000000 
-INFO  @ Wed, 26 Feb 2025 16:29:02:  52000000 
-INFO  @ Wed, 26 Feb 2025 16:29:03:  50000000 
-INFO  @ Wed, 26 Feb 2025 16:29:04:  48000000 
-INFO  @ Wed, 26 Feb 2025 16:29:04:  58000000 
-INFO  @ Wed, 26 Feb 2025 16:29:04:  56000000 
-INFO  @ Wed, 26 Feb 2025 16:29:05:  53000000 
-INFO  @ Wed, 26 Feb 2025 16:29:06:  51000000 
-INFO  @ Wed, 26 Feb 2025 16:29:07:  59000000 
-INFO  @ Wed, 26 Feb 2025 16:29:07:  49000000 
-INFO  @ Wed, 26 Feb 2025 16:29:07:  57000000 
-INFO  @ Wed, 26 Feb 2025 16:29:08:  54000000 
-INFO  @ Wed, 26 Feb 2025 16:29:10:  52000000 
-INFO  @ Wed, 26 Feb 2025 16:29:10:  60000000 
-INFO  @ Wed, 26 Feb 2025 16:29:10: 60058406 fragments have been read. 
-INFO  @ Wed, 26 Feb 2025 16:29:10:  58000000 
-INFO  @ Wed, 26 Feb 2025 16:29:10:  50000000 
-INFO  @ Wed, 26 Feb 2025 16:29:12:  55000000 
-INFO  @ Wed, 26 Feb 2025 16:29:13:  53000000 
-INFO  @ Wed, 26 Feb 2025 16:29:13:  59000000 
-INFO  @ Wed, 26 Feb 2025 16:29:14:  51000000 
-INFO  @ Wed, 26 Feb 2025 16:29:15:  56000000 
-INFO  @ Wed, 26 Feb 2025 16:29:16:  54000000 
-INFO  @ Wed, 26 Feb 2025 16:29:16:  60000000 
-INFO  @ Wed, 26 Feb 2025 16:29:17:  52000000 
-INFO  @ Wed, 26 Feb 2025 16:29:18:  57000000 
-INFO  @ Wed, 26 Feb 2025 16:29:20:  61000000 
-INFO  @ Wed, 26 Feb 2025 16:29:20:  55000000 
-INFO  @ Wed, 26 Feb 2025 16:29:21:  53000000 
-INFO  @ Wed, 26 Feb 2025 16:29:22:  58000000 
-INFO  @ Wed, 26 Feb 2025 16:29:23:  62000000 
-INFO  @ Wed, 26 Feb 2025 16:29:23:  56000000 
-INFO  @ Wed, 26 Feb 2025 16:29:24:  54000000 
-INFO  @ Wed, 26 Feb 2025 16:29:24: #1 mean fragment size is determined as 211.8 bp from treatment 
-INFO  @ Wed, 26 Feb 2025 16:29:24: #1 fragment size = 211.8 
-INFO  @ Wed, 26 Feb 2025 16:29:24: #1  total fragments in treatment: 51080904 
-INFO  @ Wed, 26 Feb 2025 16:29:24: #1 user defined the maximum fragments... 
-INFO  @ Wed, 26 Feb 2025 16:29:24: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
-INFO  @ Wed, 26 Feb 2025 16:29:25:  59000000 
-INFO  @ Wed, 26 Feb 2025 16:29:26:  63000000 
-INFO  @ Wed, 26 Feb 2025 16:29:26:  57000000 
-INFO  @ Wed, 26 Feb 2025 16:29:27:  55000000 
-INFO  @ Wed, 26 Feb 2025 16:29:28:  60000000 
-INFO  @ Wed, 26 Feb 2025 16:29:29:  64000000 
-INFO  @ Wed, 26 Feb 2025 16:29:30:  58000000 
-INFO  @ Wed, 26 Feb 2025 16:29:31:  56000000 
-INFO  @ Wed, 26 Feb 2025 16:29:31:  61000000 
-INFO  @ Wed, 26 Feb 2025 16:29:32:  65000000 
-INFO  @ Wed, 26 Feb 2025 16:29:33:  59000000 
-INFO  @ Wed, 26 Feb 2025 16:29:34:  57000000 
-INFO  @ Wed, 26 Feb 2025 16:29:35:  62000000 
-INFO  @ Wed, 26 Feb 2025 16:29:35:  66000000 
-INFO  @ Wed, 26 Feb 2025 16:29:37:  60000000 
-INFO  @ Wed, 26 Feb 2025 16:29:37:  58000000 
-INFO  @ Wed, 26 Feb 2025 16:29:38:  63000000 
-INFO  @ Wed, 26 Feb 2025 16:29:38:  67000000 
-INFO  @ Wed, 26 Feb 2025 16:29:39: 63327416 fragments have been read. 
-INFO  @ Wed, 26 Feb 2025 16:29:40:  61000000 
-INFO  @ Wed, 26 Feb 2025 16:29:41:  59000000 
-INFO  @ Wed, 26 Feb 2025 16:29:41:  68000000 
-INFO  @ Wed, 26 Feb 2025 16:29:43:  62000000 
-INFO  @ Wed, 26 Feb 2025 16:29:44: #1 mean fragment size is determined as 207.3 bp from treatment 
-INFO  @ Wed, 26 Feb 2025 16:29:44: #1 fragment size = 207.3 
-INFO  @ Wed, 26 Feb 2025 16:29:44: #1  total fragments in treatment: 60058406 
-INFO  @ Wed, 26 Feb 2025 16:29:44: #1 user defined the maximum fragments... 
-INFO  @ Wed, 26 Feb 2025 16:29:44: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
-INFO  @ Wed, 26 Feb 2025 16:29:44:  60000000 
-INFO  @ Wed, 26 Feb 2025 16:29:44:  69000000 
-INFO  @ Wed, 26 Feb 2025 16:29:47:  63000000 
-INFO  @ Wed, 26 Feb 2025 16:29:47:  70000000 
-INFO  @ Wed, 26 Feb 2025 16:29:47:  61000000 
-INFO  @ Wed, 26 Feb 2025 16:29:50:  64000000 
-INFO  @ Wed, 26 Feb 2025 16:29:50:  71000000 
-INFO  @ Wed, 26 Feb 2025 16:29:51:  62000000 
-INFO  @ Wed, 26 Feb 2025 16:29:53: 64790391 fragments have been read. 
-INFO  @ Wed, 26 Feb 2025 16:29:53:  72000000 
-INFO  @ Wed, 26 Feb 2025 16:29:54:  63000000 
-INFO  @ Wed, 26 Feb 2025 16:29:55: 72549927 fragments have been read. 
-INFO  @ Wed, 26 Feb 2025 16:29:57:  64000000 
-INFO  @ Wed, 26 Feb 2025 16:30:01:  65000000 
-OverflowError: Python integer 4127705799 out of bounds for int32
+INFO  @ Thu, 27 Feb 2025 15:32:04: #1 read fragment files... 
+INFO  @ Thu, 27 Feb 2025 15:32:04: #1 read treatment fragments... 
+INFO  @ Thu, 27 Feb 2025 15:32:05:  25000000 
+INFO  @ Thu, 27 Feb 2025 15:32:08:  1000000 
+INFO  @ Thu, 27 Feb 2025 15:32:08:  26000000 
+INFO  @ Thu, 27 Feb 2025 15:32:12:  27000000 
+INFO  @ Thu, 27 Feb 2025 15:32:12:  2000000 
+INFO  @ Thu, 27 Feb 2025 15:32:15:  28000000 
+INFO  @ Thu, 27 Feb 2025 15:32:16:  3000000 
+INFO  @ Thu, 27 Feb 2025 15:32:19:  29000000 
+INFO  @ Thu, 27 Feb 2025 15:32:19:  4000000 
+INFO  @ Thu, 27 Feb 2025 15:32:22:  30000000 
+INFO  @ Thu, 27 Feb 2025 15:32:23:  5000000 
+INFO  @ Thu, 27 Feb 2025 15:32:26:  31000000 
+INFO  @ Thu, 27 Feb 2025 15:32:27:  6000000 
+INFO  @ Thu, 27 Feb 2025 15:32:29:  32000000 
+INFO  @ Thu, 27 Feb 2025 15:32:31:  7000000 
+INFO  @ Thu, 27 Feb 2025 15:32:33:  33000000 
+INFO  @ Thu, 27 Feb 2025 15:32:35:  8000000 
+INFO  @ Thu, 27 Feb 2025 15:32:36:  34000000 
+INFO  @ Thu, 27 Feb 2025 15:32:39:  9000000 
+INFO  @ Thu, 27 Feb 2025 15:32:40:  35000000 
+INFO  @ Thu, 27 Feb 2025 15:32:42:  10000000 
+INFO  @ Thu, 27 Feb 2025 15:32:43:  36000000 
+INFO  @ Thu, 27 Feb 2025 15:32:46:  11000000 
+INFO  @ Thu, 27 Feb 2025 15:32:47:  37000000 
+INFO  @ Thu, 27 Feb 2025 15:32:50:  12000000 
+INFO  @ Thu, 27 Feb 2025 15:32:51:  38000000 
+INFO  @ Thu, 27 Feb 2025 15:32:53:  13000000 
+INFO  @ Thu, 27 Feb 2025 15:32:54:  39000000 
+INFO  @ Thu, 27 Feb 2025 15:32:57:  14000000 
+INFO  @ Thu, 27 Feb 2025 15:32:58:  40000000 
+INFO  @ Thu, 27 Feb 2025 15:33:00:  15000000 
+INFO  @ Thu, 27 Feb 2025 15:33:01:  41000000 
+INFO  @ Thu, 27 Feb 2025 15:33:04:  16000000 
+INFO  @ Thu, 27 Feb 2025 15:33:05:  42000000 
+INFO  @ Thu, 27 Feb 2025 15:33:08:  17000000 
+INFO  @ Thu, 27 Feb 2025 15:33:08:  43000000 
+INFO  @ Thu, 27 Feb 2025 15:33:12:  44000000 
+INFO  @ Thu, 27 Feb 2025 15:33:12:  18000000 
+INFO  @ Thu, 27 Feb 2025 15:33:15:  45000000 
+INFO  @ Thu, 27 Feb 2025 15:33:16:  19000000 
+INFO  @ Thu, 27 Feb 2025 15:33:19:  46000000 
+INFO  @ Thu, 27 Feb 2025 15:33:19:  20000000 
+INFO  @ Thu, 27 Feb 2025 15:33:22:  47000000 
+INFO  @ Thu, 27 Feb 2025 15:33:23:  21000000 
+INFO  @ Thu, 27 Feb 2025 15:33:26:  48000000 
+INFO  @ Thu, 27 Feb 2025 15:33:27:  22000000 
+INFO  @ Thu, 27 Feb 2025 15:33:30:  49000000 
+INFO  @ Thu, 27 Feb 2025 15:33:31:  23000000 
+INFO  @ Thu, 27 Feb 2025 15:33:33:  50000000 
+INFO  @ Thu, 27 Feb 2025 15:33:35:  24000000 
+INFO  @ Thu, 27 Feb 2025 15:33:37:  51000000 
+INFO  @ Thu, 27 Feb 2025 15:33:38:  25000000 
+INFO  @ Thu, 27 Feb 2025 15:33:40:  52000000 
+INFO  @ Thu, 27 Feb 2025 15:33:42:  26000000 
+INFO  @ Thu, 27 Feb 2025 15:33:44:  53000000 
+INFO  @ Thu, 27 Feb 2025 15:33:46:  27000000 
+INFO  @ Thu, 27 Feb 2025 15:33:47:  54000000 
+INFO  @ Thu, 27 Feb 2025 15:33:50:  28000000 
+INFO  @ Thu, 27 Feb 2025 15:33:51:  55000000 
+INFO  @ Thu, 27 Feb 2025 15:33:54:  29000000 
+INFO  @ Thu, 27 Feb 2025 15:33:54:  56000000 
+INFO  @ Thu, 27 Feb 2025 15:33:58:  57000000 
+INFO  @ Thu, 27 Feb 2025 15:33:58:  30000000 
+INFO  @ Thu, 27 Feb 2025 15:34:01:  58000000 
+INFO  @ Thu, 27 Feb 2025 15:34:02:  31000000 
+INFO  @ Thu, 27 Feb 2025 15:34:05:  59000000 
+INFO  @ Thu, 27 Feb 2025 15:34:06:  32000000 
+INFO  @ Thu, 27 Feb 2025 15:34:09:  60000000 
+INFO  @ Thu, 27 Feb 2025 15:34:09:  33000000 
+INFO  @ Thu, 27 Feb 2025 15:34:12:  61000000 
+INFO  @ Thu, 27 Feb 2025 15:34:13:  34000000 
+INFO  @ Thu, 27 Feb 2025 15:34:15:  62000000 
+INFO  @ Thu, 27 Feb 2025 15:34:17:  35000000 
+INFO  @ Thu, 27 Feb 2025 15:34:19:  63000000 
+INFO  @ Thu, 27 Feb 2025 15:34:21:  36000000 
+INFO  @ Thu, 27 Feb 2025 15:34:22:  64000000 
+INFO  @ Thu, 27 Feb 2025 15:34:25:  37000000 
+INFO  @ Thu, 27 Feb 2025 15:34:26:  65000000 
+INFO  @ Thu, 27 Feb 2025 15:34:28:  38000000 
+INFO  @ Thu, 27 Feb 2025 15:34:29:  66000000 
+INFO  @ Thu, 27 Feb 2025 15:34:32:  39000000 
+INFO  @ Thu, 27 Feb 2025 15:34:33:  67000000 
+INFO  @ Thu, 27 Feb 2025 15:34:36:  40000000 
+INFO  @ Thu, 27 Feb 2025 15:34:36:  68000000 
+INFO  @ Thu, 27 Feb 2025 15:34:40:  41000000 
+INFO  @ Thu, 27 Feb 2025 15:34:40:  69000000 
+INFO  @ Thu, 27 Feb 2025 15:34:43:  70000000 
+INFO  @ Thu, 27 Feb 2025 15:34:43:  42000000 
+INFO  @ Thu, 27 Feb 2025 15:34:47:  71000000 
+INFO  @ Thu, 27 Feb 2025 15:34:47:  43000000 
+INFO  @ Thu, 27 Feb 2025 15:34:50:  72000000 
+INFO  @ Thu, 27 Feb 2025 15:34:51:  44000000 
+INFO  @ Thu, 27 Feb 2025 15:34:54:  73000000 
+INFO  @ Thu, 27 Feb 2025 15:34:54:  45000000 
+INFO  @ Thu, 27 Feb 2025 15:34:54: 73221188 fragments have been read. 
+INFO  @ Thu, 27 Feb 2025 15:34:58:  46000000 
+INFO  @ Thu, 27 Feb 2025 15:35:01:  47000000 
+INFO  @ Thu, 27 Feb 2025 15:35:05:  48000000 
+INFO  @ Thu, 27 Feb 2025 15:35:08:  49000000 
+INFO  @ Thu, 27 Feb 2025 15:35:12:  50000000 
+INFO  @ Thu, 27 Feb 2025 15:35:15:  51000000 
+INFO  @ Thu, 27 Feb 2025 15:35:19:  52000000 
+INFO  @ Thu, 27 Feb 2025 15:35:23: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_3_broad_peaks.xls 
+INFO  @ Thu, 27 Feb 2025 15:35:23:  53000000 
+INFO  @ Thu, 27 Feb 2025 15:35:25: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_3_broad_peaks.broadPeak 
+INFO  @ Thu, 27 Feb 2025 15:35:26: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_3_broad_peaks.gappedPeak 
+INFO  @ Thu, 27 Feb 2025 15:35:27:  54000000 
+INFO  @ Thu, 27 Feb 2025 15:35:27: Done! 
+INFO  @ Thu, 27 Feb 2025 15:35:31:  55000000 
+INFO  @ Thu, 27 Feb 2025 15:35:35:  56000000 
+INFO  @ Thu, 27 Feb 2025 15:35:36: #1 mean fragment size is determined as 210.6 bp from treatment 
+INFO  @ Thu, 27 Feb 2025 15:35:36: #1 fragment size = 210.6 
+INFO  @ Thu, 27 Feb 2025 15:35:36: #1  total fragments in treatment: 73221188 
+INFO  @ Thu, 27 Feb 2025 15:35:36: #1 user defined the maximum fragments... 
+INFO  @ Thu, 27 Feb 2025 15:35:36: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
+INFO  @ Thu, 27 Feb 2025 15:35:38:  57000000 
+INFO  @ Thu, 27 Feb 2025 15:35:42:  58000000 
+INFO  @ Thu, 27 Feb 2025 15:35:46:  59000000 
+INFO  @ Thu, 27 Feb 2025 15:35:50:  60000000 
+INFO  @ Thu, 27 Feb 2025 15:35:54:  61000000 
+OverflowError: Python integer 2599531379 out of bounds for int32
 Exception ignored in: 'MACS2.IO.PairedEndTrack.PETrackI.filter_dup'
 Traceback (most recent call last):
   File "/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/lib/python3.11/site-packages/MACS2/callpeak_cmd.py", line 96, in run
     treat.filter_dup(treatment_max_dup_tags)
-OverflowError: Python integer 4127705799 out of bounds for int32
-INFO  @ Wed, 26 Feb 2025 16:30:02: #1  fragments after filtering in treatment: 18530479 
-INFO  @ Wed, 26 Feb 2025 16:30:02: #1  Redundant rate of treatment: 0.64 
-INFO  @ Wed, 26 Feb 2025 16:30:02: #1 finished! 
-INFO  @ Wed, 26 Feb 2025 16:30:02: #2 Build Peak Model... 
-INFO  @ Wed, 26 Feb 2025 16:30:02: #2 Skipped... 
-INFO  @ Wed, 26 Feb 2025 16:30:02: #3 Call peaks... 
-INFO  @ Wed, 26 Feb 2025 16:30:02: # local lambda is disabled! 
-INFO  @ Wed, 26 Feb 2025 16:30:02: #3 !!!! DYNAMIC LAMBDA IS DISABLED !!!! 
-INFO  @ Wed, 26 Feb 2025 16:30:02: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 2.000000, 2.000000... 
-INFO  @ Wed, 26 Feb 2025 16:30:02: #3 Pre-compute pvalue-qvalue table... 
-DEBUG @ Wed, 26 Feb 2025 16:30:02: Start to calculate pvalue stat... 
-INFO  @ Wed, 26 Feb 2025 16:30:04:  66000000 
-INFO  @ Wed, 26 Feb 2025 16:30:07:  67000000 
-INFO  @ Wed, 26 Feb 2025 16:30:11:  68000000 
-INFO  @ Wed, 26 Feb 2025 16:30:14:  69000000 
-DEBUG @ Wed, 26 Feb 2025 16:30:16: access pq hash for 50445618 times 
-INFO  @ Wed, 26 Feb 2025 16:30:16: #3 In the peak calling step, the following will be performed simultaneously: 
-INFO  @ Wed, 26 Feb 2025 16:30:16: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... GFP_3_broad_treat_pileup.bdg 
-INFO  @ Wed, 26 Feb 2025 16:30:16: #3   Write bedGraph files for control lambda (after scaling if necessary)... GFP_3_broad_control_lambda.bdg 
-INFO  @ Wed, 26 Feb 2025 16:30:16: #3 Call peaks for each chromosome... 
-INFO  @ Wed, 26 Feb 2025 16:30:17: #1 mean fragment size is determined as 218.5 bp from treatment 
-INFO  @ Wed, 26 Feb 2025 16:30:17: #1 fragment size = 218.5 
-INFO  @ Wed, 26 Feb 2025 16:30:17: #1  total fragments in treatment: 63327416 
-INFO  @ Wed, 26 Feb 2025 16:30:17: #1 user defined the maximum fragments... 
-INFO  @ Wed, 26 Feb 2025 16:30:17: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
-INFO  @ Wed, 26 Feb 2025 16:30:17:  70000000 
-INFO  @ Wed, 26 Feb 2025 16:30:21:  71000000 
-INFO  @ Wed, 26 Feb 2025 16:30:24:  72000000 
-INFO  @ Wed, 26 Feb 2025 16:30:28:  73000000 
-INFO  @ Wed, 26 Feb 2025 16:30:28: 73221188 fragments have been read. 
-INFO  @ Wed, 26 Feb 2025 16:30:30: #1 mean fragment size is determined as 208.9 bp from treatment 
-INFO  @ Wed, 26 Feb 2025 16:30:30: #1 fragment size = 208.9 
-INFO  @ Wed, 26 Feb 2025 16:30:30: #1  total fragments in treatment: 64790391 
-INFO  @ Wed, 26 Feb 2025 16:30:30: #1 user defined the maximum fragments... 
-INFO  @ Wed, 26 Feb 2025 16:30:30: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
-OverflowError: Python integer 2276825093 out of bounds for int32
-Exception ignored in: 'MACS2.IO.PairedEndTrack.PETrackI.filter_dup'
-Traceback (most recent call last):
-  File "/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/lib/python3.11/site-packages/MACS2/callpeak_cmd.py", line 96, in run
-    treat.filter_dup(treatment_max_dup_tags)
-OverflowError: Python integer 2276825093 out of bounds for int32
-INFO  @ Wed, 26 Feb 2025 16:30:32: #1  fragments after filtering in treatment: 9945327 
-INFO  @ Wed, 26 Feb 2025 16:30:32: #1  Redundant rate of treatment: 0.83 
-INFO  @ Wed, 26 Feb 2025 16:30:32: #1 finished! 
-INFO  @ Wed, 26 Feb 2025 16:30:32: #2 Build Peak Model... 
-INFO  @ Wed, 26 Feb 2025 16:30:32: #2 Skipped... 
-INFO  @ Wed, 26 Feb 2025 16:30:32: #3 Call peaks... 
-INFO  @ Wed, 26 Feb 2025 16:30:32: # local lambda is disabled! 
-INFO  @ Wed, 26 Feb 2025 16:30:32: #3 !!!! DYNAMIC LAMBDA IS DISABLED !!!! 
-INFO  @ Wed, 26 Feb 2025 16:30:32: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 2.000000, 2.000000... 
-INFO  @ Wed, 26 Feb 2025 16:30:32: #3 Pre-compute pvalue-qvalue table... 
-DEBUG @ Wed, 26 Feb 2025 16:30:32: Start to calculate pvalue stat... 
-INFO  @ Wed, 26 Feb 2025 16:30:36: #1 mean fragment size is determined as 202.6 bp from treatment 
-INFO  @ Wed, 26 Feb 2025 16:30:36: #1 fragment size = 202.6 
-INFO  @ Wed, 26 Feb 2025 16:30:36: #1  total fragments in treatment: 72549927 
-INFO  @ Wed, 26 Feb 2025 16:30:36: #1 user defined the maximum fragments... 
-INFO  @ Wed, 26 Feb 2025 16:30:36: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
-DEBUG @ Wed, 26 Feb 2025 16:30:39: access pq hash for 23250683 times 
-INFO  @ Wed, 26 Feb 2025 16:30:39: #3 In the peak calling step, the following will be performed simultaneously: 
-INFO  @ Wed, 26 Feb 2025 16:30:39: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... YAF_1_broad_treat_pileup.bdg 
-INFO  @ Wed, 26 Feb 2025 16:30:39: #3   Write bedGraph files for control lambda (after scaling if necessary)... YAF_1_broad_control_lambda.bdg 
-INFO  @ Wed, 26 Feb 2025 16:30:39: #3 Call peaks for each chromosome... 
-OverflowError: Python integer 2712970572 out of bounds for int32
-Exception ignored in: 'MACS2.IO.PairedEndTrack.PETrackI.filter_dup'
-Traceback (most recent call last):
-  File "/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/lib/python3.11/site-packages/MACS2/callpeak_cmd.py", line 96, in run
-    treat.filter_dup(treatment_max_dup_tags)
-OverflowError: Python integer 2712970572 out of bounds for int32
-INFO  @ Wed, 26 Feb 2025 16:30:45: #1  fragments after filtering in treatment: 11607638 
-INFO  @ Wed, 26 Feb 2025 16:30:45: #1  Redundant rate of treatment: 0.82 
-INFO  @ Wed, 26 Feb 2025 16:30:45: #1 finished! 
-INFO  @ Wed, 26 Feb 2025 16:30:45: #2 Build Peak Model... 
-INFO  @ Wed, 26 Feb 2025 16:30:45: #2 Skipped... 
-INFO  @ Wed, 26 Feb 2025 16:30:45: #3 Call peaks... 
-INFO  @ Wed, 26 Feb 2025 16:30:45: # local lambda is disabled! 
-INFO  @ Wed, 26 Feb 2025 16:30:45: #3 !!!! DYNAMIC LAMBDA IS DISABLED !!!! 
-INFO  @ Wed, 26 Feb 2025 16:30:45: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 2.000000, 2.000000... 
-INFO  @ Wed, 26 Feb 2025 16:30:45: #3 Pre-compute pvalue-qvalue table... 
-DEBUG @ Wed, 26 Feb 2025 16:30:45: Start to calculate pvalue stat... 
-OverflowError: Python integer 2489593184 out of bounds for int32
-Exception ignored in: 'MACS2.IO.PairedEndTrack.PETrackI.filter_dup'
-Traceback (most recent call last):
-  File "/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/lib/python3.11/site-packages/MACS2/callpeak_cmd.py", line 96, in run
-    treat.filter_dup(treatment_max_dup_tags)
-OverflowError: Python integer 2489593184 out of bounds for int32
-INFO  @ Wed, 26 Feb 2025 16:30:52: #1  fragments after filtering in treatment: 11532108 
-INFO  @ Wed, 26 Feb 2025 16:30:52: #1  Redundant rate of treatment: 0.82 
-INFO  @ Wed, 26 Feb 2025 16:30:52: #1 finished! 
-INFO  @ Wed, 26 Feb 2025 16:30:52: #2 Build Peak Model... 
-INFO  @ Wed, 26 Feb 2025 16:30:52: #2 Skipped... 
-INFO  @ Wed, 26 Feb 2025 16:30:52: #3 Call peaks... 
-INFO  @ Wed, 26 Feb 2025 16:30:52: # local lambda is disabled! 
-INFO  @ Wed, 26 Feb 2025 16:30:52: #3 !!!! DYNAMIC LAMBDA IS DISABLED !!!! 
-INFO  @ Wed, 26 Feb 2025 16:30:52: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 2.000000, 2.000000... 
-INFO  @ Wed, 26 Feb 2025 16:30:52: #3 Pre-compute pvalue-qvalue table... 
-DEBUG @ Wed, 26 Feb 2025 16:30:52: Start to calculate pvalue stat... 
-DEBUG @ Wed, 26 Feb 2025 16:31:00: access pq hash for 53382793 times 
-INFO  @ Wed, 26 Feb 2025 16:31:00: #3 In the peak calling step, the following will be performed simultaneously: 
-INFO  @ Wed, 26 Feb 2025 16:31:00: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... GFP_1_broad_treat_pileup.bdg 
-INFO  @ Wed, 26 Feb 2025 16:31:00: #3   Write bedGraph files for control lambda (after scaling if necessary)... GFP_1_broad_control_lambda.bdg 
-INFO  @ Wed, 26 Feb 2025 16:31:00: #3 Call peaks for each chromosome... 
-INFO  @ Wed, 26 Feb 2025 16:31:01: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_1_broad_peaks.xls 
-INFO  @ Wed, 26 Feb 2025 16:31:02: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_1_broad_peaks.broadPeak 
-INFO  @ Wed, 26 Feb 2025 16:31:02: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_1_broad_peaks.gappedPeak 
-INFO  @ Wed, 26 Feb 2025 16:31:02: Done! 
-INFO  @ Wed, 26 Feb 2025 16:31:10: #1 mean fragment size is determined as 210.6 bp from treatment 
-INFO  @ Wed, 26 Feb 2025 16:31:10: #1 fragment size = 210.6 
-INFO  @ Wed, 26 Feb 2025 16:31:10: #1  total fragments in treatment: 73221188 
-INFO  @ Wed, 26 Feb 2025 16:31:10: #1 user defined the maximum fragments... 
-INFO  @ Wed, 26 Feb 2025 16:31:10: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
-DEBUG @ Wed, 26 Feb 2025 16:31:11: access pq hash for 67934135 times 
-INFO  @ Wed, 26 Feb 2025 16:31:11: #3 In the peak calling step, the following will be performed simultaneously: 
-INFO  @ Wed, 26 Feb 2025 16:31:11: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... YAF_3_broad_treat_pileup.bdg 
-INFO  @ Wed, 26 Feb 2025 16:31:11: #3   Write bedGraph files for control lambda (after scaling if necessary)... YAF_3_broad_control_lambda.bdg 
-INFO  @ Wed, 26 Feb 2025 16:31:11: #3 Call peaks for each chromosome... 
-OverflowError: Python integer 2387044081 out of bounds for int32
-Exception ignored in: 'MACS2.IO.PairedEndTrack.PETrackI.filter_dup'
-Traceback (most recent call last):
-  File "/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/lib/python3.11/site-packages/MACS2/callpeak_cmd.py", line 96, in run
-    treat.filter_dup(treatment_max_dup_tags)
-OverflowError: Python integer 2387044081 out of bounds for int32
-INFO  @ Wed, 26 Feb 2025 16:31:26: #1  fragments after filtering in treatment: 10737079 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #1  Redundant rate of treatment: 0.85 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #1 finished! 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #2 Build Peak Model... 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #2 Skipped... 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #3 Call peaks... 
-INFO  @ Wed, 26 Feb 2025 16:31:26: # local lambda is disabled! 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #3 !!!! DYNAMIC LAMBDA IS DISABLED !!!! 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 2.000000, 2.000000... 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #3 Pre-compute pvalue-qvalue table... 
-DEBUG @ Wed, 26 Feb 2025 16:31:26: Start to calculate pvalue stat... 
-INFO  @ Wed, 26 Feb 2025 16:31:26: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_3_broad_peaks.xls 
-INFO  @ Wed, 26 Feb 2025 16:31:27: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_3_broad_peaks.broadPeak 
-INFO  @ Wed, 26 Feb 2025 16:31:27: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_3_broad_peaks.gappedPeak 
-INFO  @ Wed, 26 Feb 2025 16:31:27: Done! 
-DEBUG @ Wed, 26 Feb 2025 16:31:35: access pq hash for 30689506 times 
-INFO  @ Wed, 26 Feb 2025 16:31:35: #3 In the peak calling step, the following will be performed simultaneously: 
-INFO  @ Wed, 26 Feb 2025 16:31:35: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... GFP_2_broad_treat_pileup.bdg 
-INFO  @ Wed, 26 Feb 2025 16:31:35: #3   Write bedGraph files for control lambda (after scaling if necessary)... GFP_2_broad_control_lambda.bdg 
-INFO  @ Wed, 26 Feb 2025 16:31:35: #3 Call peaks for each chromosome... 
-OverflowError: Python integer 3927879167 out of bounds for int32
-Exception ignored in: 'MACS2.IO.PairedEndTrack.PETrackI.filter_dup'
-Traceback (most recent call last):
-  File "/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/lib/python3.11/site-packages/MACS2/callpeak_cmd.py", line 96, in run
-    treat.filter_dup(treatment_max_dup_tags)
-OverflowError: Python integer 3927879167 out of bounds for int32
-INFO  @ Wed, 26 Feb 2025 16:31:39: #1  fragments after filtering in treatment: 18637041 
-INFO  @ Wed, 26 Feb 2025 16:31:39: #1  Redundant rate of treatment: 0.75 
-INFO  @ Wed, 26 Feb 2025 16:31:39: #1 finished! 
-INFO  @ Wed, 26 Feb 2025 16:31:39: #2 Build Peak Model... 
-INFO  @ Wed, 26 Feb 2025 16:31:39: #2 Skipped... 
-INFO  @ Wed, 26 Feb 2025 16:31:39: #3 Call peaks... 
-INFO  @ Wed, 26 Feb 2025 16:31:39: # local lambda is disabled! 
-INFO  @ Wed, 26 Feb 2025 16:31:39: #3 !!!! DYNAMIC LAMBDA IS DISABLED !!!! 
-INFO  @ Wed, 26 Feb 2025 16:31:39: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 2.000000, 2.000000... 
-INFO  @ Wed, 26 Feb 2025 16:31:39: #3 Pre-compute pvalue-qvalue table... 
-DEBUG @ Wed, 26 Feb 2025 16:31:39: Start to calculate pvalue stat... 
-DEBUG @ Wed, 26 Feb 2025 16:32:06: access pq hash for 95857250 times 
-INFO  @ Wed, 26 Feb 2025 16:32:06: #3 In the peak calling step, the following will be performed simultaneously: 
-INFO  @ Wed, 26 Feb 2025 16:32:06: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... YAF_2_broad_treat_pileup.bdg 
-INFO  @ Wed, 26 Feb 2025 16:32:06: #3   Write bedGraph files for control lambda (after scaling if necessary)... YAF_2_broad_control_lambda.bdg 
-INFO  @ Wed, 26 Feb 2025 16:32:06: #3 Call peaks for each chromosome... 
-INFO  @ Wed, 26 Feb 2025 16:32:12: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_2_broad_peaks.xls 
-INFO  @ Wed, 26 Feb 2025 16:32:12: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_2_broad_peaks.broadPeak 
-INFO  @ Wed, 26 Feb 2025 16:32:13: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_2_broad_peaks.gappedPeak 
-INFO  @ Wed, 26 Feb 2025 16:32:13: Done! 
-INFO  @ Wed, 26 Feb 2025 16:32:27: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_1_broad_peaks.xls 
-INFO  @ Wed, 26 Feb 2025 16:32:28: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_1_broad_peaks.broadPeak 
-INFO  @ Wed, 26 Feb 2025 16:32:28: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP_1_broad_peaks.gappedPeak 
-INFO  @ Wed, 26 Feb 2025 16:32:29: Done! 
-INFO  @ Wed, 26 Feb 2025 16:33:13: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_3_broad_peaks.xls 
-INFO  @ Wed, 26 Feb 2025 16:33:15: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_3_broad_peaks.broadPeak 
-INFO  @ Wed, 26 Feb 2025 16:33:15: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_3_broad_peaks.gappedPeak 
-INFO  @ Wed, 26 Feb 2025 16:33:16: Done! 
-INFO  @ Wed, 26 Feb 2025 16:34:33: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_2_broad_peaks.xls 
-INFO  @ Wed, 26 Feb 2025 16:34:34: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_2_broad_peaks.broadPeak 
-INFO  @ Wed, 26 Feb 2025 16:34:35: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_2_broad_peaks.gappedPeak 
-INFO  @ Wed, 26 Feb 2025 16:34:35: Done! 
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_2_4233590/GFP_3/GFP_3.chr.bam has inconsistent naming convention for record:
-KI270728.1	17935	18005	LH00392:122:22F7NHLT4:5:2324:14417:5118/2	24	+
-
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_2_4233590/GFP_3/GFP_3.chr.bam has inconsistent naming convention for record:
-KI270728.1	17935	18005	LH00392:122:22F7NHLT4:5:2324:14417:5118/2	24	+
-
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_3_4233591/YAF_1/YAF_1.chr.bam has inconsistent naming convention for record:
+OverflowError: Python integer 2599531379 out of bounds for int32
+INFO  @ Thu, 27 Feb 2025 15:35:57: #1  fragments after filtering in treatment: 12322594 
+INFO  @ Thu, 27 Feb 2025 15:35:57: #1  Redundant rate of treatment: 0.83 
+INFO  @ Thu, 27 Feb 2025 15:35:57: #1 finished! 
+INFO  @ Thu, 27 Feb 2025 15:35:57: #2 Build Peak Model... 
+INFO  @ Thu, 27 Feb 2025 15:35:57: #2 Skipped... 
+INFO  @ Thu, 27 Feb 2025 15:35:57: #3 Call peaks... 
+INFO  @ Thu, 27 Feb 2025 15:35:57: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 0.698970, 1.000000... 
+INFO  @ Thu, 27 Feb 2025 15:35:57: #3 Pre-compute pvalue-qvalue table... 
+DEBUG @ Thu, 27 Feb 2025 15:35:57: Start to calculate pvalue stat... 
+INFO  @ Thu, 27 Feb 2025 15:35:58:  62000000 
+INFO  @ Thu, 27 Feb 2025 15:36:02:  63000000 
+INFO  @ Thu, 27 Feb 2025 15:36:06:  64000000 
+INFO  @ Thu, 27 Feb 2025 15:36:09: 64790391 fragments have been read. 
+INFO  @ Thu, 27 Feb 2025 15:36:51: #1 mean fragment size is determined as 208.9 bp from treatment 
+INFO  @ Thu, 27 Feb 2025 15:36:51: #1 fragment size = 208.9 
+INFO  @ Thu, 27 Feb 2025 15:36:51: #1  total fragments in treatment: 64790391 
+INFO  @ Thu, 27 Feb 2025 15:36:51: #1 user defined the maximum fragments... 
+INFO  @ Thu, 27 Feb 2025 15:36:51: #1 filter out redundant fragments by allowing at most 1 identical fragment(s) 
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_3_4237255/YAF_1/YAF_1.chr.bam has inconsistent naming convention for record:
 KI270728.1	123840	123903	LH00392:122:22F7NHLT4:5:2255:21417:14069/1	22	+
 
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_3_4233591/YAF_1/YAF_1.chr.bam has inconsistent naming convention for record:
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_3_4237255/YAF_1/YAF_1.chr.bam has inconsistent naming convention for record:
 KI270728.1	123840	123903	LH00392:122:22F7NHLT4:5:2255:21417:14069/1	22	+
 
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_0_4233588/GFP_1/GFP_1.chr.bam has inconsistent naming convention for record:
-KI270728.1	144346	144474	LH00392:122:22F7NHLT4:5:1355:24605:21521/1	21	+
-
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_0_4233588/GFP_1/GFP_1.chr.bam has inconsistent naming convention for record:
-KI270728.1	144346	144474	LH00392:122:22F7NHLT4:5:1355:24605:21521/1	21	+
-
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_1_4233589/GFP_2/GFP_2.chr.bam has inconsistent naming convention for record:
+OverflowError: Python integer 3307441734 out of bounds for int32
+Exception ignored in: 'MACS2.IO.PairedEndTrack.PETrackI.filter_dup'
+Traceback (most recent call last):
+  File "/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/lib/python3.11/site-packages/MACS2/callpeak_cmd.py", line 96, in run
+    treat.filter_dup(treatment_max_dup_tags)
+OverflowError: Python integer 3307441734 out of bounds for int32
+INFO  @ Thu, 27 Feb 2025 15:37:29: #1  fragments after filtering in treatment: 15290475 
+INFO  @ Thu, 27 Feb 2025 15:37:29: #1  Redundant rate of treatment: 0.76 
+INFO  @ Thu, 27 Feb 2025 15:37:29: #1 finished! 
+INFO  @ Thu, 27 Feb 2025 15:37:29: #2 Build Peak Model... 
+INFO  @ Thu, 27 Feb 2025 15:37:29: #2 Skipped... 
+INFO  @ Thu, 27 Feb 2025 15:37:29: #3 Call peaks... 
+INFO  @ Thu, 27 Feb 2025 15:37:29: #3 Call broad peaks with given level1 -log10qvalue cutoff and level2: 0.698970, 1.000000... 
+INFO  @ Thu, 27 Feb 2025 15:37:29: #3 Pre-compute pvalue-qvalue table... 
+DEBUG @ Thu, 27 Feb 2025 15:37:29: Start to calculate pvalue stat... 
+DEBUG @ Thu, 27 Feb 2025 15:38:30: access pq hash for 272866731 times 
+INFO  @ Thu, 27 Feb 2025 15:38:30: #3 In the peak calling step, the following will be performed simultaneously: 
+INFO  @ Thu, 27 Feb 2025 15:38:30: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... YAF_2_broad_treat_pileup.bdg 
+INFO  @ Thu, 27 Feb 2025 15:38:30: #3   Write bedGraph files for control lambda (after scaling if necessary)... YAF_2_broad_control_lambda.bdg 
+INFO  @ Thu, 27 Feb 2025 15:38:30: #3 Call peaks for each chromosome... 
+DEBUG @ Thu, 27 Feb 2025 15:39:36: access pq hash for 196819264 times 
+INFO  @ Thu, 27 Feb 2025 15:39:37: #3 In the peak calling step, the following will be performed simultaneously: 
+INFO  @ Thu, 27 Feb 2025 15:39:37: #3   Write bedGraph files for treatment pileup (after scaling if necessary)... YAF_3_broad_treat_pileup.bdg 
+INFO  @ Thu, 27 Feb 2025 15:39:37: #3   Write bedGraph files for control lambda (after scaling if necessary)... YAF_3_broad_control_lambda.bdg 
+INFO  @ Thu, 27 Feb 2025 15:39:37: #3 Call peaks for each chromosome... 
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_1_4237239/GFP_2/GFP_2.chr.bam has inconsistent naming convention for record:
 KI270728.1	147401	147451	LH00392:122:22F7NHLT4:5:1115:26426:25037/2	22	+
 
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_1_4233589/GFP_2/GFP_2.chr.bam has inconsistent naming convention for record:
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_1_4237239/GFP_2/GFP_2.chr.bam has inconsistent naming convention for record:
 KI270728.1	147401	147451	LH00392:122:22F7NHLT4:5:1115:26426:25037/2	22	+
 
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4233587/YAF_3/YAF_3.chr.bam has inconsistent naming convention for record:
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_2_4237250/GFP_3/GFP_3.chr.bam has inconsistent naming convention for record:
+KI270728.1	17935	18005	LH00392:122:22F7NHLT4:5:2324:14417:5118/2	24	+
+
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_2_4237250/GFP_3/GFP_3.chr.bam has inconsistent naming convention for record:
+KI270728.1	17935	18005	LH00392:122:22F7NHLT4:5:2324:14417:5118/2	24	+
+
+INFO  @ Thu, 27 Feb 2025 15:43:28: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_3_broad_peaks.xls 
+INFO  @ Thu, 27 Feb 2025 15:43:30: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_3_broad_peaks.broadPeak 
+INFO  @ Thu, 27 Feb 2025 15:43:31: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_3_broad_peaks.gappedPeak 
+INFO  @ Thu, 27 Feb 2025 15:43:32: Done! 
+INFO  @ Thu, 27 Feb 2025 15:44:10: #4 Write output xls file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_2_broad_peaks.xls 
+INFO  @ Thu, 27 Feb 2025 15:44:12: #4 Write broad peak in broadPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_2_broad_peaks.broadPeak 
+INFO  @ Thu, 27 Feb 2025 15:44:13: #4 Write broad peak in bed12/gappedPeak format file... /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF_2_broad_peaks.gappedPeak 
+INFO  @ Thu, 27 Feb 2025 15:44:14: Done! 
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4237188/YAF_3/YAF_3.chr.bam has inconsistent naming convention for record:
 KI270728.1	136372	136403	LH00392:122:22F7NHLT4:5:1282:43646:1028/1	22	+
 
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4233587/YAF_3/YAF_3.chr.bam has inconsistent naming convention for record:
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_5_4237188/YAF_3/YAF_3.chr.bam has inconsistent naming convention for record:
 KI270728.1	136372	136403	LH00392:122:22F7NHLT4:5:1282:43646:1028/1	22	+
 
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_4_4233592/YAF_2/YAF_2.chr.bam has inconsistent naming convention for record:
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_4_4237266/YAF_2/YAF_2.chr.bam has inconsistent naming convention for record:
 KI270728.1	97933	97967	LH00392:122:22F7NHLT4:5:2216:31791:8326/1	22	+
 
-***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_4_4233592/YAF_2/YAF_2.chr.bam has inconsistent naming convention for record:
+***** WARNING: File /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/tmp_4_4237266/YAF_2/YAF_2.chr.bam has inconsistent naming convention for record:
 KI270728.1	97933	97967	LH00392:122:22F7NHLT4:5:2216:31791:8326/1	22	+
 

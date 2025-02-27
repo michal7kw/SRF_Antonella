@@ -1,8 +1,8 @@
 Metric,Value
 Sample,GFP_2
 Total_Reads,145099854
-Reads_in_Peaks,59919892
-FRiP,0.412956
-Peak_Count,128487
-Mean_Length,4199.71
-Mean_Fold_Enrichment,7.53211
+Reads_in_Peaks,577021
+FRiP,0.003977
+Peak_Count,4496
+Mean_Length,1343.93
+Mean_Fold_Enrichment,5.66234

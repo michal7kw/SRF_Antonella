@@ -2,7 +2,7 @@
 ChIP-seq Cross-Reference Analysis Report
 ===========================================
 
-Analysis Date: 2025-02-25 15:35:22
+Analysis Date: 2025-02-27 15:39:00
 
 
 === Initial V5 Peak Statistics ===
@@ -88,52 +88,102 @@ Chromosome Distribution:
 === Analysis for GFP condition ===
 
 Peak Statistics for GFP:
- Total peaks: 732151
- Peaks overlapping with V5: 18 (0.0%)
+ Total peaks: 243946
+ Peaks overlapping with V5: 14 (0.0%)
 
 === Initial H2AK119Ub GFP Peak Statistics ===
-Total Peaks: 732151
+Total Peaks: 243946
 
 Peak Width Statistics:
-- Mean: 2375.8 bp
-- Median: 1670.0 bp
-- Range: 501 - 10001 bp
-- Standard Deviation: 1956.4 bp
+- Mean: 5457.5 bp
+- Median: 2978.5 bp
+- Range: 1001 - 49996 bp
+- Standard Deviation: 6682.4 bp
 
 Chromosome Distribution:
-- chr1: 51055 peaks (7.0%)
-- chr10: 32675 peaks (4.5%)
-- chr11: 30616 peaks (4.2%)
-- chr12: 26068 peaks (3.6%)
-- chr13: 24064 peaks (3.3%)
-- chr14: 21254 peaks (2.9%)
-- chr15: 23487 peaks (3.2%)
-- chr16: 19560 peaks (2.7%)
-- chr17: 16291 peaks (2.2%)
-- chr18: 11801 peaks (1.6%)
-- chr19: 9220 peaks (1.3%)
-- chr2: 82939 peaks (11.3%)
-- chr20: 15994 peaks (2.2%)
-- chr21: 6799 peaks (0.9%)
-- chr22: 8492 peaks (1.2%)
-- chr3: 51369 peaks (7.0%)
-- chr4: 45232 peaks (6.2%)
-- chr5: 36333 peaks (5.0%)
-- chr6: 63294 peaks (8.6%)
-- chr7: 52803 peaks (7.2%)
-- chr8: 39136 peaks (5.3%)
-- chr9: 30180 peaks (4.1%)
-- chrX: 31651 peaks (4.3%)
-- chrY: 1838 peaks (0.3%)
+- chr1: 16571 peaks (6.8%)
+- chr10: 4090 peaks (1.7%)
+- chr11: 8032 peaks (3.3%)
+- chr12: 17052 peaks (7.0%)
+- chr13: 1020 peaks (0.4%)
+- chr14: 2449 peaks (1.0%)
+- chr15: 6221 peaks (2.6%)
+- chr16: 12858 peaks (5.3%)
+- chr17: 10731 peaks (4.4%)
+- chr18: 9660 peaks (4.0%)
+- chr19: 5500 peaks (2.3%)
+- chr2: 38147 peaks (15.6%)
+- chr20: 3465 peaks (1.4%)
+- chr21: 1058 peaks (0.4%)
+- chr22: 5664 peaks (2.3%)
+- chr3: 22024 peaks (9.0%)
+- chr4: 2574 peaks (1.1%)
+- chr5: 9628 peaks (3.9%)
+- chr6: 9988 peaks (4.1%)
+- chr7: 26955 peaks (11.0%)
+- chr8: 19585 peaks (8.0%)
+- chr9: 6572 peaks (2.7%)
+- chrX: 3709 peaks (1.5%)
+- chrY: 393 peaks (0.2%)
 
 === H2AK119Ub GFP Blacklist Filtering Summary ===
-Original peaks: 732151
-Filtered peaks: 732151
+Original peaks: 243946
+Filtered peaks: 243946
 Removed peaks: 0 (0.0%)
 
 Width Statistics Changes:
-Original - Mean: 2375.8, Median: 1670.0, Range: 501-10001
-Filtered - Mean: 2375.8, Median: 1670.0, Range: 501-10001
+Original - Mean: 5457.5, Median: 2978.5, Range: 1001-49996
+Filtered - Mean: 5457.5, Median: 2978.5, Range: 1001-49996
 
-ERROR: error in evaluating the argument 'args' in selecting a method for function 'do.call': GRanges objects don't support [[, as.list(), lapply(), or unlist() at
-  the moment
+
+=== Analysis for YAF condition ===
+
+Peak Statistics for YAF:
+ Total peaks: 321228
+ Peaks overlapping with V5: 11 (0.0%)
+
+=== Initial H2AK119Ub YAF Peak Statistics ===
+Total Peaks: 321228
+
+Peak Width Statistics:
+- Mean: 5405.7 bp
+- Median: 2893.0 bp
+- Range: 1001 - 50000 bp
+- Standard Deviation: 6688.0 bp
+
+Chromosome Distribution:
+- chr1: 17486 peaks (5.4%)
+- chr10: 25218 peaks (7.9%)
+- chr11: 11056 peaks (3.4%)
+- chr12: 21904 peaks (6.8%)
+- chr13: 14664 peaks (4.6%)
+- chr14: 14250 peaks (4.4%)
+- chr15: 6961 peaks (2.2%)
+- chr16: 14373 peaks (4.5%)
+- chr17: 8190 peaks (2.5%)
+- chr18: 4319 peaks (1.3%)
+- chr19: 5567 peaks (1.7%)
+- chr2: 19148 peaks (6.0%)
+- chr20: 12755 peaks (4.0%)
+- chr21: 2220 peaks (0.7%)
+- chr22: 3459 peaks (1.1%)
+- chr3: 13234 peaks (4.1%)
+- chr4: 8107 peaks (2.5%)
+- chr5: 15337 peaks (4.8%)
+- chr6: 36766 peaks (11.4%)
+- chr7: 13410 peaks (4.2%)
+- chr8: 13860 peaks (4.3%)
+- chr9: 21986 peaks (6.8%)
+- chrX: 16916 peaks (5.3%)
+- chrY: 42 peaks (0.0%)
+
+=== H2AK119Ub YAF Blacklist Filtering Summary ===
+Original peaks: 321228
+Filtered peaks: 321228
+Removed peaks: 0 (0.0%)
+
+Width Statistics Changes:
+Original - Mean: 5405.7, Median: 2893.0, Range: 1001-50000
+Filtered - Mean: 5405.7, Median: 2893.0, Range: 1001-50000
+
+Analysis completed successfully.

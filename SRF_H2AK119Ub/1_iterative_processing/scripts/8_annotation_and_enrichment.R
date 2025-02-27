@@ -47,11 +47,22 @@ suppressPackageStartupMessages({
 source("scripts/utils.R")
 
 #' Create a detailed pie chart showing genomic feature distribution
-#' @param peak_anno ChIPseeker annotation object
+#' @param anno_data Data frame with annotation data and fold change information
+#' @param direction Optional parameter to filter by direction ("up", "down", or NULL for all)
+#' @param title Optional title for the pie chart
 #' @return ggplot object with detailed pie chart
-create_detailed_pie_chart <- function(peak_anno) {
-    # Extract annotation data
-    anno_df <- as.data.frame(peak_anno)
+create_detailed_pie_chart <- function(anno_data, direction = NULL, title = NULL) {
+    # Make a copy of the annotation data
+    anno_df <- anno_data
+    
+    # Filter by direction if specified
+    if (!is.null(direction)) {
+        if (direction == "up") {
+            anno_df <- anno_df[anno_df$fold_change > 0, ]
+        } else if (direction == "down") {
+            anno_df <- anno_df[anno_df$fold_change < 0, ]
+        }
+    }
     
     # Create a more detailed categorization
     anno_df$detailed_annotation <- NA
@@ -105,6 +116,11 @@ create_detailed_pie_chart <- function(peak_anno) {
                   position = position_stack(vjust = 0.5),
                   size = 3)
     
+    # Add title if provided
+    if (!is.null(title)) {
+        pie_chart <- pie_chart + ggtitle(title)
+    }
+    
     return(pie_chart)
 }
 
@@ -150,6 +166,9 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
     # Standardize chromosome names to UCSC style (e.g., chr1 instead of 1)
     significant_peaks_gr <- standardize_chromosomes(significant_peaks)
 
+    # Add fold change information to the annotation object for later filtering
+    fold_change_values <- significant_peaks_gr$Fold
+
     # Annotate peaks relative to genomic features (promoters, UTRs, exons, etc)
     log_message("Performing peak annotation...")
     txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
@@ -158,6 +177,14 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
         tssRegion = c(-3000, 3000), # Define promoter region
         verbose = FALSE
     )
+    
+    # Instead of modifying the peak_anno object directly, we'll store the fold change
+    # in a separate data frame that we'll use for filtering in the pie chart function
+    anno_df <- as.data.frame(peak_anno)
+    anno_df$fold_change <- fold_change_values
+    
+    # Save the modified annotation data frame for later use
+    fold_change_data <- anno_df
 
     # Save annotation results
     peak_annotation_file <- file.path(annotation_dir, "peak_annotation.rds")
@@ -184,7 +211,13 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
     }
 
     # Create detailed pie chart
-    plots$detailed_pie <- create_detailed_pie_chart(peak_anno)
+    plots$detailed_pie <- create_detailed_pie_chart(fold_change_data, title = "All Peaks")
+    
+    # Create separate pie charts for up and down regulated genes
+    plots$up_regulated_pie <- create_detailed_pie_chart(fold_change_data, direction = "up", 
+                                                       title = "Up-regulated Peaks")
+    plots$down_regulated_pie <- create_detailed_pie_chart(fold_change_data, direction = "down", 
+                                                         title = "Down-regulated Peaks")
 
     annotation_plots_pdf <- file.path(figures_dir, "annotation_plots.pdf")
     pdf(annotation_plots_pdf, width = 10, height = 8)
@@ -194,12 +227,26 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
         print(plots$upset)
     }
     print(plots$detailed_pie)
+    print(plots$up_regulated_pie)
+    print(plots$down_regulated_pie)
     dev.off()
 
-    # Save detailed pie chart to a separate file for better visibility
+    # Save detailed pie charts to separate files for better visibility
     detailed_pie_pdf <- file.path(figures_dir, "detailed_pie_chart.pdf")
     pdf(detailed_pie_pdf, width = 10, height = 8)
     print(plots$detailed_pie)
+    dev.off()
+    
+    # Save up-regulated pie chart
+    up_regulated_pie_pdf <- file.path(figures_dir, "up_regulated_pie_chart.pdf")
+    pdf(up_regulated_pie_pdf, width = 10, height = 8)
+    print(plots$up_regulated_pie)
+    dev.off()
+    
+    # Save down-regulated pie chart
+    down_regulated_pie_pdf <- file.path(figures_dir, "down_regulated_pie_chart.pdf")
+    pdf(down_regulated_pie_pdf, width = 10, height = 8)
+    print(plots$down_regulated_pie)
     dev.off()
 
     # Extract genes associated with YAF-enriched peaks
