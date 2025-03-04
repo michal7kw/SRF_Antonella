@@ -1,7 +1,7 @@
 STAR version=2.7.10b
 STAR compilation time,server,dir=2023-05-25T06:56:23+0000 :/opt/conda/conda-bld/star_1684997536154/work/source
 ##### Command Line:
-/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/bin/STAR-avx2 --runMode genomeGenerate --genomeDir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star --genomeFastaFiles /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf --runThreadN 2 --sjdbOverhang 100
+/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/bin/STAR-avx2 --runMode genomeGenerate --genomeDir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star --genomeFastaFiles /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa --sjdbGTFfile /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf --runThreadN 2 --sjdbOverhang 100 --limitGenomeGenerateRAM 60000000000
 ##### Initial USER parameters from Command Line:
 ###### All USER parameters from Command Line:
 runMode                       genomeGenerate        ~RE-DEFINED
@@ -10,6 +10,7 @@ genomeFastaFiles              /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2
 sjdbGTFfile                   /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf     ~RE-DEFINED
 runThreadN                    2     ~RE-DEFINED
 sjdbOverhang                  100     ~RE-DEFINED
+limitGenomeGenerateRAM        60000000000     ~RE-DEFINED
 ##### Finished reading parameters from all sources
 
 ##### Final user re-defined parameters-----------------:
@@ -17,12 +18,13 @@ runMode                           genomeGenerate
 runThreadN                        2
 genomeDir                         /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star
 genomeFastaFiles                  /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa   
+limitGenomeGenerateRAM            60000000000
 sjdbGTFfile                       /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf
 sjdbOverhang                      100
 
 -------------------------------
 ##### Final effective command line:
-/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/bin/STAR-avx2   --runMode genomeGenerate      --runThreadN 2   --genomeDir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star   --genomeFastaFiles /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa      --sjdbGTFfile /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf   --sjdbOverhang 100
+/beegfs/scratch/ric.broccoli/kubacki.michal/conda_envs/snakemake/bin/STAR-avx2   --runMode genomeGenerate      --runThreadN 2   --genomeDir /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star   --genomeFastaFiles /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa      --limitGenomeGenerateRAM 60000000000   --sjdbGTFfile /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf   --sjdbOverhang 100
 ----------------------------------------
 
 Number of fastq files for each mate = 1
@@ -31,7 +33,7 @@ Finished loading and checking parameters
 --genomeDir directory exists and will be overwritten: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star/
 !!!!! WARNING: Could not move Log.out file from ./Log.out into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star/Log.out. Will keep ./Log.out
 
-Feb 24 16:41:05 ... starting to generate Genome files
+Mar 04 05:14:41 ... starting to generate Genome files
 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa : chr # 0  "1" chrStart: 0
 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa : chr # 1  "10" chrStart: 249036800
 /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa : chr # 2  "11" chrStart: 382992384
@@ -423,7 +425,7 @@ KI270392.1	971
 KI270394.1	970
 Genome sequence total length = 3099750718
 Genome size with padding = 3138387968
-Feb 24 16:41:54 ..... processing annotations GTF
+Mar 04 05:15:31 ..... processing annotations GTF
 WARNING: while processing sjdbGTFfile=/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf: chromosome 'M' not found in Genome fasta files for line:
 M	ENSEMBL	exon	577	647	.	+	.	gene_id "ENSG00000210049.1"; transcript_id "ENST00000387314.1"; gene_type "Mt_tRNA"; gene_name "MT-TF"; transcript_type "Mt_tRNA"; transcript_name "MT-TF-201"; exon_number 1; exon_id "ENSE00001544501.1"; level 3; transcript_support_level "NA"; hgnc_id "HGNC:7481"; tag "basic"; tag "Ensembl_canonical";
 WARNING: while processing sjdbGTFfile=/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf: chromosome 'M' not found in Genome fasta files for line:
@@ -503,42 +505,11 @@ Processing pGe.sjdbGTFfile=/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK1
 		853499 exons (non-collapsed)
 		298720 collapsed junctions
 Total junctions: 298720
-Feb 24 16:42:03 ..... finished GTF processing
+Mar 04 05:15:40 ..... finished GTF processing
 
 Estimated genome size with padding and SJs: total=genome+SJ=3339387968 = 3138387968 + 201000000
 GstrandBit=32
 Number of SA indices: 5891698134
-Feb 24 16:42:16 ... starting to sort Suffix Array. This may take a long time...
-Number of chunks: 7;   chunks size limit: 7416967152 bytes
-Feb 24 16:42:30 ... sorting Suffix Array chunks and saving them to disk...
-Writing 7255731480 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SA_1 ; empty space on disk = 210780275867648 bytes ... done
-Writing 7381683288 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SA_0 ; empty space on disk = 210916024516608 bytes ... done
-Writing 7269409000 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SA_2 ; empty space on disk = 210560843513856 bytes ... done
-Writing 7389829552 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SA_3 ; empty space on disk = 210369954447360 bytes ... done
-Writing 7416202544 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SA_4 ; empty space on disk = 209524562591744 bytes ... done
-Writing 7331792712 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SA_5 ; empty space on disk = 209502037606400 bytes ... done
-Writing 3088936496 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SA_6 ; empty space on disk = 209514655645696 bytes ... done
-Feb 24 19:11:37 ... loading chunks from disk, packing SA...
-Feb 24 19:12:47 ... finished generating suffix array
-Feb 24 19:12:47 ... generating Suffix Array index
-Feb 24 19:15:44 ... completed Suffix Array index
-Feb 24 19:15:45   Finished preparing junctions
-Feb 24 19:15:45 ..... inserting junctions into the genome indices
-Feb 24 19:19:49   Finished SA search: number of new junctions=298692, old junctions=0
-Feb 24 19:20:33   Finished sorting SA indicesL nInd=119390000
-Genome size with junctions=3198425060  3138387968   60037092
-GstrandBit1=32   GstrandBit=32
-Feb 24 19:21:47   Finished inserting junction indices
-Feb 24 19:22:06   Finished SAi
-Feb 24 19:22:07 ..... finished inserting junctions into genome
-Feb 24 19:22:07 ... writing Genome to disk ...
-Writing 3198425060 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//Genome ; empty space on disk = 209490051858432 bytes ... done
-SA size in bytes: 24795738556
-Feb 24 19:22:08 ... writing Suffix Array to disk ...
-Writing 24795738556 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SA ; empty space on disk = 209490051858432 bytes ... done
-Feb 24 19:22:13 ... writing SAindex to disk
-Writing 8 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SAindex ; empty space on disk = 209490051858432 bytes ... done
-Writing 120 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SAindex ; empty space on disk = 209490051858432 bytes ... done
-Writing 1565873491 bytes into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star//SAindex ; empty space on disk = 209490051858432 bytes ... done
-Feb 24 19:22:14 ..... finished successfully
-DONE: Genome generation, EXITING
+Mar 04 05:15:53 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 3;   chunks size limit: 16116967152 bytes
+Mar 04 05:16:06 ... sorting Suffix Array chunks and saving them to disk...

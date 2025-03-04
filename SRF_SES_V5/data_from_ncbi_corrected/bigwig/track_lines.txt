@@ -1,0 +1,5 @@
+track type=bigWig name="SES_rep1" description="SES-transduced replicate 1 Cut&Tag" bigDataUrl=./bigwig/SES_rep1.bw
+track type=bigWig name="SES_rep2" description="SES-transduced replicate 2 Cut&Tag" bigDataUrl=./bigwig/SES_rep2.bw
+track type=bigWig name="SOX2_rep1" description="SOX2-transduced replicate 1 Cut&Tag" bigDataUrl=./bigwig/SOX2_rep1.bw
+track type=bigWig name="SES_rep3" description="SES-transduced replicate 3 Cut&Tag" bigDataUrl=./bigwig/SES_rep3.bw
+track type=bigWig name="SOX2_rep3" description="SOX2-transduced replicate 3 Cut&Tag" bigDataUrl=./bigwig/SOX2_rep3.bw

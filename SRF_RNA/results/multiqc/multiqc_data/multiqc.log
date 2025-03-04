@@ -1,7 +1,8 @@
-[2025-02-24 21:38:25,899] multiqc.core.version_check                         [WARNING]  MultiQC Version v1.27 now available!
-[2025-02-24 21:38:25,900] multiqc.core.file_search                           [INFO   ]  Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/fastqc
-[2025-02-24 21:38:25,900] multiqc.core.file_search                           [INFO   ]  Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/star
-[2025-02-24 21:38:25,901] multiqc.core.file_search                           [INFO   ]  Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/counts
-[2025-02-24 21:38:35,807] multiqc.modules.featurecounts.featurecounts        [INFO   ]  Found 9 reports
-[2025-02-24 21:38:37,962] multiqc.modules.star.star                          [INFO   ]  Found 9 reports
-[2025-02-24 21:38:38,763] multiqc.modules.fastqc.fastqc                      [INFO   ]  Found 36 reports
+[2025-03-04 09:46:24,081] multiqc.core.version_check                         [WARNING]  MultiQC Version v1.27.1 now available!
+[2025-03-04 09:46:24,082] multiqc.core.file_search                           [INFO   ]  Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/fastqc
+[2025-03-04 09:46:24,082] multiqc.core.file_search                           [INFO   ]  Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/star
+[2025-03-04 09:46:24,082] multiqc.core.file_search                           [INFO   ]  Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/counts
+[2025-03-04 09:46:24,083] multiqc.core.file_search                           [INFO   ]  Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/deseq2
+[2025-03-04 09:46:30,983] multiqc.modules.featurecounts.featurecounts        [INFO   ]  Found 9 reports
+[2025-03-04 09:46:31,166] multiqc.modules.star.star                          [INFO   ]  Found 9 reports
+[2025-03-04 09:46:31,759] multiqc.modules.fastqc.fastqc                      [INFO   ]  Found 36 reports

@@ -104,7 +104,7 @@
 ||    The reads are assigned on the single-end mode.                          ||
 ||    Total alignments : 111010654                                            ||
 ||    Successfully assigned alignments : 26411275 (23.8%)                     ||
-||    Running time : 1.65 minutes                                             ||
+||    Running time : 1.63 minutes                                             ||
 ||                                                                            ||
 || Write the final count table.                                               ||
 || Write the read assignment summary.                                         ||

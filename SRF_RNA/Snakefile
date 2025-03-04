@@ -1,4 +1,5 @@
 from os.path import join
+import pandas as pd
 
 # Configuration
 CONFIG = {
@@ -9,8 +10,29 @@ CONFIG = {
     'gtf': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.nochr.gtf',  # Basic Gencode v43 annotation for GRCh38 (without chr prefix)
     'max_threads': 32,  # Maximum threads for heavy processes
     'medium_threads': 16,  # Medium thread count for moderate processes
-    'light_threads': 4  # Light thread count for simple processes
+    'light_threads': 4,  # Light thread count for simple processes
+    'chrom_sizes': '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome/Homo_sapiens.GRCh38.dna.primary_assembly.chrom.sizes',  # Chromosome sizes for bigWig generation
+    # Define comparisons for differential expression analysis
+    'comparisons': [
+        ('GFP', 'C'),  # GFP vs Control
+        ('YAF', 'C'),  # YAF vs Control
+        ('YAF', 'GFP')  # YAF vs GFP
+    ]
 }
+
+# Create sample to condition mapping
+SAMPLE_TO_CONDITION = {}
+for sample in CONFIG['samples']:
+    for condition in CONFIG['conditions']:
+        if sample.startswith(condition):
+            SAMPLE_TO_CONDITION[sample] = condition
+
+# Create metadata table for DESeq2
+metadata = pd.DataFrame({
+    'sample': CONFIG['samples'],
+    'condition': [SAMPLE_TO_CONDITION[s] for s in CONFIG['samples']]
+})
+metadata.to_csv('metadata.csv', index=False)
 
 # Output directories
 RESULTS_DIR = 'results'
@@ -27,8 +49,26 @@ rule all:
         expand(join(RESULTS_DIR, 'fastqc', '{sample}_R2_trimmed_fastqc.html'), sample=CONFIG['samples']),
         # STAR alignments
         expand(join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam'), sample=CONFIG['samples']),
+        # BAM indices
+        expand(join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam.bai'), sample=CONFIG['samples']),
         # featureCounts results
         join(RESULTS_DIR, 'counts', 'all_samples_counts.txt'),
+        # BigWig files
+        expand(join(RESULTS_DIR, 'bigwig', '{sample}.bw'), sample=CONFIG['samples']),
+        # DESeq2 results
+        expand(join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'differential_expression.csv'), 
+               zip, condition1=[comp[0] for comp in CONFIG['comparisons']], condition2=[comp[1] for comp in CONFIG['comparisons']]),
+        # DESeq2 visualizations
+        expand(join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'MA_plot.pdf'), 
+               zip, condition1=[comp[0] for comp in CONFIG['comparisons']], condition2=[comp[1] for comp in CONFIG['comparisons']]),
+        expand(join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'volcano_plot.pdf'), 
+               zip, condition1=[comp[0] for comp in CONFIG['comparisons']], condition2=[comp[1] for comp in CONFIG['comparisons']]),
+        # PCA plot
+        join(RESULTS_DIR, 'deseq2', 'pca_plot.pdf'),
+        # Heatmap of top DEGs
+        join(RESULTS_DIR, 'deseq2', 'top_degs_heatmap.pdf'),
+        # Sample correlation heatmap
+        join(RESULTS_DIR, 'deseq2', 'sample_correlation_heatmap.pdf'),
         # MultiQC report
         join(RESULTS_DIR, 'multiqc', 'multiqc_report.html')
 
@@ -100,36 +140,40 @@ rule star_index:
         fasta = CONFIG['genome_fasta'],
         gtf = CONFIG['gtf']
     output:
-        directory(CONFIG['genome_dir'])
+        touch(join(LOGS_DIR, 'star_index', 'index_complete.flag'))
+    params:
+        genome_dir = CONFIG['genome_dir']
     log:
         join(LOGS_DIR, 'star_index', 'star_index.log')
-    threads: CONFIG['max_threads']
+    threads: 1
     resources:
-        mem_mb=64000,
-        time='12h'
+        mem_mb=4000,
+        time='5m'
     shell:
-        'mkdir -p {output} && '
-        'STAR --runMode genomeGenerate '
-        '--genomeDir {output} '
-        '--genomeFastaFiles {input.fasta} '
-        '--sjdbGTFfile {input.gtf} '
-        '--runThreadN {threads} '
-        '--sjdbOverhang 100 '
-        '--limitGenomeGenerateRAM 60000000000 '
-        '2> {log}'
+        # Only check for the existence of the index
+        'echo "Checking for STAR index in {params.genome_dir}" > {log} && '
+        'if [ ! -d "{params.genome_dir}" ] || [ ! -f "{params.genome_dir}/genomeParameters.txt" ]; then '
+        '    echo "STAR index not found or incomplete. Please run the build_star_index.sh script first." >> {log}; '
+        '    echo "Run: sbatch scripts/build_star_index.sh" >> {log}; '
+        '    exit 1; '
+        'else '
+        '    echo "STAR index found and appears to be complete" >> {log}; '
+        '    touch {output}; '
+        'fi'
 
 # STAR alignment
 rule star_align:
     input:
         r1 = rules.trimmomatic.output.r1,
         r2 = rules.trimmomatic.output.r2,
-        index = CONFIG['genome_dir']
+        index_flag = rules.star_index.output
     output:
         bam = join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam'),
         log = join(RESULTS_DIR, 'star', '{sample}', '{sample}_Log.final.out')
     params:
         outdir = join(RESULTS_DIR, 'star', '{sample}'),
-        prefix = join(RESULTS_DIR, 'star', '{sample}', '{sample}_')
+        prefix = join(RESULTS_DIR, 'star', '{sample}', '{sample}_'),
+        genome_dir = CONFIG['genome_dir']
     log:
         join(LOGS_DIR, 'star', '{sample}.log')
     threads: CONFIG['max_threads']
@@ -139,7 +183,7 @@ rule star_align:
     shell:
         'STAR '
         '--runThreadN {threads} '
-        '--genomeDir {CONFIG[genome_dir]} '
+        '--genomeDir {params.genome_dir} '
         '--readFilesIn {input.r1} {input.r2} '
         '--readFilesCommand zcat '
         '--outFileNamePrefix {params.prefix} '
@@ -157,7 +201,12 @@ rule index_bam:
     log:
         join(LOGS_DIR, 'samtools_index', '{sample}.log')
     shell:
-        'samtools index {input} 2> {log}'
+        # Check if the index already exists and is newer than the BAM file
+        'if [ -f {output} ] && [ {output} -nt {input} ]; then '
+        '    echo "BAM index already exists and is up-to-date, skipping indexing" > {log}; '
+        'else '
+        '    samtools index {input} 2> {log}; '
+        'fi'
 
 # featureCounts
 rule featurecounts:
@@ -181,6 +230,82 @@ rule featurecounts:
         '{input.bams} '
         '2> {log}'
 
+# Generate bigWig files from BAM
+rule bam_to_bigwig:
+    input:
+        bam = join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam'),
+        bai = join(RESULTS_DIR, 'star', '{sample}', '{sample}_Aligned.sortedByCoord.out.bam.bai')
+    output:
+        bigwig = join(RESULTS_DIR, 'bigwig', '{sample}.bw')
+    log:
+        join(LOGS_DIR, 'bigwig', '{sample}.log')
+    threads: CONFIG['medium_threads']
+    resources:
+        mem_mb=32000,
+        time='4h'
+    shell:
+        'bamCoverage '
+        '--bam {input.bam} '
+        '--outFileName {output.bigwig} '
+        '--outFileFormat bigwig '
+        '--binSize 10 '
+        '--normalizeUsing RPKM '
+        '--effectiveGenomeSize 2913022398 '
+        '--numberOfProcessors {threads} '
+        '2> {log}'
+
+# Prepare count matrix for DESeq2
+rule prepare_count_matrix:
+    input:
+        counts = join(RESULTS_DIR, 'counts', 'all_samples_counts.txt')
+    output:
+        matrix = join(RESULTS_DIR, 'deseq2', 'count_matrix.csv')
+    log:
+        join(LOGS_DIR, 'deseq2', 'prepare_count_matrix.log')
+    script:
+        'scripts/prepare_count_matrix.R'
+
+# Run DESeq2 differential expression analysis
+rule deseq2_analysis:
+    input:
+        counts = join(RESULTS_DIR, 'deseq2', 'count_matrix.csv'),
+        metadata = 'metadata.csv'
+    output:
+        results = join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'differential_expression.csv'),
+        normalized_counts = join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'normalized_counts.csv'),
+        rds = join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'dds.rds'),
+        ma_plot = join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'MA_plot.pdf'),
+        volcano_plot = join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'volcano_plot.pdf')
+    params:
+        condition1 = '{condition1}',
+        condition2 = '{condition2}'
+    log:
+        join(LOGS_DIR, 'deseq2', '{condition1}_vs_{condition2}.log')
+    resources:
+        mem_mb=32000,
+        time='2h'
+    script:
+        'scripts/run_deseq2.R'
+
+# Generate PCA plot and sample correlation heatmap
+rule deseq2_visualizations:
+    input:
+        dds_files = expand(join(RESULTS_DIR, 'deseq2', '{condition1}_vs_{condition2}', 'dds.rds'),
+                          zip, condition1=[comp[0] for comp in CONFIG['comparisons']], 
+                          condition2=[comp[1] for comp in CONFIG['comparisons']]),
+        metadata = 'metadata.csv'
+    output:
+        pca = join(RESULTS_DIR, 'deseq2', 'pca_plot.pdf'),
+        heatmap = join(RESULTS_DIR, 'deseq2', 'sample_correlation_heatmap.pdf'),
+        top_degs_heatmap = join(RESULTS_DIR, 'deseq2', 'top_degs_heatmap.pdf')
+    log:
+        join(LOGS_DIR, 'deseq2', 'visualizations.log')
+    resources:
+        mem_mb=32000,
+        time='2h'
+    script:
+        'scripts/deseq2_visualizations.R'
+
 # MultiQC report
 rule multiqc:
     input:
@@ -201,4 +326,5 @@ rule multiqc:
         '{RESULTS_DIR}/fastqc '
         '{RESULTS_DIR}/star '
         '{RESULTS_DIR}/counts '
+        '{RESULTS_DIR}/deseq2 '
         '2> {log}'
