@@ -1,8 +1,0 @@
-WARNING: overwriting environment variables set in the machine
-overwriting variable ['TMPDIR']
-'select()' returned 1:many mapping between keys and columns
-'select()' returned 1:many mapping between keys and columns
-'select()' returned 1:many mapping between keys and columns
-'select()' returned 1:many mapping between keys and columns
-Warning message:
-closing unused connection 4 (/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/cross_analysis/results/analysis_report.txt) 

@@ -8,3 +8,4 @@ track type=bed name="SES_rep3_peaks" description="SES-transduced replicate 3 Cut
 browser position chr1:1-10000
 track type=bed name="SOX2_rep3_peaks" description="SOX2-transduced replicate 3 Cut&Tag peaks" itemRgb=On
 browser position chr1:1-10000
+track type=bed name="SOX2_rep2_peaks" description="SOX2-transduced replicate 2 Cut&Tag peaks" itemRgb=On

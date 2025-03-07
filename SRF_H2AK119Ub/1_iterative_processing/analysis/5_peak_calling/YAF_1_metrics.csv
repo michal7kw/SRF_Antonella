@@ -1,8 +1,8 @@
 Metric,Value
 Sample,YAF_1
 Total_Reads,120116812
-Reads_in_Peaks,1852109
-FRiP,0.015419
-Peak_Count,9986
-Mean_Length,1367.86
-Mean_Fold_Enrichment,5.7597
+Reads_in_Peaks,71289593
+FRiP,0.593502
+Peak_Count,393379
+Mean_Length,1424.99
+Mean_Fold_Enrichment,3.46425

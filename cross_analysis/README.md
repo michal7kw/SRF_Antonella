@@ -1,3 +1,0 @@
-# Cross Analysis for V5 and H2AK119Ub ChIP-seq Data
-
-This analysis pipeline performs cross analysis of V5 and H2AK119Ub ChIP-seq data. The workflow first identifies overlapping binding sites between the two datasets. Following this, it conducts downstream analysis of the overlapping regions, which includes genomic annotation, transcription start site (TSS) distribution analysis, and comparative gene list analysis.
