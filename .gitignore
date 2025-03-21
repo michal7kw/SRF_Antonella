@@ -1,5 +1,6 @@
 # Directories to ignore
-# logs/
+**/logs/
+logs/
 Archive/
 .snakemake/
 COMMON_DATA/
@@ -24,6 +25,8 @@ SRF_SES_V5/results/qc/fastqc/
 *.sam
 *.bt2
 *Peak
+*.out
+*.err
 
 # Peak and genomic track files
 *.bed
@@ -74,9 +77,9 @@ COMMON_DATA/genome_star/
 *.tar
 
 # Log and temporary files
-# *.log
-# *.err
-# *.out
+*.log
+*.err
+*.out
 *.tmp
 *.tmp*
 

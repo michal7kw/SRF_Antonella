@@ -1,68 +1,145 @@
-# Gene Promoter-Peak Overlap Analysis
+# YAF Enrichment Analysis
 
-This script analyzes the overlap between differentially expressed genes' promoters from RNA-seq data and peaks from Cut&Tag experiments.
+This repository contains a streamlined analysis pipeline to examine the enrichment of YAF vs GFP Cut&Tag data at promoters of differentially expressed genes.
+
+## Overview
+
+The analysis aims to determine if there's a relationship between YAF binding and gene expression changes. It compares binding patterns between upregulated and downregulated genes to understand YAF's potential role as a transcriptional activator or repressor.
 
 ## Requirements
 
-- Python 3.6+
-- pandas
-- numpy
-- matplotlib
-- seaborn
-- pybedtools
+The analysis requires the following R packages:
+- DESeq2
+- rtracklayer
+- GenomicRanges
+- ggplot2
+- dplyr
+- tidyr
+- pheatmap
+- RColorBrewer
+- gridExtra
+- ggpubr
+- scales
+- viridis
 
-You can install the required packages with:
+The script will attempt to install any missing packages.
 
-```bash
-pip install pandas numpy matplotlib seaborn pybedtools
-```
+## Input Data
 
-## Usage
+The analysis uses the following input data:
+1. DESeq2 results from RNA-seq analysis: `/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv`
+2. GTF annotation file: `/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf`
+3. BigWig files for YAF and GFP samples: `/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/6_bigwig/`
 
-```bash
-python overlap_analysis.py [options]
-```
+## How to Run
 
-### Options
-
-- `--deseq2_file`: Path to DESeq2 differential expression results (default: 'SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv')
-- `--counts_file`: Path to normalized counts file (default: 'SRF_RNA/results/deseq2/YAF_vs_GFP/normalized_counts.csv')
-- `--peaks_dir`: Directory containing peak files (default: '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling')
-- `--gtf_file`: Path to GTF annotation file (default: '/beegfs/scratch/ric.broccoli/kubacki.michal/genomes/human/gencode.v38.annotation.gtf')
-- `--padj_threshold`: Adjusted p-value threshold for significant genes (default: 0.05)
-- `--log2fc_threshold`: Log2 fold change threshold for significant genes (default: 1.0)
-- `--output_dir`: Directory to save results (default: 'overlap_results')
-- `--promoter_upstream`: Distance upstream of TSS to define promoter region (default: 2000)
-- `--promoter_downstream`: Distance downstream of TSS to define promoter region (default: 200)
-
-## Example
+Simply execute the R script:
 
 ```bash
-python overlap_analysis.py --padj_threshold 0.01 --log2fc_threshold 1.5 --promoter_upstream 3000 --output_dir my_results
+chmod +x yaf_enrichment_analysis.R
+./yaf_enrichment_analysis.R
 ```
+
+Or run it with Rscript:
+
+```bash
+Rscript yaf_enrichment_analysis.R
+```
+
+## Analysis Steps
+
+1. Load DESeq2 results and filter for significant DEGs
+2. Load GTF annotation and extract gene information
+3. Define promoter regions (2kb upstream and 500bp downstream of TSS)
+4. Map DEGs to promoter regions
+5. Extract signal from bigWig files for each promoter region
+6. Calculate average signal and log2FC for YAF vs GFP
+7. Create visualizations
+8. Perform statistical tests
+9. Generate summary report
 
 ## Output
 
-The script generates the following outputs in the specified output directory:
+The analysis creates a directory called `YAF_enrichment_results` with the following outputs:
 
-1. `promoter_overlap_summary.csv`: A summary of the overlap between differentially expressed genes' promoters and peaks for each sample
-2. `promoter_overlap_summary.png`: A bar plot showing the percentage of differentially expressed genes with promoter-peak overlaps
-3. `promoter_sample_similarity.png`: A heatmap showing the similarity between samples based on overlapping genes
-4. `{sample}_up_promoter_overlapping_genes.txt`: List of upregulated genes with promoter-peak overlaps for each sample
-5. `{sample}_down_promoter_overlapping_genes.txt`: List of downregulated genes with promoter-peak overlaps for each sample
+### Data Files
+- `YAF_GFP_binding_at_promoters.csv`: Table with binding data for all genes
+- `enrichment_summary_stats.csv`: Summary statistics for each regulation group
 
-## How it works
+### Visualizations (in the `plots` subdirectory)
+1. Boxplot of YAF/GFP enrichment by regulation status
+2. Scatterplot of YAF vs GFP signal
+3. Bar plot of average YAF and GFP signal with error bars
+4. Violin plot of YAF/GFP ratio distribution
+5. Correlation plot between binding and expression log2FC
+6. Heatmap of top genes by YAF binding
+7. Density plot of YAF and GFP signal distribution
+8. Combined figure with multiple plots
 
-1. Loads differentially expressed genes from DESeq2 results
-2. Extracts promoter coordinates for these genes from a GTF file
-   - For genes on the + strand: TSS - upstream to TSS + downstream
-   - For genes on the - strand: TES - downstream to TES + upstream
-3. Loads peak files for each sample
-4. Finds overlaps between promoters and peaks using pybedtools
-5. Summarizes and visualizes the results
+### Reports
+- `analysis_summary.txt`: Text summary of the analysis results, including statistical tests and biological interpretation
 
-## Notes
+## Interpretation
 
-- The script expects broadPeak files with the naming convention `{sample}_broad_peaks_final.broadPeak`
-- Gene IDs in the DESeq2 results should match those in the GTF file
-- By default, promoters are defined as 2000bp upstream to 200bp downstream of the transcription start site (TSS) 
+The analysis helps determine:
+1. Whether YAF binding is enriched at promoters of upregulated or downregulated genes
+2. If there's a correlation between YAF binding and gene expression changes
+3. The potential role of YAF as a transcriptional activator or repressor
+
+## Troubleshooting
+
+If you encounter issues with missing bigWig files, check that the file paths are correct and that the files have the expected names (YAF_1.bw, YAF_2.bw, YAF_3.bw, GFP_1.bw, GFP_2.bw, GFP_3.bw).
+
+If you get errors related to package installation, you may need to install them manually:
+
+```R
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(c("DESeq2", "rtracklayer", "GenomicRanges"))
+install.packages(c("ggplot2", "dplyr", "tidyr", "pheatmap", "RColorBrewer", "gridExtra", "ggpubr", "scales", "viridis"))
+```
+
+# Gene Ontology Analysis for YAF vs GFP
+
+This folder contains scripts to perform Gene Ontology (GO) analysis on differentially expressed genes from the YAF vs GFP comparison.
+
+## Files
+
+- `go_analysis.py`: Main Python script that performs GO analysis on upregulated and downregulated genes
+- `requirements.txt`: List of Python package dependencies
+- `run_go_analysis.sh`: Shell script to set up the environment and run the analysis
+
+## Workflow
+
+The analysis performs the following steps:
+
+1. Loads differential expression results from the DESeq2
+2. Identifies significantly up and down-regulated genes (padj < 0.05)
+3. Performs GO term enrichment analysis using the EnrichR API (via gseapy)
+4. Creates visualizations of top enriched GO terms
+5. Performs Gene Set Enrichment Analysis (GSEA) on the ranked gene list
+
+## Categories of GO Analysis
+
+For both upregulated and downregulated genes, the script performs enrichment for:
+
+- Biological Process (BP)
+- Cellular Component (CC)
+- Molecular Function (MF)
+
+## Running the Analysis
+
+1. Make sure the shell script is executable:
+   ```
+   chmod +x run_go_analysis.sh
+   ```
+
+2. Run the script:
+   ```
+   ./run_go_analysis.sh
+   ```
+
+3. Results will be saved in the `go_analysis_results` directory:
+   - Enrichment results in TSV format
+   - Visualization plots in PNG format
+   - Lists of up and downregulated genes 

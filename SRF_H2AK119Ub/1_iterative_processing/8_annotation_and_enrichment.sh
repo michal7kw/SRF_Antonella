@@ -19,7 +19,7 @@
 # - analysis/7_differential_binding/significant_peaks.rds: GRanges object with significant differential peaks
 #
 # Output files:
-# In analysis/8_annotation_and_enrichment/annotation_broad/:
+# In analysis/8_annotation_and_enrichment/annotation/:
 #   figures/
 #     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
 #     - detailed_pie_chart.pdf: Detailed pie chart with genomic feature distribution
@@ -29,13 +29,13 @@
 #     - go_enrichment.csv: GO enrichment analysis results
 #   peak_annotation.rds: R object with full annotation data
 #
-# In analysis/8_annotation_and_enrichment/gene_lists_broad/:
-#   - YAF_enriched_genes_broad_full.csv: All enriched genes with details
-#   - YAF_enriched_genes_broad_symbols.txt: List of gene symbols only
-#   - YAF_enriched_genes_broad_promoters.txt: Genes associated with promoter regions
-#   - YAF_enriched_genes_broad_promoters_1st_exon_intron.txt: Genes in promoters + 1st exon/intron
-#   - YAF_enriched_genes_broad_distal_intergenic.txt: Genes associated with distal intergenic regions
-#   - YAF_enriched_genes_broad_other_regions.txt: Genes in other genomic regions
+# In analysis/8_annotation_and_enrichment/gene_lists/:
+#   - YAF_enriched_genes_full.csv: All enriched genes with details
+#   - YAF_enriched_genes_symbols.txt: List of gene symbols only
+#   - YAF_enriched_genes_promoters.txt: Genes associated with promoter regions
+#   - YAF_enriched_genes_promoters_1st_exon_intron.txt: Genes in promoters + 1st exon/intron
+#   - YAF_enriched_genes_distal_intergenic.txt: Genes associated with distal intergenic regions
+#   - YAF_enriched_genes_other_regions.txt: Genes in other genomic regions
 #
 # Dependencies:
 # - ChIPseeker for peak annotation
@@ -62,20 +62,20 @@ conda activate snakemake
 WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
 cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exit 1; }
 
-# Define output directory
-OUTPUT_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment"
+# Define directories
+INPUT_DIR="${WORKDIR}/analysis/7_differential_binding"  # Input directory containing significant_peaks.rds
+OUTPUT_DIR="${WORKDIR}/analysis/8_annotation_and_enrichment"
 
 # Create necessary directories
 log_message "Creating output directories..."
 mkdir -p logs
-mkdir -p ${OUTPUT_DIR}/annotation_broad/{figures,tables}
-mkdir -p ${OUTPUT_DIR}/gene_lists_broad
+mkdir -p ${OUTPUT_DIR}/annotation/{figures,tables}
+mkdir -p ${OUTPUT_DIR}/gene_lists
 
 # Check for required input files
 log_message "Checking input files..."
-peak_type="broad"
 files=(
-    "analysis/7_differential_binding/significant_peaks.rds"
+    "${INPUT_DIR}/significant_peaks.rds"
 )
 for file in "${files[@]}"; do
     if [[ ! -f "$file" ]]; then
@@ -86,6 +86,6 @@ done
 
 # Run R script for annotation and enrichment analysis
 log_message "Running annotation and enrichment analysis..."
-Rscript scripts/8_annotation_and_enrichment.R ${OUTPUT_DIR}
+Rscript scripts/8_annotation_and_enrichment.R "${OUTPUT_DIR}" "${INPUT_DIR}"
 
 log_message "Annotation and enrichment analysis completed"

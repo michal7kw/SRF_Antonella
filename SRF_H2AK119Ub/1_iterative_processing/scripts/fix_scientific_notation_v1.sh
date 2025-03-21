@@ -16,7 +16,7 @@ log_message() {
 }
 
 BASE_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
-PEAKS_DIR="$BASE_DIR/analysis/peaks"
+PEAKS_DIR="$BASE_DIR/analysis/5_peak_calling"
 
 log_message "Starting peak file format fix for all peak files"
 

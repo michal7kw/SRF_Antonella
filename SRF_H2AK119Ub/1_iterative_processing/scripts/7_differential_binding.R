@@ -33,12 +33,38 @@ suppressPackageStartupMessages({
     library(GenomeInfoDb)  # For renaming seqlevels
 })
 
-# Define global constants
-PEAKS_DIR <- "analysis/5_peak_calling"
-PEAKS_SUFFIX <- "peaks_final"
-ALIGN_DIR <- "analysis/3_alignment"
-OUTPUT_DIR <- commandArgs(trailingOnly = TRUE)[1] # Get output directory from command line
-ANNOTATION_DIR <- file.path(OUTPUT_DIR, "../annotation_broad_deseq2") # annotation directory is one level up
+# Parse command line arguments
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) < 7) {
+    stop("Usage: Rscript script.R OUTPUT_DIR PEAKS_DIR PEAKS_SUFFIX ALIGN_DIR SAMPLE_IDS SAMPLE_CONDITIONS SAMPLE_REPLICATES")
+}
+
+# Define global constants from command line arguments
+OUTPUT_DIR <- args[1]
+PEAKS_DIR <- args[2]
+PEAKS_SUFFIX <- args[3]
+ALIGN_DIR <- args[4]
+ANNOTATION_DIR <- file.path(OUTPUT_DIR, "./annotation")
+
+# Parse sample information
+sample_ids <- strsplit(args[5], ",")[[1]]
+sample_conditions <- strsplit(args[6], ",")[[1]]
+sample_replicates <- as.numeric(strsplit(args[7], ",")[[1]])
+
+if (length(sample_ids) != length(sample_conditions) || length(sample_ids) != length(sample_replicates)) {
+    stop("Sample IDs, conditions, and replicates must have the same length")
+}
+
+# Create samples data frame
+samples <- data.frame(
+    SampleID = sample_ids,
+    Factor = rep("H2AK119Ub", length(sample_ids)),
+    Condition = sample_conditions,
+    Replicate = sample_replicates,
+    bamReads = file.path(ALIGN_DIR, paste0(sample_ids, ".dedup.bam")),
+    Peaks = file.path(PEAKS_DIR, paste0(sample_ids, "_broad_", PEAKS_SUFFIX, ".broadPeak")),
+    PeakCaller = rep("broad", length(sample_ids))
+)
 
 # Log a message with timestamp and level
 log_message <- function(msg, level = "INFO") {
@@ -70,42 +96,115 @@ standardize_peak_files <- function(peak_files) {
     for (file in peak_files) {
         log_message(sprintf("Standardizing chromosome names in %s", file))
         tryCatch({
-            peaks <- try({
-                read.table(file, header=FALSE,
-                           colClasses=c("character", "numeric", "numeric", "character",
-                                        "numeric", "character", "numeric", "numeric", "numeric"),
-                           col.names=c("chr", "start", "end", "name", "score",
-                                       "strand", "signalValue", "pValue", "qValue"))
-            }, silent=TRUE)
+            # First try reading with strict parameters and error checking
+            peaks <- NULL
+            error_lines <- c()
             
-            if (inherits(peaks, "try-error")) {
-                peaks <- read.delim(file, header=FALSE, fill=TRUE, sep="\t",
-                                    col.names=c("chr", "start", "end", "name", "score",
-                                                "strand", "signalValue", "pValue", "qValue"))
+            # Read the file line by line first to identify problematic lines
+            con <- file(file, "r")
+            lines <- readLines(con)
+            close(con)
+            
+            # Detect chromosome format in the first valid line
+            chr_format <- "numeric"  # default format
+            for (line in lines) {
+                fields <- strsplit(line, "\t")[[1]]
+                if (length(fields) == 9) {
+                    if (grepl("^chr", fields[1])) {
+                        chr_format <- "chr"
+                    }
+                    break
+                }
+            }
+            log_message(sprintf("Detected chromosome format: %s", chr_format))
+            
+            valid_lines <- character(0)
+            for (i in seq_along(lines)) {
+                line <- lines[i]
+                fields <- strsplit(line, "\t")[[1]]
+                
+                if (length(fields) != 9) {
+                    error_lines <- c(error_lines, 
+                        sprintf("Line %d: Expected 9 fields, found %d", i, length(fields)))
+                    next
+                }
+                
+                # Validate chromosome format
+                chr_value <- gsub("^chr", "", fields[1])  # Remove chr prefix if present
+                if (!grepl("^([1-9][0-9]?|[XYM][TT]?)$", chr_value)) {
+                    error_lines <- c(error_lines,
+                        sprintf("Line %d: Invalid chromosome format: %s", i, fields[1]))
+                    next
+                }
+                
+                # Validate numeric fields
+                if (!all(grepl("^[0-9]+$", fields[c(2,3,5)]) & 
+                        grepl("^[0-9.]+$", fields[c(7,8,9)]))) {
+                    error_lines <- c(error_lines,
+                        sprintf("Line %d: Invalid numeric fields", i))
+                    next
+                }
+                
+                valid_lines <- c(valid_lines, line)
             }
             
-            peaks <- na.omit(peaks)
-            if (nrow(peaks) == 0) {
-                log_message(sprintf("WARNING: No valid peaks found in %s after cleaning", file))
-                next
+            if (length(error_lines) > 0) {
+                error_file <- paste0(file, ".errors")
+                writeLines(c(
+                    sprintf("Errors found in %s:", file),
+                    error_lines,
+                    sprintf("\nTotal lines: %d", length(lines)),
+                    sprintf("Valid lines: %d", length(valid_lines)),
+                    sprintf("Invalid lines: %d", length(error_lines))
+                ), error_file)
+                
+                log_message(sprintf("Found %d invalid lines in %s. See %s for details",
+                    length(error_lines), file, error_file))
             }
             
-            # **Remove** any 'chr' prefix if present (so peak names match BAM files)
-            peaks$chr <- gsub("^chr", "", peaks$chr)
+            if (length(valid_lines) == 0) {
+                stop(sprintf("No valid peaks found in %s after validation", file))
+            }
             
-            # Keep only standard chromosomes (non-UCSC style)
-            standard_chroms <- c(as.character(1:22), "X", "Y", "MT")
+            # Write valid lines to temporary file
+            temp_file <- tempfile()
+            writeLines(valid_lines, temp_file)
+            
+            # Read the cleaned data
+            peaks <- read.table(temp_file, header=FALSE,
+                colClasses=c("character", "numeric", "numeric", "character",
+                            "numeric", "character", "numeric", "numeric", "numeric"),
+                col.names=c("chr", "start", "end", "name", "score",
+                            "strand", "signalValue", "pValue", "qValue"))
+            
+            unlink(temp_file)  # Clean up temporary file
+            
+            # Keep only standard chromosomes (maintaining the original format)
+            standard_chroms <- if(chr_format == "chr") {
+                paste0("chr", c(1:22, "X", "Y", "MT"))
+            } else {
+                c(as.character(1:22), "X", "Y", "MT")
+            }
+            
+            # Convert chromosomes to the detected format if needed
+            if (chr_format == "chr" && !all(grepl("^chr", peaks$chr))) {
+                peaks$chr <- paste0("chr", peaks$chr)
+            } else if (chr_format == "numeric" && any(grepl("^chr", peaks$chr))) {
+                peaks$chr <- gsub("^chr", "", peaks$chr)
+            }
+            
             peaks <- peaks[peaks$chr %in% standard_chroms, ]
             
             if (nrow(peaks) == 0) {
-                log_message(sprintf("WARNING: No peaks left after filtering chromosomes in %s", file))
-                next
+                stop(sprintf("No peaks left after filtering chromosomes in %s", file))
             }
             
+            # Write back the cleaned data
             write.table(peaks, file, sep="\t", quote=FALSE, 
-                        row.names=FALSE, col.names=FALSE)
+                row.names=FALSE, col.names=FALSE)
             
-            log_message(sprintf("Processed %d peaks in %s", nrow(peaks), file))
+            log_message(sprintf("Successfully processed %d peaks in %s", nrow(peaks), file))
+            
         }, error = function(e) {
             log_message(sprintf("ERROR processing %s: %s", file, e$message), level = "ERROR")
             stop(sprintf("Failed to process peak file %s", file))
@@ -175,9 +274,10 @@ perform_diffbind <- function(samples) {
     # Normalize and perform differential analysis
     log_message("Performing differential analysis...")
     dba_data <- dba.normalize(dba_data, 
-                              normalize = DBA_NORM_LIB,
-                              background = TRUE)
+                          normalize = DBA_NORM_LIB,
+                          background = FALSE)  # Set to FALSE with no controls
     
+    log_message("Setting up contrasts...")
     dba_data <- dba.contrast(dba_data, 
                              categories = DBA_CONDITION,
                              minMembers = 2)
@@ -185,14 +285,51 @@ perform_diffbind <- function(samples) {
     log_message("Contrast information:")
     print(dba.show(dba_data, bContrasts = TRUE))
     
-    dba_data <- dba.analyze(dba_data, 
-                           method = DBA_DESEQ2)
+    tryCatch({
+        log_message("Starting DESeq2 analysis with dispersion estimation...")
+        
+        # Analyze with DESeq2 method with correct parameters
+        dba_data <- dba.analyze(dba_data, 
+                       method = DBA_DESEQ2)
+        
+        log_message("DESeq2 analysis completed successfully")
+        
+        # Get detailed statistics about the analysis
+        analysis_stats <- dba.show(dba_data, bContrasts = TRUE)
+        log_message("Analysis statistics:")
+        print(analysis_stats)
+        
+        # Plot dispersion estimates
+        pdf(file.path(OUTPUT_DIR, "dispersion_plots.pdf"))
+        tryCatch({
+            dba.plotHeatmap(dba_data)
+            title("Sample correlation heatmap")
+            
+            dba.plotPCA(dba_data, DBA_CONDITION, label=DBA_ID)
+            title("PCA plot of samples")
+            
+            dba.plotMA(dba_data)
+            title("MA plot of differential binding")
+            
+            dba.plotVolcano(dba_data)
+            title("Volcano plot of differential binding")
+        }, error = function(e) {
+            log_message(sprintf("Warning: Could not generate some plots: %s", e$message), "WARNING")
+        }, finally = {
+            dev.off()
+        })
+        
+    }, error = function(e) {
+        log_message(sprintf("Error in differential analysis: %s", e$message), "ERROR")
+        stop(sprintf("Differential analysis failed: %s", e$message))
+    })
     
     log_message("Extracting results...")
     dba_results <- dba.report(dba_data,
-                             th = 1,
-                             bCalled = FALSE,
-                             bNormalized = TRUE)
+                         th = 1,
+                         bCalled = FALSE,
+                         bNormalized = TRUE,
+                         bCounts = TRUE)  # Add this to include read counts
     
     log_message("Saving results...")
     saveRDS(dba_data, file.path(OUTPUT_DIR, "dba_analysis.rds"))
@@ -203,46 +340,31 @@ perform_diffbind <- function(samples) {
     
     log_message(sprintf("Found %d differential binding sites", nrow(df_results)))
     
-    # === Peak Annotation ===
-    log_message("Annotating peaks...")
-    peaks_gr <- dba_results
+    # # === Peak Annotation ===
+    # log_message("Annotating peaks...")
+    # peaks_gr <- dba_results
     
-    # For annotation we need UCSC-style names. Convert the non-UCSC (e.g. "1", "2", …)
-    # to UCSC style by adding the "chr" prefix.
-    seqlevels(peaks_gr) <- paste0("chr", seqlevels(peaks_gr))
+    # # For annotation we need UCSC-style names. Convert the non-UCSC (e.g. "1", "2", …)
+    # # to UCSC style by adding the "chr" prefix.
+    # seqlevels(peaks_gr) <- paste0("chr", seqlevels(peaks_gr))
     
-    txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
-    peakAnno <- annotatePeak(peaks_gr, TxDb = txdb,
-                             tssRegion = c(-3000, 3000),
-                             verbose = FALSE)
+    # txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+    # peakAnno <- annotatePeak(peaks_gr, TxDb = txdb,
+    #                          tssRegion = c(-3000, 3000),
+    #                          verbose = FALSE)
     
-    saveRDS(peakAnno, file.path(ANNOTATION_DIR, "peak_annotation.rds"))
-    write.csv(as.data.frame(peakAnno),
-              file.path(ANNOTATION_DIR, "peak_annotation.csv"),
-              row.names = FALSE)
+    # saveRDS(peakAnno, file.path(ANNOTATION_DIR, "peak_annotation.rds"))
+    # write.csv(as.data.frame(peakAnno),
+    #           file.path(ANNOTATION_DIR, "peak_annotation.csv"),
+    #           row.names = FALSE)
     
-    pdf(file.path(ANNOTATION_DIR, "annotation_plots.pdf"))
-    plotAnnoPie(peakAnno)
-    plotDistToTSS(peakAnno)
-    dev.off()
+    # pdf(file.path(ANNOTATION_DIR, "annotation_plots.pdf"))
+    # plotAnnoPie(peakAnno)
+    # plotDistToTSS(peakAnno)
+    # dev.off()
     
     return(dba_results)
 }
-
-# Define sample list with only selected samples that have similar peak counts
-# Using samples with comparable peak counts (27k-37k peaks) for more reliable comparison
-samples <- data.frame(
-    SampleID = c("GFP_1", "GFP_3", "YAF_2", "YAF_3"),
-    Factor = rep("H2AK119Ub", 4),
-    Condition = rep(c("GFP", "YAF"), each = 2),
-    Replicate = c(1, 3, 2, 3),
-    bamReads = file.path(ALIGN_DIR, paste0(c("GFP_1", "GFP_3", "YAF_2", "YAF_3"), ".dedup.bam")),
-    Peaks = file.path(PEAKS_DIR, paste0(c("GFP_1", "GFP_3", "YAF_2", "YAF_3"), "_broad_", PEAKS_SUFFIX, ".broadPeak")),
-    PeakCaller = rep("broad", 4)
-)
-
-log_message("Using selected samples with similar peak counts:")
-print(samples)
 
 # Execute the differential binding analysis
 dba_results <- perform_diffbind(samples)

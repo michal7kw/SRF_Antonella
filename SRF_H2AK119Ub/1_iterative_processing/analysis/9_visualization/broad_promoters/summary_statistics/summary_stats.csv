@@ -1,12 +1,12 @@
 "Metric","Value"
-"Total Promoter Peaks",4653
-"YAF-enriched Peaks",1462
-"GFP-enriched Peaks",3191
-"Significant Peaks (FDR < 0.05)",1543
-"Significant YAF-enriched (FDR < 0.05)",605
-"Significant GFP-enriched (FDR < 0.05)",938
-"Unique Genes",4072
+"Total Promoter Peaks",32268
+"YAF-enriched Peaks",16776
+"GFP-enriched Peaks",15492
+"Significant Peaks (FDR < 0.01)",5928
+"Significant YAF-enriched (FDR < 0.01)",4315
+"Significant GFP-enriched (FDR < 0.01)",1613
+"Unique Genes",17636
 "Median Distance to TSS",0
-"Mean Fold Change",-0.087443404878198
-"Median p-value",0.103848947728532
-"Median FDR",0.193729049955771
+"Mean Fold Change",0.127479144648579
+"Median p-value",0.114628941250107
+"Median FDR",0.247316282689577

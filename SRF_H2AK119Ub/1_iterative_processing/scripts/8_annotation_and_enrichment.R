@@ -6,7 +6,7 @@
 # - analysis/7_differential_binding/significant_peaks.rds: GRanges object with significant differential peaks
 #
 # Output files:
-# In analysis/8_annotation_and_enrichment/annotation_broad/:
+# In analysis/8_annotation_and_enrichment/annotation/:
 #   figures/
 #     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
 #     - detailed_pie_chart.pdf: Detailed pie chart with genomic feature distribution
@@ -16,14 +16,14 @@
 #     - go_enrichment.csv: GO enrichment analysis results
 #   peak_annotation.rds: R object with full annotation data
 #
-# In analysis/8_annotation_and_enrichment/gene_lists_broad/:
-#   - YAF_enriched_genes_broad_full.csv: All enriched genes with details
-#   - YAF_enriched_genes_broad_symbols.txt: List of gene symbols only
-#   - YAF_enriched_genes_broad_promoters.txt: Genes associated with promoter regions
-#   - YAF_enriched_genes_broad_promoters.csv: Genes associated with promoter regions (with details)
-#   - YAF_enriched_genes_broad_promoters_1st_exon_intron.txt: Genes in promoters + 1st exon/intron
-#   - YAF_enriched_genes_broad_distal_intergenic.txt: Genes associated with distal intergenic regions
-#   - YAF_enriched_genes_broad_other_regions.txt: Genes in other genomic regions
+# In analysis/8_annotation_and_enrichment/gene_lists/:
+#   - YAF_enriched_genes_full.csv: All enriched genes with details
+#   - YAF_enriched_genes_symbols.txt: List of gene symbols only
+#   - YAF_enriched_genes_promoters.txt: Genes associated with promoter regions
+#   - YAF_enriched_genes_promoters.csv: Genes associated with promoter regions (with details)
+#   - YAF_enriched_genes_promoters_1st_exon_intron.txt: Genes in promoters + 1st exon/intron
+#   - YAF_enriched_genes_distal_intergenic.txt: Genes associated with distal intergenic regions
+#   - YAF_enriched_genes_other_regions.txt: Genes in other genomic regions
 #
 # Dependencies:
 # - ChIPseeker for peak annotation
@@ -45,6 +45,16 @@ suppressPackageStartupMessages({
 })
 
 source("scripts/utils.R")
+
+# Parse command line arguments
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) < 2) {
+    stop("Usage: Rscript script.R OUTPUT_DIR INPUT_DIR")
+}
+
+# Define directories from command line arguments
+OUTPUT_DIR <- args[1]
+INPUT_DIR <- args[2]  # Directory containing significant_peaks.rds
 
 #' Create a detailed pie chart showing genomic feature distribution
 #' @param anno_data Data frame with annotation data and fold change information
@@ -144,11 +154,11 @@ standardize_chromosomes <- function(gr) {
 }
 
 #' Perform peak annotation and enrichment analysis
-annotate_and_enrich <- function(output_dir, peak_type = "broad") {
+annotate_and_enrich <- function(output_dir, input_dir, peak_type = "broad") {
     log_message(sprintf("Starting annotation and enrichment analysis for %s peaks", peak_type))
 
     # Define input file paths
-    significant_peaks_file <- file.path("analysis", "7_differential_binding", "significant_peaks.rds")
+    significant_peaks_file <- file.path(input_dir, "significant_peaks.rds")
 
     # Load peaks
     significant_peaks <- readRDS(significant_peaks_file)
@@ -348,16 +358,16 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
         # Dotplot showing enriched terms
         print(dotplot(ego, showCategory = 20))
 
-        # Network plot showing term similarity
-        tryCatch({
-            ego <- pairwise_termsim(ego)
-            print(emapplot(ego, showCategory = 50))
-        }, error = function(e) {
-            log_message("Could not create emapplot. Skipping...", level = "WARNING")
-        })
+        # # Network plot showing term similarity
+        # tryCatch({
+        #     ego <- pairwise_termsim(ego)
+        #     print(emapplot(ego, showCategory = 50))
+        # }, error = function(e) {
+        #     log_message("Could not create emapplot. Skipping...", level = "WARNING")
+        # })
 
         # Gene-concept network plot
-        print(cnetplot(ego, showCategory = 10))
+        # print(cnetplot(ego, showCategory = 10))
 
         dev.off()
     }
@@ -373,21 +383,14 @@ annotate_and_enrich <- function(output_dir, peak_type = "broad") {
 # Main execution block
 log_message("Starting annotation and enrichment pipeline...")
 
-# Get the output directory from command line arguments
-args <- commandArgs(trailingOnly = TRUE)
-if (length(args) == 0) {
-    stop("Output directory must be provided as a command line argument.")
-}
-output_dir <- args[1]
-
 # Perform annotation and enrichment analysis for broad peaks
-broad_results <- annotate_and_enrich(output_dir, "broad")
+broad_results <- annotate_and_enrich(OUTPUT_DIR, INPUT_DIR, "broad")
 
 # Create summary for broad peaks
 log_message("Creating analysis summary...")
 if (!is.null(broad_results)) {
     # Load the significant peaks to get the total number of peaks
-    significant_peaks_file <- file.path("analysis", "7_differential_binding", "significant_peaks.rds")
+    significant_peaks_file <- file.path(INPUT_DIR, "significant_peaks.rds")
     significant_peaks <- readRDS(significant_peaks_file)
 
     combined_summary <- data.frame(
@@ -397,7 +400,7 @@ if (!is.null(broad_results)) {
         GO_Terms = ifelse(!is.null(broad_results$go_enrichment), nrow(broad_results$go_enrichment), 0)
     )
 
-    combined_summary_file <- file.path(output_dir, "combined_summary.csv")
+    combined_summary_file <- file.path(OUTPUT_DIR, "combined_summary.csv")
     write.csv(combined_summary,
         combined_summary_file,
         row.names = FALSE

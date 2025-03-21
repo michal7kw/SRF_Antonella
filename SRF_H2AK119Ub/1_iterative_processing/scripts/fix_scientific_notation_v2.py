@@ -31,7 +31,7 @@ def process_file(input_file, output_file):
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python fix_scientific_notation.py <input_file>")
+        print("Usage: python fix_scientific_notation_v2.py <input_file>")
         sys.exit(1)
     
     input_file = sys.argv[1]

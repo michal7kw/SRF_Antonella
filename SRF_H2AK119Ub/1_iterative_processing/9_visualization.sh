@@ -16,8 +16,8 @@
 # between YAF and GFP samples.
 #
 # Input files:
-# - analysis/7_differential_binding/diffbind_broad/significant_peaks.rds: GRanges object with differential peaks
-# - analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_full.csv: Annotated gene list
+# - analysis/7_differential_binding/diffbind/significant_peaks.rds: GRanges object with differential peaks
+# - analysis/8_annotation_and_enrichment/gene_lists/YAF_enriched_genes_full.csv: Annotated gene list
 # - analysis/7_differential_binding/diffbind_narrow/significant_peaks.rds (optional): Narrow peaks data
 # - analysis/8_annotation_and_enrichment/gene_lists_narrow/YAF_enriched_genes_narrow_full.csv (optional): Narrow peaks genes
 #
@@ -60,17 +60,15 @@ mkdir -p logs
 
 # Check for required input files
 log_message "Checking input files..."
-for type in broad; do
-    files=(
-        "analysis/7_differential_binding/significant_peaks.rds"
-        "analysis/8_annotation_and_enrichment/gene_lists_${type}/YAF_enriched_genes_${type}_full.csv"
-    )
-    for file in "${files[@]}"; do
-        if [[ ! -f "$file" ]]; then
-            log_message "ERROR: Required file not found: $file"
-            exit 1
-        fi
-    done
+files=(
+    "analysis/7_differential_binding/significant_peaks.rds"
+    "analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_full.csv"
+)
+for file in "${files[@]}"; do
+    if [[ ! -f "$file" ]]; then
+        log_message "ERROR: Required file not found: $file"
+        exit 1
+    fi
 done
 
 # Run R script for visualization

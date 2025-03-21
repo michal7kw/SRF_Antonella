@@ -49,6 +49,9 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
     peak_analysis_dir <- file.path(base_dir, "peak_analysis")
     summary_statistics_dir <- file.path(base_dir, "summary_statistics")
     
+    # Add missing gene_analysis_dir definition
+    gene_analysis_dir <- file.path(base_dir, "gene_analysis")
+    
     dirs <- c(peak_analysis_dir, gene_analysis_dir, summary_statistics_dir)
     create_dirs(dirs)
     
@@ -87,8 +90,8 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
     top_genes <- rbind(top_yaf_genes, top_gfp_genes)
     
     ma_plot <- ggplot(promoter_genes, aes(x = log2(mean_concentration), y = fold_change)) +
-        geom_point(aes(color = p_value < 0.05, size = abs(fold_change)), alpha = 0.6) +
-        scale_color_manual(values = c("grey50", "red3"), name = "p-value < 0.05") +
+        geom_point(aes(color = p_value < 0.01, size = abs(fold_change)), alpha = 0.6) +
+        scale_color_manual(values = c("grey50", "red3"), name = "p-value < 0.01") +
         scale_size_continuous(range = c(0.5, 2), name = "abs(Fold)") +
         geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
         # Add labels for top genes
@@ -115,13 +118,13 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
     log_message("Creating enhanced volcano plot for promoter peaks...")
     
     # Calculate significant gene counts for annotation
-    total_sig_count <- sum(promoter_genes$FDR < 0.05)
-    sig_yaf_count <- sum(promoter_genes$fold_change > 0 & promoter_genes$FDR < 0.05)
-    sig_gfp_count <- sum(promoter_genes$fold_change < 0 & promoter_genes$FDR < 0.05)
+    total_sig_count <- sum(promoter_genes$FDR < 0.01)
+    sig_yaf_count <- sum(promoter_genes$fold_change > 0 & promoter_genes$FDR < 0.01)
+    sig_gfp_count <- sum(promoter_genes$fold_change < 0 & promoter_genes$FDR < 0.01)
     
     # Create significance factor for better visualization
     promoter_genes$significant <- factor(
-        ifelse(promoter_genes$FDR < 0.05, "TRUE", "FALSE"),
+        ifelse(promoter_genes$FDR < 0.01, "TRUE", "FALSE"),
         levels = c("FALSE", "TRUE")
     )
     
@@ -136,7 +139,7 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
         geom_point(aes(color = significant, size = abs(fold_change)), alpha = 0.6) +
         scale_color_manual(
             values = c("grey50", "red3"),
-            name = "FDR < 0.05"
+            name = "FDR < 0.01"
         ) +
         scale_size_continuous(
             range = c(0.5, 2.5),
@@ -145,14 +148,14 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
         ) +
         # Add reference lines
         geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", alpha = 0.5) +
-        geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "grey50", alpha = 0.5) +
-        # Add count annotations in a cleaner format
+        geom_hline(yintercept = -log10(0.01), linetype = "dashed", color = "grey50", alpha = 0.5) +
+        # Add count annotations at the bottom of the plot to avoid overlap with data points
         annotate("text", 
-                x = max(promoter_genes$fold_change) * 0.8,
-                y = max(-log10(promoter_genes$FDR)) * 0.95,
-                label = sprintf("Total significant: %d\nYAF-enriched: %d\nGFP-enriched: %d", 
+                x = 0,  # Center of the x-axis
+                y = min(-log10(promoter_genes$FDR)) + 0.5,  # Just above the bottom of the plot
+                label = sprintf("Total significant: %d | YAF-enriched: %d | GFP-enriched: %d", 
                               total_sig_count, sig_yaf_count, sig_gfp_count),
-                hjust = 0, size = 3, color = "black") +
+                hjust = 0.5, vjust = 0, size = 3.5, color = "black", fontface = "bold") +  # Centered horizontally
         # Add gene labels with improved spacing
         geom_text_repel(
             data = top_sig_genes,
@@ -178,12 +181,14 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
             legend.title = element_text(size = 9),
             legend.text = element_text(size = 8),
             panel.grid.minor = element_blank(),
-            panel.grid.major = element_line(color = "grey90")
+            panel.grid.major = element_line(color = "grey90"),
+            # Add more margin space to prevent text from being cut off
+            plot.margin = margin(t = 20, r = 20, b = 20, l = 20, unit = "pt")
         )
 
     save_plot(volcano_plot,
               file.path(peak_analysis_dir, "volcano_plot_promoters.pdf"),
-              width = 8, height = 7)
+              width = 9, height = 8)  # Increased width and height to provide more space
     
     # 4. TSS Distance Distribution
     log_message("Creating TSS distance distribution plot...")
@@ -212,9 +217,9 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
     # 6. FDR vs Fold Change scatter plot
     log_message("Creating FDR vs Fold Change scatter plot...")
     fdr_fold_plot <- ggplot(promoter_genes, aes(x = fold_change, y = FDR)) +
-        geom_point(aes(color = FDR < 0.05), alpha = 0.6) +
-        scale_color_manual(values = c("grey50", "red3"), name = "FDR < 0.05") +
-        geom_hline(yintercept = 0.05, linetype = "dashed", color = "red", alpha = 0.5) +
+        geom_point(aes(color = FDR < 0.01), alpha = 0.6) +
+        scale_color_manual(values = c("grey50", "red3"), name = "FDR < 0.01") +
+        geom_hline(yintercept = 0.01, linetype = "dashed", color = "red", alpha = 0.5) +
         labs(x = "log2 Fold Change (YAF/GFP)",
              y = "FDR",
              title = "FDR vs Fold Change for Promoter Peaks") +
@@ -230,9 +235,9 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
             "Total Promoter Peaks",
             "YAF-enriched Peaks",
             "GFP-enriched Peaks",
-            "Significant Peaks (FDR < 0.05)",
-            "Significant YAF-enriched (FDR < 0.05)",
-            "Significant GFP-enriched (FDR < 0.05)",
+            "Significant Peaks (FDR < 0.01)",
+            "Significant YAF-enriched (FDR < 0.01)",
+            "Significant GFP-enriched (FDR < 0.01)",
             "Unique Genes",
             "Median Distance to TSS",
             "Mean Fold Change",
@@ -243,9 +248,9 @@ create_visualizations <- function(output_dir, peak_type, promoter_genes) {
             nrow(promoter_genes),
             sum(promoter_genes$fold_change > 0),
             sum(promoter_genes$fold_change < 0),
-            sum(promoter_genes$FDR < 0.05),
-            sum(promoter_genes$fold_change > 0 & promoter_genes$FDR < 0.05),
-            sum(promoter_genes$fold_change < 0 & promoter_genes$FDR < 0.05),
+            sum(promoter_genes$FDR < 0.01),
+            sum(promoter_genes$fold_change > 0 & promoter_genes$FDR < 0.01),
+            sum(promoter_genes$fold_change < 0 & promoter_genes$FDR < 0.01),
             length(unique(promoter_genes$SYMBOL)),
             median(abs(promoter_genes$distanceToTSS)),
             mean(promoter_genes$fold_change),
@@ -281,7 +286,7 @@ output_dir <- args[1]
 log_message("Starting visualization process for promoter peaks...")
 
 # Load promoter genes file
-broad_genes_file <- "analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_promoters.csv"
+broad_genes_file <- "analysis/8_annotation_and_enrichment/gene_lists/YAF_enriched_genes_broad_promoters.csv"
 
 log_message(sprintf("Loading promoter genes from %s", broad_genes_file))
 promoter_genes <- read.csv(broad_genes_file)
