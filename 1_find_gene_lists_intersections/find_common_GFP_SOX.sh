@@ -15,9 +15,9 @@ source /opt/common/tools/ric.cosr/miniconda3/bin/activate
 conda activate snakemake 
 
 # Set working directory
-cd /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5
+cd /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections
 
 # Create logs directory if it doesn't exist
 mkdir -p logs
 
-Rscript find_common_GFP_SOX.R
+Rscript scripts/find_common_GFP_SOX.R

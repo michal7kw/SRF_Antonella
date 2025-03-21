@@ -11,14 +11,13 @@ import seaborn as sns
 import os
 
 # File paths
-gene_list_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/YAF_SES_strict.csv'
-output_dir = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/dysregulation_analysis_SES_strict'
+# gene_list_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output/YAF_SES_strict.csv'
+# output_dir = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/2_check_dysregulation_of_the_intersected_genes/YAF_dysregulation_analysis_SES_strict'
 
-# gene_list_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/YAF_SES.csv'
-# output_dir = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/dysregulation_analysis_SES'
+gene_list_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output/YAF_SES.csv'
+output_dir = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/2_check_dysregulation_of_the_intersected_genes/YAF_dysregulation_analysis_SES'
 
 diff_expr_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv'
-
 
 
 # Create output directory if it doesn't exist

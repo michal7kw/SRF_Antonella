@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=check_gene_dysregulation_SES
+#SBATCH --job-name=GFP_check_gene_dysregulation_SOX
 #SBATCH --account=kubacki.michal
 #SBATCH --mem=64GB
 #SBATCH --time=12:00:00
@@ -7,17 +7,17 @@
 #SBATCH --ntasks=16
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/check_gene_dysregulation_SES.err"
-#SBATCH --output="logs/check_gene_dysregulation_SES.out"
+#SBATCH --error="logs/GFP_check_gene_dysregulation_SOX.err"
+#SBATCH --output="logs/GFP_check_gene_dysregulation_SOX.out"
 
 # Load necessary modules (adjust as needed for your cluster)
 source /opt/common/tools/ric.cosr/miniconda3/bin/activate
 conda activate snakemake 
 
 # Set working directory
-cd /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5
+cd /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/2_check_dysregulation_of_the_intersected_genes
 
 # Create logs directory if it doesn't exist
 mkdir -p logs
 
-python check_gene_dysregulation_SES.py
+python scripts/GFP_check_gene_dysregulation_SOX.py

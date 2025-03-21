@@ -86,13 +86,14 @@ find_genes_with_peaks_in_promoter <- function(peaks, promoters) {
 
 # Main function
 main <- function() {
+  output_dir <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output"
 
   # File paths
   GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
-  output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES.csv"
+  output_file <- paste0(output_dir, "/GFP_SES.csv")
 
   # GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/GFP.broadPeak"
-  # output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES_strict.csv"
+  # output_file <- paste0(output_dir, "/GFP_SES_strict.csv")
   
   SES_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak"
   gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"

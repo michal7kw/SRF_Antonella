@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# Script to identify genes that have at least one peak of both GFP and SOX in their promoter regions
+# Script to identify genes that have at least one peak of both YAF and SES in their promoter regions
 # This is a more efficient R implementation using GenomicRanges
 
 # Load required libraries
@@ -86,20 +86,20 @@ find_genes_with_peaks_in_promoter <- function(peaks, promoters) {
 
 # Main function
 main <- function() {
+  output_dir <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output"
   # File paths
+  # yaf_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF.broadPeak"
+  # output_file <- paste0(output_dir, "/YAF_SES.csv")
 
-  GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
-  output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SOX_strict.csv"
-
-  # GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
-  # output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SOX.csv"
+  yaf_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/YAF.broadPeak"
+  output_file <- paste0(output_dir, "/YAF_SES_strict.csv")
   
-  SOX_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SOX2.broadPeak"
+  SES_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak"
   gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
   
   # Parse peak files
-  GFP_peaks <- read_broadpeak(GFP_peak_file)
-  SOX_peaks <- read_broadpeak(SOX_peak_file)
+  yaf_peaks <- read_broadpeak(yaf_peak_file)
+  SES_peaks <- read_broadpeak(SES_peak_file)
   
   # Extract gene information from GTF
   genes <- extract_genes_from_gtf(gtf_file)
@@ -108,17 +108,17 @@ main <- function() {
   promoters <- get_promoters(genes)
   
   # Find genes with peaks in promoter regions
-  cat("Finding genes with GFP peaks in promoter regions\n")
-  GFP_genes <- find_genes_with_peaks_in_promoter(GFP_peaks, promoters)
-  cat("Found", length(GFP_genes), "genes with GFP peaks in promoter regions\n")
+  cat("Finding genes with YAF peaks in promoter regions\n")
+  yaf_genes <- find_genes_with_peaks_in_promoter(yaf_peaks, promoters)
+  cat("Found", length(yaf_genes), "genes with YAF peaks in promoter regions\n")
   
-  cat("Finding genes with SOX peaks in promoter regions\n")
-  SOX_genes <- find_genes_with_peaks_in_promoter(SOX_peaks, promoters)
-  cat("Found", length(SOX_genes), "genes with SOX peaks in promoter regions\n")
+  cat("Finding genes with SES peaks in promoter regions\n")
+  SES_genes <- find_genes_with_peaks_in_promoter(SES_peaks, promoters)
+  cat("Found", length(SES_genes), "genes with SES peaks in promoter regions\n")
   
-  # Find genes with both GFP and SOX peaks in promoter regions
-  common_genes <- intersect(GFP_genes, SOX_genes)
-  cat("Found", length(common_genes), "genes with both GFP and SOX peaks in promoter regions\n")
+  # Find genes with both YAF and SES peaks in promoter regions
+  common_genes <- intersect(yaf_genes, SES_genes)
+  cat("Found", length(common_genes), "genes with both YAF and SES peaks in promoter regions\n")
   
   # Get gene information for common genes
   common_gene_info <- data.frame(
@@ -158,19 +158,19 @@ main_txdb <- function() {
   cat("Using TxDb approach (alternative implementation)\n")
   
   # File paths
+  # yaf_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/YAF.broadPeak"
+  # output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/YAF_SES.csv"
 
-  GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
-  output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SOX_strict.csv"
-
-  # GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
-  # output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SOX.csv"
+  yaf_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF.broadPeak"
+  output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/YAF_SES_strict.csv"
   
-  SOX_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SOX2.broadPeak"
+  SES_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak"
   gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
+
   
   # Parse peak files
-  GFP_peaks <- read_broadpeak(GFP_peak_file)
-  SOX_peaks <- read_broadpeak(SOX_peak_file)
+  yaf_peaks <- read_broadpeak(yaf_peak_file)
+  SES_peaks <- read_broadpeak(SES_peak_file)
   
   # Create TxDb object from GTF file
   cat("Creating TxDb from GTF file...\n")
@@ -190,19 +190,19 @@ main_txdb <- function() {
   promoters <- promoters(genes, upstream=2000, downstream=0)
   
   # Find genes with peaks in promoter regions
-  cat("Finding genes with GFP peaks in promoter regions\n")
-  GFP_overlaps <- findOverlaps(GFP_peaks, promoters)
-  GFP_genes <- unique(names(genes)[subjectHits(GFP_overlaps)])
-  cat("Found", length(GFP_genes), "genes with GFP peaks in promoter regions\n")
+  cat("Finding genes with YAF peaks in promoter regions\n")
+  yaf_overlaps <- findOverlaps(yaf_peaks, promoters)
+  yaf_genes <- unique(names(genes)[subjectHits(yaf_overlaps)])
+  cat("Found", length(yaf_genes), "genes with YAF peaks in promoter regions\n")
   
-  cat("Finding genes with SOX peaks in promoter regions\n")
-  SOX_overlaps <- findOverlaps(SOX_peaks, promoters)
-  SOX_genes <- unique(names(genes)[subjectHits(SOX_overlaps)])
-  cat("Found", length(SOX_genes), "genes with SOX peaks in promoter regions\n")
+  cat("Finding genes with SES peaks in promoter regions\n")
+  SES_overlaps <- findOverlaps(SES_peaks, promoters)
+  SES_genes <- unique(names(genes)[subjectHits(SES_overlaps)])
+  cat("Found", length(SES_genes), "genes with SES peaks in promoter regions\n")
   
-  # Find genes with both GFP and SOX peaks in promoter regions
-  common_genes <- intersect(GFP_genes, SOX_genes)
-  cat("Found", length(common_genes), "genes with both GFP and SOX peaks in promoter regions\n")
+  # Find genes with both YAF and SES peaks in promoter regions
+  common_genes <- intersect(yaf_genes, SES_genes)
+  cat("Found", length(common_genes), "genes with both YAF and SES peaks in promoter regions\n")
   
   # Get gene information for common genes
   common_gene_info <- data.frame(

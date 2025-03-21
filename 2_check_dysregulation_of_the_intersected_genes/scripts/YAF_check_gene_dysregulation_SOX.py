@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script to check the type of dysregulation of genes listed in YAF_SES.csv
+Script to check the type of dysregulation of genes listed in YAF_SOX.csv
 by comparing with differential expression results.
 """
 
@@ -11,15 +11,13 @@ import seaborn as sns
 import os
 
 # File paths
-gene_list_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/YAF_SES_strict.csv'
-output_dir = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/dysregulation_analysis_SES_strict'
+# gene_list_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output/YAF_SOX.csv'
+# output_dir = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/2_check_dysregulation_of_the_intersected_genes/YAF_dysregulation_analysis_SOX'
 
-# gene_list_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/YAF_SES.csv'
-# output_dir = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/dysregulation_analysis_SES'
+gene_list_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output/YAF_SOX_strict.csv'
+output_dir = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/2_check_dysregulation_of_the_intersected_genes/YAF_dysregulation_analysis_SOX_strict'
 
 diff_expr_file = '/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv'
-
-
 
 # Create output directory if it doesn't exist
 os.makedirs(output_dir, exist_ok=True)
@@ -74,7 +72,7 @@ print(f"\nDetailed results saved to {output_file}")
 # Create a bar plot of dysregulation categories
 plt.figure(figsize=(10, 6))
 sns.barplot(x=dysreg_counts.index, y=dysreg_counts.values)
-plt.title('Dysregulation Categories for YAF_SES Genes')
+plt.title('Dysregulation Categories for YAF_SOX Genes')
 plt.xlabel('Dysregulation Category')
 plt.ylabel('Number of Genes')
 plt.xticks(rotation=45, ha='right')
@@ -110,7 +108,7 @@ plt.axhline(-np.log10(0.05), color='gray', linestyle='--', alpha=0.3)
 plt.axvline(1, color='gray', linestyle='--', alpha=0.3)
 plt.axvline(-1, color='gray', linestyle='--', alpha=0.3)
 
-plt.title('Volcano Plot of YAF_SES Genes')
+plt.title('Volcano Plot of YAF_SOX Genes')
 plt.xlabel('log2 Fold Change')
 plt.ylabel('-log10(adjusted p-value)')
 plt.tight_layout()
