@@ -1,0 +1,43 @@
+YAF Binding Analysis Summary (Filtered for YAF/SOX Intersection Genes)
+======================================================================
+
+Analysis restricted to genes present in: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output/YAF_SOX.csv
+Total genes in list: 7354
+Genes from list found in DESeq results: 5869
+
+Number of upregulated genes analyzed: 227
+Mean YAF/GFP enrichment (log2FC) for upregulated genes: -0.071 ± 0.599 (mean ± SD)
+
+Number of downregulated genes analyzed: 459
+Mean YAF/GFP enrichment (log2FC) for downregulated genes: 0.546 ± 0.632 (mean ± SD)
+
+Wilcoxon rank sum test for difference in YAF/GFP enrichment:
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  log2FC_binding by regulation
+W = 79306, p-value < 2.2e-16
+alternative hypothesis: true location shift is not equal to 0
+
+
+Conclusion:
+(Note: Conclusions apply only to the subset of genes shared between YAF and SOX targets)
+Within the YAF/SOX gene set, YAF binding is significantly higher at promoters of downregulated genes compared to upregulated genes.
+This supports the hypothesis that for these shared target genes, YAF binding to promoters may cause gene downregulation, suggesting a repressive function.
+
+Correlation between YAF binding and gene expression:
+
+	Pearson's product-moment correlation
+
+data:  all_signal$log2FC_binding and all_signal$log2FC_expr
+t = -11.91, df = 684, p-value < 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.4745703 -0.3504537
+sample estimates:
+       cor 
+-0.4144372 
+
+
+There is a significant negative correlation between YAF binding and gene expression,
+suggesting that stronger YAF binding is associated with lower gene expression.

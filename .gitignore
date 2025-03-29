@@ -4,6 +4,8 @@ logs/
 Archive/
 .snakemake/
 COMMON_DATA/
+old_analysis/
+old/
 
 # Project-specific directories
 SRF_H2AK119Ub/1_iterative_processing/analysis/OLD/

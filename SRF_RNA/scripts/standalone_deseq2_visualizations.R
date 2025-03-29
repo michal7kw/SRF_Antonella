@@ -23,13 +23,43 @@ suppressPackageStartupMessages({
 is_interactive <- interactive()
 
 # Set working directory to script's location
-script_dir <- dirname(rstudioapi::getSourceEditorContext()$path)
-setwd(script_dir)
+# Get the script's directory using a method compatible with Rscript
+if (!is_interactive) {
+  # Get the command line arguments
+  args <- commandArgs(trailingOnly = FALSE)
+  # Find the argument that specifies the script file path
+  file_arg <- grep("--file=", args, value = TRUE)
+  if (length(file_arg) == 1) {
+    # Extract the path from the --file= argument
+    script_path <- sub("--file=", "", file_arg)
+    # Get the directory containing the script
+    script_dir <- dirname(script_path)
+    # Set the working directory to the script's directory
+    setwd(script_dir)
+    cat("Set working directory to:", script_dir, "\n")
+  } else {
+    warning("Could not determine script directory. Using current working directory.")
+    script_dir <- getwd()
+  }
+} else {
+  # Fallback for interactive mode (e.g., RStudio)
+  script_dir <- tryCatch(
+    dirname(rstudioapi::getSourceEditorContext()$path),
+    error = function(e) {
+      warning("RStudio API not available. Using current working directory.")
+      getwd()
+    }
+  )
+  setwd(script_dir)
+  cat("Running interactively. Set working directory to:", script_dir, "\n")
+}
 
 # Parse as I will be also running this code some time in the interactive mode 
 option_list <- list(
   make_option(c("-d", "--dds_dir"), type="character", default="results/deseq2",
               help="Directory containing DESeq2 results [default: %default]"),
+  make_option(c("-c", "--counts"), type="character", default="results/counts/counts.csv",
+              help="Path to the original full count matrix CSV file [default: %default]"),
   make_option(c("-m", "--metadata"), type="character", default="metadata.csv",
               help="Metadata file [default: %default]"),
   make_option(c("-o", "--output_dir"), type="character", default="results/deseq2",
@@ -85,7 +115,8 @@ output_path <- "E:/SRF_CODE/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/deseq2"
 
 # Handle command line arguments differently based on interactive mode
 if (is_interactive) {
-  # In interactive mode, set up default values that can be manually modified
+  # NOTE: The 'results_path' and 'output_path' below are example hardcoded paths.
+  # Adjust 'dds_dir', 'metadata', 'output_dir', and 'counts' as needed for your interactive session.
   opt <- list(
     dds_dir = results_path,
     metadata = "../metadata.csv",
@@ -96,7 +127,7 @@ if (is_interactive) {
     heatmap_height = 8,
     top_degs_width = 12,
     top_degs_height = 14,
-    top_n_degs = 50,
+    top_n_degs = 20,
     pca_title = "PCA of RNA-seq Samples",
     heatmap_title = "Sample Correlation Heatmap",
     top_degs_title = "Top Differentially Expressed Genes",
@@ -114,6 +145,9 @@ if (is_interactive) {
     verbose = TRUE
   )
   
+  # Add default for counts file in interactive mode
+  opt$counts <- "../results/counts/counts.csv" # Adjust path as needed for interactive use
+
   # Print message about interactive mode
   cat("Running in interactive mode. You can modify the 'opt' list before proceeding.\n")
   cat("Example: opt$dds_dir <- 'path/to/deseq2/results'\n")
@@ -142,9 +176,12 @@ validate_parameters <- function() {
     warning(paste("DESeq2 directory does not exist:", opt$dds_dir))
   }
   
-  # Check if metadata file exists
+  # Check if files exist
   if (!file.exists(opt$metadata)) {
     warning(paste("Metadata file does not exist:", opt$metadata))
+  }
+  if (!file.exists(opt$counts)) {
+    warning(paste("Counts file does not exist:", opt$counts))
   }
   
   # Check numeric parameters are positive
@@ -179,6 +216,284 @@ if (is_interactive) {
   validate_parameters()
 }
 
+# --- Function Definitions Moved Here ---
+
+# Function to convert gene IDs to gene symbols
+get_gene_symbols <- function(gene_ids, species = opt$species) {
+  # Check if we have any gene IDs to convert
+  if (length(gene_ids) == 0) {
+    return(character(0))
+  }
+  
+  # Print a sample of gene IDs for debugging
+  log_message(paste("Sample gene IDs:", paste(head(gene_ids, 3), collapse=", ")))
+  
+  # Check if these are Ensembl IDs with version numbers (e.g., ENSG00000123456.1)
+  is_first_id_valid <- !is.na(gene_ids[1]) && gene_ids[1] != ""
+  has_version <- FALSE
+  if (is_first_id_valid) {
+      has_version <- grepl("^ENS[A-Z]*[0-9]+\\.[0-9]+$", gene_ids[1])
+  }
+
+  if (has_version) {
+    log_message("Detected Ensembl IDs with version numbers. Removing version numbers for mapping.")
+    original_ids <- gene_ids
+    gene_ids_no_version <- sub("\\.[0-9]+$", "", gene_ids)
+    id_mapping <- setNames(original_ids, gene_ids_no_version)
+    gene_ids_for_mapping <- gene_ids_no_version
+  } else {
+    gene_ids_for_mapping <- gene_ids
+  }
+  
+  # Select the appropriate annotation database based on species
+  if (tolower(species) == "human") {
+    annotation_db <- org.Hs.eg.db
+  } else if (tolower(species) == "mouse") {
+    annotation_db <- org.Mm.eg.db
+  } else {
+    warning("Unsupported species. Choose 'human' or 'mouse'.")
+    return(gene_ids)  # Return original IDs
+  }
+  
+  # Determine primary keytype based on ID format
+  primary_keytype <- "SYMBOL" # Default guess
+  if (is_first_id_valid) {
+      if (grepl("^ENS[A-Z]*[0-9]+", gene_ids_for_mapping[1])) {
+          primary_keytype <- "ENSEMBL"
+      } else if (grepl("^[NX]M_|^[NX]R_", gene_ids_for_mapping[1])) {
+          primary_keytype <- "REFSEQ"
+      } else if (grepl("^[0-9]+$", gene_ids_for_mapping[1])) {
+           primary_keytype <- "ENTREZID"
+      }
+  }
+  log_message(paste("Attempting mapping with primary keytype:", primary_keytype))
+
+  # Try mapping using the determined primary keytype
+  symbols <- tryCatch({
+    mapIds(annotation_db, 
+           keys = gene_ids_for_mapping, 
+           column = "SYMBOL",
+           keytype = primary_keytype, 
+           multiVals = "first")
+  }, error = function(e) {
+    log_message(paste("Error with primary keytype", primary_keytype, ":", e$message))
+    NULL
+  })
+
+  # Check success rate
+  success_rate <- if (!is.null(symbols)) sum(!is.na(symbols)) / length(gene_ids_for_mapping) else 0
+  log_message(paste("Mapping success rate with", primary_keytype, ":", round(success_rate * 100, 1), "%"))
+
+  # If primary keytype failed or had low success, try alternatives
+  alternative_keytypes <- c("ENSEMBL", "SYMBOL", "REFSEQ", "ENTREZID", "GENENAME")
+  alternative_keytypes <- setdiff(alternative_keytypes, primary_keytype) # Remove the one we already tried
+
+  if (success_rate < 0.5) {
+      log_message("Primary keytype mapping insufficient. Trying alternatives.")
+      for (key_type in alternative_keytypes) {
+          log_message(paste("Trying alternative keytype:", key_type))
+          symbols_alt <- tryCatch({
+              mapIds(annotation_db, 
+                     keys = gene_ids_for_mapping, 
+                     column = "SYMBOL",
+                     keytype = key_type, 
+                     multiVals = "first")
+          }, error = function(e) {
+              log_message(paste("Error with alternative keytype", key_type, ":", e$message))
+              NULL
+          })
+
+          success_rate_alt <- if (!is.null(symbols_alt)) sum(!is.na(symbols_alt)) / length(gene_ids_for_mapping) else 0
+          log_message(paste("Mapping success rate with", key_type, ":", round(success_rate_alt * 100, 1), "%"))
+
+          if (success_rate_alt > success_rate) {
+              log_message(paste("Using results from alternative keytype:", key_type))
+              symbols <- symbols_alt
+              success_rate <- success_rate_alt
+              if (success_rate > 0.8) break # Stop if we get good mapping
+          }
+          if (success_rate > 0.8) break # Stop if primary was good enough after all
+      }
+  }
+
+  # Handle final result
+  if (is.null(symbols) || success_rate == 0) {
+      log_message("Could not map gene IDs to symbols. Using original IDs.")
+      # Need to handle the versioned IDs correctly if they were stripped
+      if (has_version) {
+          return(original_ids)
+      } else {
+          return(gene_ids)
+      }
+  }
+
+  # Map back to original IDs if versions were stripped, and fill NAs
+  if (has_version) {
+      final_symbols <- rep(NA_character_, length(original_ids))
+      names(final_symbols) <- original_ids
+      mapped_indices <- match(names(symbols), gene_ids_no_version)
+      original_names_for_mapped <- original_ids[mapped_indices]
+      final_symbols[original_names_for_mapped] <- symbols
+      final_symbols[is.na(final_symbols)] <- names(final_symbols)[is.na(final_symbols)] # Fill NAs with original ID
+      # Ensure order matches input
+      final_symbols <- final_symbols[original_ids]
+  } else {
+      # Directly use the results, filling NAs
+      final_symbols <- symbols
+      na_indices <- is.na(final_symbols)
+      final_symbols[na_indices] <- names(final_symbols)[na_indices]
+      # Ensure order matches input
+      final_symbols <- final_symbols[gene_ids]
+  }
+
+  return(final_symbols)
+}
+
+
+# Function to get ENTREZ IDs for pathway analysis
+get_entrez_ids <- function(gene_ids, species = opt$species) {
+    # Handle empty input
+    if (length(gene_ids) == 0 || all(is.na(gene_ids))) {
+        return(character(0))
+    }
+
+    # Select the appropriate annotation database based on species
+    if (tolower(species) == "human") {
+        annotation_db <- org.Hs.eg.db
+    } else if (tolower(species) == "mouse") {
+        annotation_db <- org.Mm.eg.db
+    } else {
+        warning("Unsupported species for ENTREZ ID conversion. Choose 'human' or 'mouse'.")
+        return(NULL)
+    }
+
+    # Determine the most likely keytype
+    first_valid_id <- na.omit(gene_ids)[1]
+    key_type <- "SYMBOL" # Default guess
+     if (!is.na(first_valid_id)) {
+        if (grepl("^ENS[A-Z]*[0-9]+", first_valid_id)) {
+            # Check for version numbers and strip if present
+            if (grepl("\\.[0-9]+$", first_valid_id)) {
+                 log_message("Stripping version numbers from Ensembl IDs for ENTREZ mapping.")
+                 gene_ids <- sub("\\.[0-9]+$", "", gene_ids)
+            }
+            key_type <- "ENSEMBL"
+        } else if (grepl("^[NX]M_|^[NX]R_", first_valid_id)) {
+            key_type <- "REFSEQ"
+        } else if (grepl("^[0-9]+$", first_valid_id)) {
+             # Already Entrez IDs? Return them directly, but ensure character type
+             log_message("Input IDs look like ENTREZ IDs. Returning as is.")
+             return(as.character(gene_ids))
+        }
+    }
+    log_message(paste("Attempting ENTREZ ID mapping using keytype:", key_type))
+
+    # Try to convert IDs to ENTREZ IDs
+    entrez_ids <- tryCatch({
+        mapIds(annotation_db, keys = gene_ids, column = "ENTREZID",
+               keytype = key_type, multiVals = "first")
+    }, error = function(e) {
+        warning("Error converting gene IDs to ENTREZ IDs using keytype ", key_type, ": ", e$message)
+        NULL
+    })
+
+    # If primary keytype failed, try others if appropriate
+    alternative_keytypes <- c("ENSEMBL", "SYMBOL", "REFSEQ")
+    alternative_keytypes <- setdiff(alternative_keytypes, key_type)
+
+    if (is.null(entrez_ids) || sum(!is.na(entrez_ids)) < length(gene_ids) * 0.1) {
+        log_message("Primary keytype mapping failed or insufficient. Trying alternatives for ENTREZ IDs.")
+        for (alt_key_type in alternative_keytypes) {
+            # Handle version stripping for ENSEMBL if it's the alternative
+             gene_ids_alt <- gene_ids
+             if (alt_key_type == "ENSEMBL" && grepl("^ENS[A-Z]*[0-9]+\\.[0-9]+$", first_valid_id)) {
+                  log_message("Stripping version numbers from Ensembl IDs for alternative ENTREZ mapping.")
+                  gene_ids_alt <- sub("\\.[0-9]+$", "", gene_ids)
+             }
+
+             log_message(paste("Trying alternative keytype for ENTREZ:", alt_key_type))
+             entrez_ids_alt <- tryCatch({
+                 mapIds(annotation_db, keys = gene_ids_alt, column = "ENTREZID",
+                        keytype = alt_key_type, multiVals = "first")
+             }, error = function(e) {
+                 warning("Error converting gene IDs to ENTREZ IDs using alternative keytype ", alt_key_type, ": ", e$message)
+                 NULL
+             })
+
+             # Use alternative if it's better
+             if (!is.null(entrez_ids_alt) && sum(!is.na(entrez_ids_alt)) > sum(!is.na(entrez_ids))) {
+                 log_message(paste("Using results from alternative keytype:", alt_key_type))
+                 entrez_ids <- entrez_ids_alt
+             }
+        }
+    }
+
+    # Filter out NA values before returning
+    final_entrez_ids <- entrez_ids[!is.na(entrez_ids)]
+    num_mapped <- length(final_entrez_ids)
+    num_input <- length(na.omit(gene_ids))
+    log_message(paste("Successfully mapped", num_mapped, "out of", num_input, "input IDs to ENTREZ IDs."))
+
+    if (num_mapped == 0) return(NULL) # Return NULL if no IDs mapped
+
+    return(final_entrez_ids)
+}
+
+# Function to run pathway analysis
+run_pathway_analysis <- function(gene_list, species = opt$species) {
+  # Ensure gene_list contains ENTREZ IDs as character strings
+  gene_list <- as.character(na.omit(gene_list))
+
+  if (is.null(gene_list) || length(gene_list) < 10) {
+     log_message(paste("Skipping pathway analysis: Need at least 10 valid gene IDs, found", length(gene_list)))
+    return(NULL)
+  }
+
+  # Select OrgDb based on species
+  OrgDb <- NULL
+  if (tolower(species) == "human") {
+    OrgDb <- org.Hs.eg.db
+  } else if (tolower(species) == "mouse") {
+    OrgDb <- org.Mm.eg.db
+  } else {
+    warning("Unsupported species for pathway analysis. Choose 'human' or 'mouse'.")
+    return(NULL)
+  }
+  
+  log_message(paste("Running GO enrichment for", length(gene_list), "genes using", species, "database."))
+  
+  # Try to run GO enrichment
+  ego <- tryCatch({
+    enrichGO(gene          = gene_list,
+             OrgDb         = OrgDb,
+             keyType       = "ENTREZID", # Explicitly state keyType
+             ont           = "BP",       # Biological Process
+             pAdjustMethod = "BH",       # Benjamini-Hochberg correction
+             pvalueCutoff  = 0.05,
+             qvalueCutoff  = 0.2)        # q-value cutoff
+  }, error = function(e) {
+    warning("Error running GO enrichment: ", e$message)
+    NULL
+  })
+  
+  if (is.null(ego)) {
+      log_message("GO enrichment resulted in NULL.")
+      return(NULL)
+  }
+
+  ego_results <- as.data.frame(ego)
+
+  if (nrow(ego_results) == 0) {
+    log_message("No significant GO terms found.")
+    return(NULL)
+  }
+
+  log_message(paste("Found", nrow(ego_results), "significant GO terms."))
+  return(ego_results)
+}
+
+# --- End of Function Definitions ---
+
 log_message("Starting visualization generation")
 
 # Create output directory if it doesn't exist
@@ -190,22 +505,88 @@ if (!dir.exists(opt$output_dir)) {
 # Define output file paths
 pca_plot_file <- file.path(opt$output_dir, "pca_plot.pdf")
 heatmap_file <- file.path(opt$output_dir, "sample_correlation_heatmap.pdf")
-top_degs_heatmap_file <- file.path(opt$output_dir, "top_degs_heatmap.pdf")
+top_degs_heatmap_file <- file.path(opt$output_dir, "top_unique_degs_heatmap.pdf")
 volcano_dir <- file.path(opt$output_dir, "volcano_plots")
 summary_dir <- file.path(opt$output_dir, "summary_files")
+comp_heatmap_dir <- file.path(opt$output_dir, "comparison_heatmaps")
 
-# Create summary directory if it doesn't exist
+# Create output directories if they don't exist
 if (!dir.exists(summary_dir)) {
   dir.create(summary_dir, recursive = TRUE)
   log_message(paste("Created summary directory:", summary_dir))
 }
+if (!dir.exists(volcano_dir)) {
+  dir.create(volcano_dir, recursive = TRUE)
+  log_message(paste("Created volcano plots directory:", volcano_dir))
+}
+if (!dir.exists(comp_heatmap_dir)) {
+  dir.create(comp_heatmap_dir, recursive = TRUE)
+  log_message(paste("Created comparison heatmaps directory:", comp_heatmap_dir))
+}
 
-# Read metadata
-log_message(paste("Reading metadata from:", opt$metadata))
-metadata <- read.csv(opt$metadata, check.names = FALSE)
+# Read full metadata
+log_message(paste("Reading full metadata from:", opt$metadata))
+metadata_full <- read.csv(opt$metadata, check.names = FALSE, row.names = "sample")
+
+# Print metadata structure for debugging
+log_message(paste("Metadata structure:", paste(names(metadata_full), collapse=", ")))
+log_message(paste("Conditions found in metadata:", paste(unique(metadata_full$condition), collapse=", ")))
+log_message(paste("Sample count by condition:"))
+condition_counts <- table(metadata_full$condition)
+for (cond in names(condition_counts)) {
+  log_message(paste(" -", cond, ":", condition_counts[cond], "samples"))
+}
+
+# Add direct check for specific samples to avoid matching issues
+log_message("Finding samples for each comparison directly from DESeqDatasets:")
+for (dds_file in list.files(opt$dds_dir, pattern = "_vs_", include.dirs = TRUE, full.names = TRUE)) {
+  comparison_dir <- basename(dds_file)
+  if (dir.exists(dds_file) && file.exists(file.path(dds_file, "dds.rds"))) {
+    dds_obj <- readRDS(file.path(dds_file, "dds.rds"))
+    comparison_samples <- colnames(dds_obj)
+    log_message(paste(" -", comparison_dir, ":", length(comparison_samples), "samples"))
+    log_message(paste("   Samples:", paste(comparison_samples, collapse=", ")))
+  }
+}
+
+# Read full count matrix
+log_message(paste("Reading full count matrix from:", opt$counts))
+count_matrix_full <- read.csv(opt$counts, row.names = 1, check.names = FALSE)
+
+# Ensure samples in count matrix and metadata are aligned
+samples_to_keep <- intersect(rownames(metadata_full), colnames(count_matrix_full))
+if(length(samples_to_keep) == 0) {
+  stop("No common samples found between metadata and count matrix.")
+}
+if(length(samples_to_keep) < ncol(count_matrix_full) || length(samples_to_keep) < nrow(metadata_full)) {
+  log_message("Warning: Subsetting count matrix and metadata to common samples.")
+}
+count_matrix_full <- count_matrix_full[, samples_to_keep]
+metadata_full <- metadata_full[samples_to_keep, , drop = FALSE]
+metadata_full <- metadata_full %>% arrange(match(rownames(.), colnames(count_matrix_full)))
+
+# Verify that sample order matches
+if (!all(rownames(metadata_full) == colnames(count_matrix_full))) {
+  stop("Sample order mismatch after filtering/ordering full metadata and counts.")
+}
+
+# Create a full DESeqDataSet for VST calculation across all samples
+log_message("Creating full DESeqDataSet for VST")
+dds_full <- DESeqDataSetFromMatrix(
+  countData = count_matrix_full,
+  colData = metadata_full,
+  design = ~ condition
+)
+
+# Filter out low-count genes before VST (optional but recommended)
+dds_full <- dds_full[rowSums(counts(dds_full)) >= 10, ]
+
+# Get variance stabilized transformed data for all samples
+log_message("Performing variance stabilizing transformation on all samples")
+vst_full <- vst(dds_full, blind = FALSE)
 
 # Find all DESeq2 RDS files
-log_message("Finding DESeq2 RDS files")
+log_message("Finding DESeq2 RDS files for comparisons")
 comparisons <- list.dirs(opt$dds_dir, full.names = TRUE, recursive = FALSE)
 comparisons <- comparisons[grepl("_vs_", basename(comparisons))]
 dds_files <- file.path(comparisons, "dds.rds")
@@ -220,18 +601,16 @@ for (file in dds_files) {
   log_message(paste("  -", file))
 }
 
-# Load the first DESeq2 object to get normalized counts for all samples
-log_message(paste("Loading DESeq2 object from:", dds_files[1]))
-dds <- readRDS(dds_files[1])
-
-# Get variance stabilized transformed data for all samples
-log_message("Performing variance stabilizing transformation")
-vst <- vst(dds, blind = FALSE)
-
-# Create PCA plot
-log_message("Creating PCA plot")
+# Create PCA plot using full vst data
+log_message("Creating PCA plot using all samples")
 pdf(pca_plot_file, width = opt$pca_width, height = opt$pca_height)
-pca_data <- plotPCA(vst, intgroup = "condition", returnData = TRUE)
+
+# The plotPCA function expects the intgroup to be present in colData(vst_full)
+# Ensure that the 'condition' column is correctly placed in the colData
+colData(vst_full)$condition <- metadata_full$condition
+
+# Now generate the PCA data
+pca_data <- plotPCA(vst_full, intgroup = "condition", returnData = TRUE)
 percentVar <- round(100 * attr(pca_data, "percentVar"))
 
 # Create enhanced PCA plot
@@ -241,7 +620,6 @@ pca_plot <- ggplot(pca_data, aes(x = PC1, y = PC2, color = condition, label = na
   xlab(paste0("PC1: ", percentVar[1], "% variance")) +
   ylab(paste0("PC2: ", percentVar[2], "% variance")) +
   ggtitle(opt$pca_title) +
-  theme_get() +
   theme(plot.title = element_text(hjust = 0.5, size = 16),
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 12),
@@ -249,30 +627,34 @@ pca_plot <- ggplot(pca_data, aes(x = PC1, y = PC2, color = condition, label = na
         legend.text = element_text(size = 12))
 
 # Apply selected theme
-if (opt$pca_theme == "bw") {
-  pca_plot <- pca_plot + theme_bw()
-} else if (opt$pca_theme == "classic") {
-  pca_plot <- pca_plot + theme_classic()
-} else if (opt$pca_theme == "minimal") {
-  pca_plot <- pca_plot + theme_minimal()
-}
+theme_func <- match.fun(paste0("theme_", opt$pca_theme))
+pca_plot <- pca_plot + theme_func()
 
 print(pca_plot)
 dev.off()
 log_message(paste("PCA plot saved to:", pca_plot_file))
 
-# Create sample correlation heatmap
-log_message("Creating sample correlation heatmap")
-sample_dists <- dist(t(assay(vst)))
+# Create sample correlation heatmap using full vst data
+log_message("Creating sample correlation heatmap using all samples")
+sample_dists <- dist(t(assay(vst_full)))
 sample_dist_matrix <- as.matrix(sample_dists)
-rownames(sample_dist_matrix) <- colnames(vst)
-colnames(sample_dist_matrix) <- colnames(vst)
+rownames(sample_dist_matrix) <- colnames(vst_full)
+colnames(sample_dist_matrix) <- colnames(vst_full)
 
-# Get condition colors
-condition_colors <- brewer.pal(min(length(unique(metadata$condition)), 9), opt$color_palette)
-names(condition_colors) <- unique(metadata$condition)
-annotation_col <- data.frame(Condition = metadata$condition)
-rownames(annotation_col) <- metadata$sample
+# Get condition colors based on full metadata
+conditions_all <- unique(metadata_full$condition)
+num_colors_needed <- length(conditions_all)
+num_colors_available <- brewer.pal.info[opt$color_palette, "maxcolors"]
+palette_colors <- brewer.pal(min(num_colors_needed, num_colors_available), opt$color_palette)
+if (num_colors_needed > num_colors_available) {
+  warning(paste("Number of conditions exceeds colors in palette", opt$color_palette, ". Colors will be recycled."))
+  palette_colors <- rep(palette_colors, length.out = num_colors_needed)
+}
+condition_colors <- setNames(palette_colors, conditions_all)
+
+# Create annotation data frame using full metadata
+annotation_col <- data.frame(Condition = metadata_full$condition)
+rownames(annotation_col) <- rownames(metadata_full)
 ann_colors <- list(Condition = condition_colors)
 
 pdf(heatmap_file, width = opt$heatmap_width, height = opt$heatmap_height)
@@ -289,233 +671,142 @@ log_message(paste("Sample correlation heatmap saved to:", heatmap_file))
 # Collect top DEGs from all comparisons
 log_message("Collecting top DEGs from all comparisons")
 all_top_degs <- list()
+comparison_top_degs <- list()
 
 for (dds_file in dds_files) {
+  comparison_name <- basename(dirname(dds_file))
   log_message(paste("Processing DESeq2 object:", dds_file))
   dds_obj <- readRDS(dds_file)
   
   # Get results
   res <- results(dds_obj)
   
-  # Get top N DEGs by adjusted p-value
-  top_degs <- rownames(res[order(res$padj), ])[1:opt$top_n_degs]
-  all_top_degs <- c(all_top_degs, list(top_degs))
+  # Get top N DEGs by adjusted p-value for this comparison
+  res_filtered <- as.data.frame(res) %>% filter(!is.na(padj))
+  top_degs_comp <- rownames(res_filtered[order(res_filtered$padj), ])[1:min(opt$top_n_degs, nrow(res_filtered))]
+
+  all_top_degs <- c(all_top_degs, list(top_degs_comp))
+  comparison_top_degs[[comparison_name]] <- top_degs_comp
 }
 
-# Get unique top DEGs
+# Get unique top DEGs across all comparisons
 unique_top_degs <- unique(unlist(all_top_degs))
-log_message(paste("Number of unique top DEGs:", length(unique_top_degs)))
+log_message(paste("Number of unique top DEGs across all comparisons:", length(unique_top_degs)))
 
-# Create heatmap of top DEGs
-log_message("Creating heatmap of top DEGs")
-# Extract normalized counts for top DEGs
-top_degs_counts <- assay(vst)[unique_top_degs, ]
+# Create heatmap of unique top DEGs across all comparisons
+log_message("Creating heatmap of unique top DEGs using only relevant samples")
 
-# Scale the counts for better visualization
-top_degs_counts_scaled <- t(scale(t(top_degs_counts)))
+for (comparison_name in names(comparison_top_degs)) {
+  top_degs_current_comp <- comparison_top_degs[[comparison_name]]
+  if (length(top_degs_current_comp) > 0) {
+    top_degs_current_comp_present <- intersect(top_degs_current_comp, rownames(assay(vst_full)))
+    log_message(paste("Processing heatmap for:", comparison_name))
+    log_message(paste("Found", length(top_degs_current_comp_present), "top DEGs for", comparison_name, "in VST data."))
 
-pdf(top_degs_heatmap_file, width = opt$top_degs_width, height = opt$top_degs_height)
-pheatmap(top_degs_counts_scaled,
-         annotation_col = annotation_col,
-         annotation_colors = ann_colors,
-         show_rownames = FALSE,
-         clustering_method = "ward.D2",
-         main = opt$top_degs_title,
-         fontsize = 10)
-dev.off()
-log_message(paste("Top DEGs heatmap saved to:", top_degs_heatmap_file))
-
-# Function to convert gene IDs to gene symbols
-get_gene_symbols <- function(gene_ids, species = opt$species) {
-  # Check if we have any gene IDs to convert
-  if (length(gene_ids) == 0) {
-    return(character(0))
-  }
-  
-  # Print a sample of gene IDs for debugging
-  log_message(paste("Sample gene IDs:", paste(head(gene_ids, 3), collapse=", ")))
-  
-  # Check if these are Ensembl IDs with version numbers (e.g., ENSG00000123456.1)
-  has_version <- grepl("^ENS[A-Z]*[0-9]+\\.[0-9]+$", gene_ids[1])
-  
-  if (has_version) {
-    log_message("Detected Ensembl IDs with version numbers. Removing version numbers for mapping.")
-    # Create a mapping to keep track of original IDs
-    original_ids <- gene_ids
-    # Remove version numbers (everything after the dot)
-    gene_ids_no_version <- sub("\\.[0-9]+$", "", gene_ids)
-    # Create a mapping from stripped IDs back to original IDs
-    id_mapping <- setNames(original_ids, gene_ids_no_version)
-    # Use the stripped IDs for mapping
-    gene_ids_for_mapping <- gene_ids_no_version
-  } else {
-    # Use original IDs for mapping
-    gene_ids_for_mapping <- gene_ids
-  }
-  
-  # Select the appropriate annotation database based on species
-  if (tolower(species) == "human") {
-    annotation_db <- org.Hs.eg.db
-  } else if (tolower(species) == "mouse") {
-    annotation_db <- org.Mm.eg.db
-  } else {
-    warning("Unsupported species. Choose 'human' or 'mouse'.")
-    return(gene_ids)  # Return original IDs
-  }
-  
-  # Try to map using ENSEMBL keytype first (most common for RNA-seq data)
-  log_message("Trying ENSEMBL keytype for gene ID mapping")
-  symbols <- tryCatch({
-    mapped_symbols <- mapIds(annotation_db, 
-                            keys = gene_ids_for_mapping, 
-                            column = "SYMBOL",
-                            keytype = "ENSEMBL", 
-                            multiVals = "first")
-    
-    # Check if mapping was successful
-    if (sum(!is.na(mapped_symbols)) > length(gene_ids_for_mapping) * 0.1) {
-      log_message(paste("Successfully mapped", sum(!is.na(mapped_symbols)), "out of", length(gene_ids_for_mapping), "gene IDs"))
-      mapped_symbols
-    } else {
-      log_message("Less than 10% of IDs mapped. Trying other keytypes.")
-      NULL
-    }
-  }, error = function(e) {
-    log_message(paste("Error with ENSEMBL keytype:", e$message))
-    NULL
-  })
-  
-  # If ENSEMBL mapping failed, try other keytypes
-  if (is.null(symbols)) {
-    key_types <- c("SYMBOL", "REFSEQ", "ENTREZID", "GENENAME")
-    
-    for (key_type in key_types) {
-      log_message(paste("Trying", key_type, "keytype for gene ID mapping"))
+    if (length(top_degs_current_comp_present) > 1) { # Need at least 2 genes to plot
       
-      symbols <- tryCatch({
-        mapped_symbols <- mapIds(annotation_db, 
-                                keys = gene_ids_for_mapping, 
-                                column = "SYMBOL",
-                                keytype = key_type, 
-                                multiVals = "first")
+      # Load the original DESeq2 object to get the exact samples used in this comparison
+      dds_file_path <- file.path(opt$dds_dir, comparison_name, "dds.rds")
+      if (file.exists(dds_file_path)) {
+        dds_comparison <- readRDS(dds_file_path)
+        comparison_samples <- colnames(dds_comparison)
+        log_message(paste("Found", length(comparison_samples), "samples in DESeq2 object for", comparison_name))
         
-        # Check if mapping was successful
-        if (sum(!is.na(mapped_symbols)) > length(gene_ids_for_mapping) * 0.1) {
-          log_message(paste("Successfully mapped", sum(!is.na(mapped_symbols)), "out of", length(gene_ids_for_mapping), "gene IDs"))
-          mapped_symbols
-          break
-        } else {
-          log_message("Less than 10% of IDs mapped. Trying next keytype.")
-          NULL
+        # Get the conditions from the comparison name
+        conditions_in_comparison <- unlist(strsplit(comparison_name, "_vs_"))
+        log_message(paste("Conditions in comparison:", paste(conditions_in_comparison, collapse=", ")))
+        
+        # Find samples that are both in the VST data and were used in the comparison
+        relevant_samples <- intersect(comparison_samples, colnames(assay(vst_full)))
+        log_message(paste("After intersection with VST data, found", length(relevant_samples), "samples"))
+        
+        if (length(relevant_samples) < 2) {
+          # Fall back to using all samples from the conditions in the comparison
+          log_message("Not enough samples found from DESeq object. Using all samples from these conditions.")
+          relevant_samples <- rownames(metadata_full[metadata_full$condition %in% conditions_in_comparison, ])
+          relevant_samples <- intersect(relevant_samples, colnames(assay(vst_full)))
+          log_message(paste("Found", length(relevant_samples), "samples from metadata matching conditions"))
         }
-      }, error = function(e) {
-        log_message(paste("Error with", key_type, "keytype:", e$message))
-        NULL
-      })
-      
-      if (!is.null(symbols)) {
-        break
-      }
-    }
-  }
-  
-  # If we still don't have symbols, return original IDs
-  if (is.null(symbols)) {
-    log_message("Could not map gene IDs to symbols. Using original IDs.")
-    return(gene_ids)
-  }
-  
-  # Replace NAs with original IDs
-  if (has_version) {
-    # For IDs with version numbers, we need to map back to the original IDs
-    names(symbols) <- id_mapping[names(symbols)]
-    result <- symbols
-    result[is.na(result)] <- names(result)[is.na(result)]
-  } else {
-    result <- symbols
-    result[is.na(result)] <- names(result)[is.na(result)]
-  }
-  
-  return(result)
-}
+        
+        if (length(relevant_samples) < 2) {
+          log_message(paste("Skipping heatmap for", comparison_name, ": Fewer than 2 relevant samples found."))
+          next # Skip to the next comparison
+        }
+        
+        # Print sample-condition mapping for debugging
+        sample_conditions <- metadata_full[relevant_samples, "condition", drop=FALSE]
+        for (i in 1:nrow(sample_conditions)) {
+          log_message(paste("Sample", rownames(sample_conditions)[i], "has condition", sample_conditions[i,1]))
+        }
+        
+        log_message(paste("Plotting heatmap for", comparison_name, "using samples:", paste(relevant_samples, collapse=", ")))
+        
+        # Subset the VST data for relevant genes AND relevant samples
+        top_degs_counts_subset <- assay(vst_full)[top_degs_current_comp_present, relevant_samples, drop=FALSE]
+        
+        # Scale the subsetted counts
+        top_degs_counts_scaled <- t(scale(t(top_degs_counts_subset)))
+        # Handle cases where scaling might produce NaNs (e.g., zero variance)
+        top_degs_counts_scaled[is.nan(top_degs_counts_scaled)] <- 0 
 
-# Function to get ENTREZ IDs for pathway analysis
-get_entrez_ids <- function(gene_ids, species = opt$species) {
-  # Select the appropriate annotation database based on species
-  if (tolower(species) == "human") {
-    annotation_db <- org.Hs.eg.db
-    key_type <- "ENSEMBL"
-    if (!grepl("^ENSG", gene_ids[1])) {
-      # If not ENSEMBL IDs, try to determine the ID type
-      if (grepl("^NM_|^XM_|^NR_|^XR_", gene_ids[1])) {
-        key_type <- "REFSEQ"
-      } else {
-        key_type <- "SYMBOL"  # Default to symbol if can't determine
-      }
-    }
-  } else if (tolower(species) == "mouse") {
-    annotation_db <- org.Mm.eg.db
-    key_type <- "ENSEMBL"
-    if (!grepl("^ENSMUS", gene_ids[1])) {
-      # If not ENSEMBL IDs, try to determine the ID type
-      if (grepl("^NM_|^XM_|^NR_|^XR_", gene_ids[1])) {
-        key_type <- "REFSEQ"
-      } else {
-        key_type <- "SYMBOL"  # Default to symbol if can't determine
-      }
-    }
-  } else {
-    stop("Unsupported species. Choose 'human' or 'mouse'.")
-  }
-  
-  # Try to convert IDs to ENTREZ IDs
-  tryCatch({
-    entrez_ids <- mapIds(annotation_db, keys = gene_ids, column = "ENTREZID", 
-                        keytype = key_type, multiVals = "first")
-    return(entrez_ids)
-  }, error = function(e) {
-    warning("Error converting gene IDs to ENTREZ IDs: ", e$message)
-    return(NULL)  # Return NULL if conversion fails
-  })
-}
+        # Subset the annotation data frame
+        annotation_col_subset <- annotation_col[relevant_samples, , drop = FALSE]
 
-# Function to run pathway analysis
-run_pathway_analysis <- function(gene_list, species = opt$species) {
-  if (is.null(gene_list) || length(gene_list) < 10) {
-    return(NULL)
-  }
-  
-  # Try to run GO enrichment
-  tryCatch({
-    if (tolower(species) == "human") {
-      ego <- enrichGO(gene = gene_list,
-                     OrgDb = org.Hs.eg.db,
-                     ont = "BP",
-                     pAdjustMethod = "BH",
-                     pvalueCutoff = 0.05,
-                     qvalueCutoff = 0.2)
+        # Create a new annotation colors list with only the relevant conditions
+        relevant_condition_colors <- ann_colors$Condition[names(ann_colors$Condition) %in% conditions_in_comparison]
+        ann_colors_subset <- list(Condition = relevant_condition_colors)
+        
+        # Get gene symbols for rownames if possible
+        heatmap_rownames <- get_gene_symbols(rownames(top_degs_counts_scaled), species = opt$species)
+
+        # Define file path for the heatmap
+        # Ensure the subdirectory exists (it should have been created in the summary loop)
+        comparison_heatmap_dir_specific <- file.path(comp_heatmap_dir, comparison_name)
+        if (!dir.exists(comparison_heatmap_dir_specific)) { dir.create(comparison_heatmap_dir_specific, recursive = TRUE) }
+        comp_heatmap_file_pdf <- file.path(comparison_heatmap_dir_specific, paste0(comparison_name, "_top_unique_degs_heatmap.pdf"))
+        comp_heatmap_file_png <- file.path(comparison_heatmap_dir_specific, paste0(comparison_name, "_top_unique_degs_heatmap.png"))
+
+        # Generate heatmap using subsetted data and save as PDF
+        pdf(comp_heatmap_file_pdf, width = opt$top_degs_width, height = opt$top_degs_height)
+        pheatmap(top_degs_counts_scaled,
+                 annotation_col = annotation_col_subset, # Use subsetted annotation
+                 annotation_colors = ann_colors_subset,  # Use subset of annotation colors
+                 labels_row = heatmap_rownames,
+                 show_rownames = TRUE,
+                 clustering_method = "ward.D2",
+                 main = paste("Top Unique DEGs -", comparison_name), # Updated title
+                 fontsize = 10,
+                 fontsize_row = max(4, 10 - length(top_degs_current_comp_present) / 10))
+        dev.off()
+        log_message(paste("Heatmap of unique top DEGs for", comparison_name, "saved to:", comp_heatmap_file_pdf))
+
+        # Generate heatmap using subsetted data and save as PNG
+        png(comp_heatmap_file_png, width = opt$top_degs_width, height = opt$top_degs_height, units = "in", res = 300)
+        pheatmap(top_degs_counts_scaled,
+                 annotation_col = annotation_col_subset, # Use subsetted annotation
+                 annotation_colors = ann_colors_subset,  # Use subset of annotation colors
+                 labels_row = heatmap_rownames,
+                 show_rownames = TRUE,
+                 clustering_method = "ward.D2",
+                 main = paste("Top Unique DEGs -", comparison_name), # Updated title
+                 fontsize = 10,
+                 fontsize_row = max(4, 10 - length(top_degs_current_comp_present) / 10))
+        dev.off()
+        log_message(paste("Heatmap of unique top DEGs for", comparison_name, "saved to:", comp_heatmap_file_png))
+
+      } else {
+        log_message(paste("Skipping unique top DEGs heatmap for", comparison_name, ": DESeq2 object not found."))
+      }
     } else {
-      ego <- enrichGO(gene = gene_list,
-                     OrgDb = org.Mm.eg.db,
-                     ont = "BP",
-                     pAdjustMethod = "BH",
-                     pvalueCutoff = 0.05,
-                     qvalueCutoff = 0.2)
+      log_message(paste("Skipping unique top DEGs heatmap for", comparison_name, ": Not enough unique top DEGs found in VST data."))
     }
-    
-    if (is.null(ego) || nrow(ego) == 0) {
-      return(NULL)
-    }
-    
-    return(as.data.frame(ego))
-  }, error = function(e) {
-    warning("Error running GO enrichment: ", e$message)
-    return(NULL)
-  })
+  } else {
+    log_message(paste("Skipping unique top DEGs heatmap for", comparison_name, ": No top DEGs found for this comparison."))
+  }
 }
 
-# Create summary files for each comparison
-log_message("Creating summary files with DESeq2 results")
+# Create summary files and comparison-specific heatmaps for each comparison
+log_message("Creating summary files and comparison-specific heatmaps")
 
 # Create a master summary file
 master_summary <- data.frame(
@@ -533,8 +824,14 @@ master_summary <- data.frame(
 
 for (dds_file in dds_files) {
   comparison_name <- basename(dirname(dds_file))
-  log_message(paste("Creating summary for:", comparison_name))
-  
+  log_message(paste("Processing summary and heatmap for:", comparison_name))
+
+  # Create subdirectories for this comparison
+  comparison_summary_dir <- file.path(summary_dir, comparison_name)
+  comparison_heatmap_dir <- file.path(comp_heatmap_dir, comparison_name)
+  if (!dir.exists(comparison_summary_dir)) { dir.create(comparison_summary_dir, recursive = TRUE) }
+  if (!dir.exists(comparison_heatmap_dir)) { dir.create(comparison_heatmap_dir, recursive = TRUE) }
+
   # Load DESeq2 results
   dds_obj <- readRDS(dds_file)
   res <- results(dds_obj)
@@ -583,19 +880,19 @@ for (dds_file in dds_files) {
   ))
   
   # Create detailed results file with gene symbols
-  detailed_file <- file.path(summary_dir, paste0(comparison_name, "_detailed_results.csv"))
+  detailed_file <- file.path(comparison_summary_dir, "detailed_results.csv")
   write.csv(res_df, detailed_file, row.names = FALSE)
   log_message(paste("Detailed results saved to:", detailed_file))
   
   # Create significant genes file
-  sig_genes_file <- file.path(summary_dir, paste0(comparison_name, "_significant_genes.csv"))
+  sig_genes_file <- file.path(comparison_summary_dir, "significant_genes.csv")
   sig_genes_df <- res_df[res_df$padj < opt$volcano_pval_cutoff & !is.na(res_df$padj), ]
   sig_genes_df <- sig_genes_df[order(sig_genes_df$padj), ]
   write.csv(sig_genes_df, sig_genes_file, row.names = FALSE)
   log_message(paste("Significant genes saved to:", sig_genes_file))
   
   # Create up and down regulated gene lists
-  up_genes_file <- file.path(summary_dir, paste0(comparison_name, "_up_regulated.csv"))
+  up_genes_file <- file.path(comparison_summary_dir, "up_regulated.csv")
   up_genes_df <- res_df[res_df$padj < opt$volcano_pval_cutoff & 
                         res_df$log2FoldChange > opt$volcano_fc_cutoff & 
                         !is.na(res_df$padj), ]
@@ -603,7 +900,7 @@ for (dds_file in dds_files) {
   write.csv(up_genes_df, up_genes_file, row.names = FALSE)
   log_message(paste("Up-regulated genes saved to:", up_genes_file))
   
-  down_genes_file <- file.path(summary_dir, paste0(comparison_name, "_down_regulated.csv"))
+  down_genes_file <- file.path(comparison_summary_dir, "down_regulated.csv")
   down_genes_df <- res_df[res_df$padj < opt$volcano_pval_cutoff & 
                           res_df$log2FoldChange < -opt$volcano_fc_cutoff & 
                           !is.na(res_df$padj), ]
@@ -623,7 +920,7 @@ for (dds_file in dds_files) {
     pathway_results <- run_pathway_analysis(sig_entrez, species = opt$species)
     
     if (!is.null(pathway_results) && nrow(pathway_results) > 0) {
-      pathway_file <- file.path(summary_dir, paste0(comparison_name, "_pathway_analysis.csv"))
+      pathway_file <- file.path(comparison_summary_dir, "pathway_analysis.csv")
       write.csv(pathway_results, pathway_file, row.names = FALSE)
       log_message(paste("Pathway analysis results saved to:", pathway_file))
     } else {
@@ -638,7 +935,7 @@ for (dds_file in dds_files) {
       up_pathway_results <- run_pathway_analysis(up_entrez, species = opt$species)
       
       if (!is.null(up_pathway_results) && nrow(up_pathway_results) > 0) {
-        up_pathway_file <- file.path(summary_dir, paste0(comparison_name, "_up_pathway_analysis.csv"))
+        up_pathway_file <- file.path(comparison_summary_dir, "up_pathway_analysis.csv")
         write.csv(up_pathway_results, up_pathway_file, row.names = FALSE)
         log_message(paste("Up-regulated pathway analysis results saved to:", up_pathway_file))
       }
@@ -651,7 +948,7 @@ for (dds_file in dds_files) {
       down_pathway_results <- run_pathway_analysis(down_entrez, species = opt$species)
       
       if (!is.null(down_pathway_results) && nrow(down_pathway_results) > 0) {
-        down_pathway_file <- file.path(summary_dir, paste0(comparison_name, "_down_pathway_analysis.csv"))
+        down_pathway_file <- file.path(comparison_summary_dir, "down_pathway_analysis.csv")
         write.csv(down_pathway_results, down_pathway_file, row.names = FALSE)
         log_message(paste("Down-regulated pathway analysis results saved to:", down_pathway_file))
       }
@@ -663,115 +960,7 @@ for (dds_file in dds_files) {
 master_summary_file <- file.path(summary_dir, "master_summary.csv")
 write.csv(master_summary, master_summary_file, row.names = FALSE)
 log_message(paste("Master summary saved to:", master_summary_file))
-
-# Create a README file with descriptions of all output files
-readme_file <- file.path(summary_dir, "README.txt")
-readme_content <- c(
-  "DESeq2 Analysis Summary Files",
-  "===========================",
-  "",
-  "This directory contains summary files from the DESeq2 differential expression analysis.",
-  "",
-  "File Descriptions:",
-  "----------------",
-  "",
-  "master_summary.csv - Overview of all comparisons with key statistics",
-  "  - comparison: Name of the comparison",
-  "  - total_genes: Total number of genes analyzed",
-  "  - up_regulated: Number of significantly up-regulated genes",
-  "  - down_regulated: Number of significantly down-regulated genes",
-  "  - significant_genes: Total number of significantly differentially expressed genes",
-  "  - max_log2fc: Maximum log2 fold change among significant genes",
-  "  - min_log2fc: Minimum log2 fold change among significant genes",
-  "  - top_up_gene: Gene symbol with highest positive fold change",
-  "  - top_down_gene: Gene symbol with highest negative fold change",
-  "",
-  "For each comparison, the following files are generated:",
-  "",
-  "1. [comparison]_detailed_results.csv - Complete DESeq2 results for all genes",
-  "   - gene_id: Original gene identifier",
-  "   - gene_symbol: Corresponding gene symbol",
-  "   - baseMean: Average normalized count across all samples",
-  "   - log2FoldChange: Log2 fold change",
-  "   - lfcSE: Standard error of log2 fold change",
-  "   - stat: Wald statistic",
-  "   - pvalue: Raw p-value",
-  "   - padj: Adjusted p-value (FDR)",
-  "",
-  "2. [comparison]_significant_genes.csv - Genes with adjusted p-value < cutoff",
-  "",
-  "3. [comparison]_up_regulated.csv - Significantly up-regulated genes",
-  "",
-  "4. [comparison]_down_regulated.csv - Significantly down-regulated genes",
-  "",
-  if (opt$run_pathway) c(
-    "5. [comparison]_pathway_analysis.csv - Pathway enrichment analysis for all significant genes",
-    "",
-    "6. [comparison]_up_pathway_analysis.csv - Pathway enrichment for up-regulated genes",
-    "",
-    "7. [comparison]_down_pathway_analysis.csv - Pathway enrichment for down-regulated genes",
-    ""
-  ) else character(0),
-  paste("Analysis performed with cutoffs: adjusted p-value <", opt$volcano_pval_cutoff, 
-        "and absolute log2 fold change >", opt$volcano_fc_cutoff),
-  paste("Date:", Sys.Date())
-)
-
-writeLines(readme_content, readme_file)
-log_message(paste("README file saved to:", readme_file))
-
-log_message("Summary file generation complete")
-
-# Create volcano plots directory if it doesn't exist
-if (!dir.exists(volcano_dir)) {
-  dir.create(volcano_dir, recursive = TRUE)
-  log_message(paste("Created volcano plots directory:", volcano_dir))
-}
-
-# Create summary directory if it doesn't exist
-if (!dir.exists(summary_dir)) {
-  dir.create(summary_dir, recursive = TRUE)
-  log_message(paste("Created summary directory:", summary_dir))
-}
-
-# Function to check if a directory is writable
-is_writable <- function(dir_path) {
-  test_file <- file.path(dir_path, "test_write_permission.tmp")
-  result <- tryCatch({
-    file.create(test_file)
-  }, error = function(e) {
-    return(FALSE)
-  })
-  
-  if (file.exists(test_file)) {
-    file.remove(test_file)
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
-}
-
-# Check if output directories are writable
-if (!is_writable(opt$output_dir)) {
-  warning(paste("Output directory is not writable:", opt$output_dir))
-  warning("Will try to use a temporary directory instead")
-  temp_dir <- tempdir()
-  opt$output_dir <- file.path(temp_dir, "deseq2_results")
-  dir.create(opt$output_dir, recursive = TRUE, showWarnings = FALSE)
-  
-  # Update output file paths
-  pca_plot_file <- file.path(opt$output_dir, "pca_plot.pdf")
-  heatmap_file <- file.path(opt$output_dir, "sample_correlation_heatmap.pdf")
-  top_degs_heatmap_file <- file.path(opt$output_dir, "top_degs_heatmap.pdf")
-  volcano_dir <- file.path(opt$output_dir, "volcano_plots")
-  summary_dir <- file.path(opt$output_dir, "summary_files")
-  
-  # Create directories
-  dir.create(volcano_dir, recursive = TRUE, showWarnings = FALSE)
-  dir.create(summary_dir, recursive = TRUE, showWarnings = FALSE)
-  
-  log_message(paste("Using temporary directory instead:", opt$output_dir))
-}
+log_message("Summary file and comparison heatmap generation complete")
 
 # Create volcano plots for each comparison
 log_message("Creating volcano plots with gene symbols")
@@ -779,6 +968,13 @@ log_message("Creating volcano plots with gene symbols")
 for (dds_file in dds_files) {
   comparison_name <- basename(dirname(dds_file))
   log_message(paste("Creating volcano plot for:", comparison_name))
+
+  # Create a subdirectory for this comparison within volcano_dir
+  comparison_volcano_dir <- file.path(volcano_dir, comparison_name)
+  if (!dir.exists(comparison_volcano_dir)) {
+    dir.create(comparison_volcano_dir, recursive = TRUE)
+    log_message(paste("Created comparison volcano directory:", comparison_volcano_dir))
+  }
   
   # Load DESeq2 results
   dds_obj <- readRDS(dds_file)
@@ -793,22 +989,27 @@ for (dds_file in dds_files) {
   res_df$gene_symbol <- get_gene_symbols(res_df$gene_id, species = opt$species)
   
   # Add significance column
-  res_df$significant <- ifelse(res_df$padj < opt$volcano_pval_cutoff & 
-                              abs(res_df$log2FoldChange) > opt$volcano_fc_cutoff, 
-                              "Significant", "Not Significant")
+  res_df$significant <- "Not Significant"
+  res_df$significant[res_df$padj < opt$volcano_pval_cutoff & !is.na(res_df$padj) & res_df$log2FoldChange > opt$volcano_fc_cutoff] <- "Up-regulated"
+  res_df$significant[res_df$padj < opt$volcano_pval_cutoff & !is.na(res_df$padj) & res_df$log2FoldChange < -opt$volcano_fc_cutoff] <- "Down-regulated"
+  res_df$significant <- factor(res_df$significant, levels = c("Up-regulated", "Down-regulated", "Not Significant"))
+
+  # Define colors for volcano plot
+  volcano_colors <- c("Up-regulated" = "red", "Down-regulated" = "blue", "Not Significant" = "grey")
   
-  # Get top genes for labeling
+  # Get top genes for labeling (based on p-value and fold change)
   top_genes <- res_df %>%
-    filter(!is.na(padj)) %>%
-    arrange(padj) %>%
+    filter(!is.na(padj) & padj < opt$volcano_pval_cutoff & abs(log2FoldChange) > opt$volcano_fc_cutoff) %>%
+    mutate(rank_metric = -log10(padj) * abs(log2FoldChange)) %>%
+    arrange(desc(rank_metric)) %>%
     head(opt$volcano_top_n)
   
   # Create volcano plot
   volcano_plot <- ggplot(res_df, aes(x = log2FoldChange, y = -log10(padj))) +
-    geom_point(aes(color = significant), alpha = 0.6) +
+    geom_point(aes(color = significant), alpha = 0.6, size = 1.5) +
     geom_hline(yintercept = -log10(opt$volcano_pval_cutoff), linetype = "dashed") +
     geom_vline(xintercept = c(-opt$volcano_fc_cutoff, opt$volcano_fc_cutoff), linetype = "dashed") +
-    scale_color_manual(values = c("Significant" = "red", "Not Significant" = "grey")) +
+    scale_color_manual(values = volcano_colors, name = "Significance") +
     geom_text_repel(data = top_genes, 
                    aes(label = gene_symbol),
                    box.padding = 0.5,
@@ -819,10 +1020,12 @@ for (dds_file in dds_files) {
          y = "-Log10 Adjusted P-value") +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5, size = 14),
-          legend.position = "bottom")
+          legend.position = "bottom",
+          legend.title = element_text(size = 10),
+          legend.text = element_text(size = 9))
   
   # Save volcano plot - with error handling
-  volcano_file <- file.path(volcano_dir, paste0(comparison_name, "_volcano.pdf"))
+  volcano_file <- file.path(comparison_volcano_dir, "volcano_plot.pdf")
   tryCatch({
     pdf(volcano_file, width = opt$volcano_width, height = opt$volcano_height)
     print(volcano_plot)
@@ -833,7 +1036,7 @@ for (dds_file in dds_files) {
   })
   
   # Also save as PNG for easier viewing - with error handling
-  volcano_png <- file.path(volcano_dir, paste0(comparison_name, "_volcano.png"))
+  volcano_png <- file.path(comparison_volcano_dir, "volcano_plot.png")
   tryCatch({
     ggsave(volcano_png, volcano_plot, width = opt$volcano_width, height = opt$volcano_height, dpi = 300)
     log_message(paste("Volcano plot saved to:", volcano_png))
