@@ -19,48 +19,57 @@ suppressPackageStartupMessages({
   library(DOSE)          # For disease ontology
 })
 
-# Check if script is being run interactively
-is_interactive <- interactive()
+# # Check if script is being run interactively
+# is_interactive <- interactive()
 
-# Set working directory to script's location
-# Get the script's directory using a method compatible with Rscript
-if (!is_interactive) {
-  # Get the command line arguments
-  args <- commandArgs(trailingOnly = FALSE)
-  # Find the argument that specifies the script file path
-  file_arg <- grep("--file=", args, value = TRUE)
-  if (length(file_arg) == 1) {
-    # Extract the path from the --file= argument
-    script_path <- sub("--file=", "", file_arg)
-    # Get the directory containing the script
-    script_dir <- dirname(script_path)
-    # Set the working directory to the script's directory
-    setwd(script_dir)
-    cat("Set working directory to:", script_dir, "\n")
-  } else {
-    warning("Could not determine script directory. Using current working directory.")
-    script_dir <- getwd()
-  }
-} else {
-  # Fallback for interactive mode (e.g., RStudio)
-  script_dir <- tryCatch(
-    dirname(rstudioapi::getSourceEditorContext()$path),
-    error = function(e) {
-      warning("RStudio API not available. Using current working directory.")
-      getwd()
-    }
-  )
-  setwd(script_dir)
-  cat("Running interactively. Set working directory to:", script_dir, "\n")
-}
+# # Set working directory to script's location
+# # Get the script's directory using a method compatible with Rscript
+# if (!is_interactive) {
+#   # Get the command line arguments
+#   args <- commandArgs(trailingOnly = FALSE)
+#   # Find the argument that specifies the script file path
+#   file_arg <- grep("--file=", args, value = TRUE)
+#   if (length(file_arg) == 1) {
+#     # Extract the path from the --file= argument
+#     script_path <- sub("--file=", "", file_arg)
+#     # Get the directory containing the script
+#     script_dir <- dirname(script_path)
+#     # Set the working directory to the script's directory
+#     setwd(script_dir)
+#     cat("Set working directory to:", script_dir, "\n")
+#   } else {
+#     warning("Could not determine script directory. Using current working directory.")
+#     script_dir <- getwd()
+#   }
+# } else {
+#   # Fallback for interactive mode (e.g., RStudio)
+#   script_dir <- tryCatch(
+#     dirname(rstudioapi::getSourceEditorContext()$path),
+#     error = function(e) {
+#       warning("RStudio API not available. Using current working directory.")
+#       getwd()
+#     }
+#   )
+#   setwd(script_dir)
+#   cat("Running interactively. Set working directory to:", script_dir, "\n")
+# }
+
+is_interactive <- TRUE
+# Set working directory to the specified path
+setwd("D:/Github/SRF_H2AK119Ub_cross_V5/SRF_RNA/scripts")
+cat("Working directory set to:", getwd(), "\n")
+
+results_path <- "D:/Github/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/deseq2/YAF_vs_GFP"
+output_path <- "D:/Github/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/deseq2/YAF_vs_GFP"
+
 
 # Parse as I will be also running this code some time in the interactive mode 
 option_list <- list(
   make_option(c("-d", "--dds_dir"), type="character", default="results/deseq2",
               help="Directory containing DESeq2 results [default: %default]"),
-  make_option(c("-c", "--counts"), type="character", default="results/counts/counts.csv",
-              help="Path to the original full count matrix CSV file [default: %default]"),
-  make_option(c("-m", "--metadata"), type="character", default="metadata.csv",
+  make_option(c("-c", "--counts"), type="character", default="../results/counts/all_samples_counts.txt",
+              help="Path to the featureCounts output file [default: %default]"),
+  make_option(c("-m", "--metadata"), type="character", default="../metadata.csv",
               help="Metadata file [default: %default]"),
   make_option(c("-o", "--output_dir"), type="character", default="results/deseq2",
               help="Output directory for visualization files [default: %default]"),
@@ -110,9 +119,6 @@ option_list <- list(
               help="Print verbose output [default: %default]")
 )
 
-results_path <- "E:/SRF_DATA/Antonella/RNA/results/deseq2"
-output_path <- "E:/SRF_CODE/SRF_H2AK119Ub_cross_V5/SRF_RNA/results/deseq2"
-
 # Handle command line arguments differently based on interactive mode
 if (is_interactive) {
   # NOTE: The 'results_path' and 'output_path' below are example hardcoded paths.
@@ -127,7 +133,7 @@ if (is_interactive) {
     heatmap_height = 8,
     top_degs_width = 12,
     top_degs_height = 14,
-    top_n_degs = 20,
+    top_n_degs = 25, # Changed default from 20 to 50
     pca_title = "PCA of RNA-seq Samples",
     heatmap_title = "Sample Correlation Heatmap",
     top_degs_title = "Top Differentially Expressed Genes",
@@ -146,7 +152,7 @@ if (is_interactive) {
   )
   
   # Add default for counts file in interactive mode
-  opt$counts <- "../results/counts/counts.csv" # Adjust path as needed for interactive use
+  opt$counts <- "../results/counts/all_samples_counts.txt" # Path to featureCounts output
 
   # Print message about interactive mode
   cat("Running in interactive mode. You can modify the 'opt' list before proceeding.\n")
@@ -551,7 +557,20 @@ for (dds_file in list.files(opt$dds_dir, pattern = "_vs_", include.dirs = TRUE, 
 
 # Read full count matrix
 log_message(paste("Reading full count matrix from:", opt$counts))
-count_matrix_full <- read.csv(opt$counts, row.names = 1, check.names = FALSE)
+# Read the featureCounts output file
+# Skip comment lines, use tab separator, specify header
+raw_counts <- read.delim(opt$counts, comment.char = "#", header = TRUE, sep = "\t", check.names = FALSE)
+
+# Set Geneid as row names and select only count columns (7th column onwards)
+# The first 6 columns are Geneid, Chr, Start, End, Strand, Length
+rownames(raw_counts) <- raw_counts$Geneid
+count_matrix_full <- raw_counts[, 7:ncol(raw_counts)]
+
+# Clean up sample names in the count matrix (remove path prefixes if present)
+# Example: results/star/C1/C1_Aligned.sortedByCoord.out.bam -> C1
+colnames(count_matrix_full) <- sub(".*/(.*?)/\\1_Aligned.*", "\\1", colnames(count_matrix_full))
+log_message(paste("Cleaned sample names:", paste(head(colnames(count_matrix_full)), collapse=", ")))
+
 
 # Ensure samples in count matrix and metadata are aligned
 samples_to_keep <- intersect(rownames(metadata_full), colnames(count_matrix_full))
@@ -587,16 +606,27 @@ vst_full <- vst(dds_full, blind = FALSE)
 
 # Find all DESeq2 RDS files
 log_message("Finding DESeq2 RDS files for comparisons")
-comparisons <- list.dirs(opt$dds_dir, full.names = TRUE, recursive = FALSE)
-comparisons <- comparisons[grepl("_vs_", basename(comparisons))]
-dds_files <- file.path(comparisons, "dds.rds")
-dds_files <- dds_files[file.exists(dds_files)]
 
-if (length(dds_files) == 0) {
-  stop("No DESeq2 RDS files found in ", opt$dds_dir)
+# Check if dds.rds exists directly in opt$dds_dir
+direct_dds_path <- file.path(opt$dds_dir, "dds.rds")
+if (file.exists(direct_dds_path)) {
+  log_message(paste("Found dds.rds directly in:", opt$dds_dir))
+  dds_files <- c(direct_dds_path) # Use this file directly
+} else {
+  # Fallback to searching subdirectories if direct file not found
+  log_message(paste("dds.rds not found directly in", opt$dds_dir, ". Searching for comparison subdirectories..."))
+  comparisons <- list.dirs(opt$dds_dir, full.names = TRUE, recursive = FALSE)
+  comparisons <- comparisons[grepl("_vs_", basename(comparisons))]
+  dds_files <- file.path(comparisons, "dds.rds")
+  dds_files <- dds_files[file.exists(dds_files)]
 }
 
-log_message(paste("Found", length(dds_files), "DESeq2 RDS files"))
+# Check if any files were found using either method
+if (length(dds_files) == 0) {
+  stop("No DESeq2 RDS files found directly in ", opt$dds_dir, " or in matching subdirectories.") # Modified error message
+}
+
+log_message(paste("Found", length(dds_files), "DESeq2 RDS file(s) to process"))
 for (file in dds_files) {
   log_message(paste("  -", file))
 }
@@ -671,11 +701,25 @@ log_message(paste("Sample correlation heatmap saved to:", heatmap_file))
 # Collect top DEGs from all comparisons
 log_message("Collecting top DEGs from all comparisons")
 all_top_degs <- list()
-comparison_top_degs <- list()
+comparison_data <- list() # Store comparison DEGs and DDS path
 
 for (dds_file in dds_files) {
-  comparison_name <- basename(dirname(dds_file))
-  log_message(paste("Processing DESeq2 object:", dds_file))
+  # Determine comparison name based on whether dds_file is direct or in a subdir
+  if (basename(dirname(dds_file)) == basename(opt$dds_dir)) {
+      # dds.rds was found directly in opt$dds_dir
+      comparison_name <- basename(opt$dds_dir)
+  } else {
+      # dds.rds was found in a subdirectory
+      comparison_name <- basename(dirname(dds_file))
+  }
+  
+  # Ensure comparison name looks valid (contains _vs_)
+  if (!grepl("_vs_", comparison_name)) {
+      log_message(paste("Warning: Skipping file/directory", dds_file, "- does not appear to be a standard comparison name."))
+      next # Skip to next dds_file
+  }
+
+  log_message(paste("Processing DESeq2 object:", dds_file, "for comparison:", comparison_name))
   dds_obj <- readRDS(dds_file)
   
   # Get results
@@ -686,7 +730,8 @@ for (dds_file in dds_files) {
   top_degs_comp <- rownames(res_filtered[order(res_filtered$padj), ])[1:min(opt$top_n_degs, nrow(res_filtered))]
 
   all_top_degs <- c(all_top_degs, list(top_degs_comp))
-  comparison_top_degs[[comparison_name]] <- top_degs_comp
+  # Store DEGs and the correct path to the dds file
+  comparison_data[[comparison_name]] <- list(degs = top_degs_comp, dds_path = dds_file)
 }
 
 # Get unique top DEGs across all comparisons
@@ -696,8 +741,10 @@ log_message(paste("Number of unique top DEGs across all comparisons:", length(un
 # Create heatmap of unique top DEGs across all comparisons
 log_message("Creating heatmap of unique top DEGs using only relevant samples")
 
-for (comparison_name in names(comparison_top_degs)) {
-  top_degs_current_comp <- comparison_top_degs[[comparison_name]]
+for (comparison_name in names(comparison_data)) {
+  top_degs_current_comp <- comparison_data[[comparison_name]]$degs # Get DEGs
+  dds_file_path <- comparison_data[[comparison_name]]$dds_path     # Get correct DDS path
+
   if (length(top_degs_current_comp) > 0) {
     top_degs_current_comp_present <- intersect(top_degs_current_comp, rownames(assay(vst_full)))
     log_message(paste("Processing heatmap for:", comparison_name))
@@ -705,98 +752,198 @@ for (comparison_name in names(comparison_top_degs)) {
 
     if (length(top_degs_current_comp_present) > 1) { # Need at least 2 genes to plot
       
-      # Load the original DESeq2 object to get the exact samples used in this comparison
-      dds_file_path <- file.path(opt$dds_dir, comparison_name, "dds.rds")
-      if (file.exists(dds_file_path)) {
-        dds_comparison <- readRDS(dds_file_path)
-        comparison_samples <- colnames(dds_comparison)
-        log_message(paste("Found", length(comparison_samples), "samples in DESeq2 object for", comparison_name))
+      # Load the original DESeq2 object using the stored path
+      log_message(paste("Loading DESeq2 object from:", dds_file_path))
+      dds_comparison <- readRDS(dds_file_path) # Use the stored path
+      comparison_samples <- colnames(dds_comparison)
+      log_message(paste("Found", length(comparison_samples), "samples in DESeq2 object for", comparison_name))
         
-        # Get the conditions from the comparison name
-        conditions_in_comparison <- unlist(strsplit(comparison_name, "_vs_"))
-        log_message(paste("Conditions in comparison:", paste(conditions_in_comparison, collapse=", ")))
+      # Get the conditions from the comparison name
+      conditions_in_comparison <- unlist(strsplit(comparison_name, "_vs_"))
+      log_message(paste("Conditions in comparison:", paste(conditions_in_comparison, collapse=", ")))
         
-        # Find samples that are both in the VST data and were used in the comparison
-        relevant_samples <- intersect(comparison_samples, colnames(assay(vst_full)))
-        log_message(paste("After intersection with VST data, found", length(relevant_samples), "samples"))
+      # Find samples that are both in the VST data and were used in the comparison
+      relevant_samples <- intersect(comparison_samples, colnames(assay(vst_full)))
+      log_message(paste("After intersection with VST data, found", length(relevant_samples), "samples"))
         
-        if (length(relevant_samples) < 2) {
+      if (length(relevant_samples) < 2) {
           # Fall back to using all samples from the conditions in the comparison
           log_message("Not enough samples found from DESeq object. Using all samples from these conditions.")
           relevant_samples <- rownames(metadata_full[metadata_full$condition %in% conditions_in_comparison, ])
           relevant_samples <- intersect(relevant_samples, colnames(assay(vst_full)))
           log_message(paste("Found", length(relevant_samples), "samples from metadata matching conditions"))
-        }
+      }
         
-        if (length(relevant_samples) < 2) {
+      if (length(relevant_samples) < 2) {
           log_message(paste("Skipping heatmap for", comparison_name, ": Fewer than 2 relevant samples found."))
           next # Skip to the next comparison
-        }
-        
-        # Print sample-condition mapping for debugging
-        sample_conditions <- metadata_full[relevant_samples, "condition", drop=FALSE]
-        for (i in 1:nrow(sample_conditions)) {
-          log_message(paste("Sample", rownames(sample_conditions)[i], "has condition", sample_conditions[i,1]))
-        }
-        
-        log_message(paste("Plotting heatmap for", comparison_name, "using samples:", paste(relevant_samples, collapse=", ")))
-        
-        # Subset the VST data for relevant genes AND relevant samples
-        top_degs_counts_subset <- assay(vst_full)[top_degs_current_comp_present, relevant_samples, drop=FALSE]
-        
-        # Scale the subsetted counts
-        top_degs_counts_scaled <- t(scale(t(top_degs_counts_subset)))
-        # Handle cases where scaling might produce NaNs (e.g., zero variance)
-        top_degs_counts_scaled[is.nan(top_degs_counts_scaled)] <- 0 
-
-        # Subset the annotation data frame
-        annotation_col_subset <- annotation_col[relevant_samples, , drop = FALSE]
-
-        # Create a new annotation colors list with only the relevant conditions
-        relevant_condition_colors <- ann_colors$Condition[names(ann_colors$Condition) %in% conditions_in_comparison]
-        ann_colors_subset <- list(Condition = relevant_condition_colors)
-        
-        # Get gene symbols for rownames if possible
-        heatmap_rownames <- get_gene_symbols(rownames(top_degs_counts_scaled), species = opt$species)
-
-        # Define file path for the heatmap
-        # Ensure the subdirectory exists (it should have been created in the summary loop)
-        comparison_heatmap_dir_specific <- file.path(comp_heatmap_dir, comparison_name)
-        if (!dir.exists(comparison_heatmap_dir_specific)) { dir.create(comparison_heatmap_dir_specific, recursive = TRUE) }
-        comp_heatmap_file_pdf <- file.path(comparison_heatmap_dir_specific, paste0(comparison_name, "_top_unique_degs_heatmap.pdf"))
-        comp_heatmap_file_png <- file.path(comparison_heatmap_dir_specific, paste0(comparison_name, "_top_unique_degs_heatmap.png"))
-
-        # Generate heatmap using subsetted data and save as PDF
-        pdf(comp_heatmap_file_pdf, width = opt$top_degs_width, height = opt$top_degs_height)
-        pheatmap(top_degs_counts_scaled,
-                 annotation_col = annotation_col_subset, # Use subsetted annotation
-                 annotation_colors = ann_colors_subset,  # Use subset of annotation colors
-                 labels_row = heatmap_rownames,
-                 show_rownames = TRUE,
-                 clustering_method = "ward.D2",
-                 main = paste("Top Unique DEGs -", comparison_name), # Updated title
-                 fontsize = 10,
-                 fontsize_row = max(4, 10 - length(top_degs_current_comp_present) / 10))
-        dev.off()
-        log_message(paste("Heatmap of unique top DEGs for", comparison_name, "saved to:", comp_heatmap_file_pdf))
-
-        # Generate heatmap using subsetted data and save as PNG
-        png(comp_heatmap_file_png, width = opt$top_degs_width, height = opt$top_degs_height, units = "in", res = 300)
-        pheatmap(top_degs_counts_scaled,
-                 annotation_col = annotation_col_subset, # Use subsetted annotation
-                 annotation_colors = ann_colors_subset,  # Use subset of annotation colors
-                 labels_row = heatmap_rownames,
-                 show_rownames = TRUE,
-                 clustering_method = "ward.D2",
-                 main = paste("Top Unique DEGs -", comparison_name), # Updated title
-                 fontsize = 10,
-                 fontsize_row = max(4, 10 - length(top_degs_current_comp_present) / 10))
-        dev.off()
-        log_message(paste("Heatmap of unique top DEGs for", comparison_name, "saved to:", comp_heatmap_file_png))
-
-      } else {
-        log_message(paste("Skipping unique top DEGs heatmap for", comparison_name, ": DESeq2 object not found."))
       }
+        
+      # Print sample-condition mapping for debugging
+      sample_conditions <- metadata_full[relevant_samples, "condition", drop=FALSE]
+      for (i in 1:nrow(sample_conditions)) {
+          log_message(paste("Sample", rownames(sample_conditions)[i], "has condition", sample_conditions[i,1]))
+      }
+        
+      log_message(paste("Plotting heatmap for", comparison_name, "using samples:", paste(relevant_samples, collapse=", ")))
+        
+      # Subset the VST data for relevant genes AND relevant samples
+      top_degs_counts_subset <- assay(vst_full)[top_degs_current_comp_present, relevant_samples, drop=FALSE]
+        
+      # Scale the subsetted counts
+      top_degs_counts_scaled <- t(scale(t(top_degs_counts_subset)))
+      # Handle cases where scaling might produce NaNs (e.g., zero variance)
+      top_degs_counts_scaled[is.nan(top_degs_counts_scaled)] <- 0
+
+      # Subset the annotation data frame
+      annotation_col_subset <- annotation_col[relevant_samples, , drop = FALSE]
+
+      # Create a new annotation colors list with only the relevant conditions
+      relevant_condition_colors <- ann_colors$Condition[names(ann_colors$Condition) %in% conditions_in_comparison]
+      ann_colors_subset <- list(Condition = relevant_condition_colors)
+        
+      # Get gene symbols for rownames if possible
+      heatmap_rownames <- get_gene_symbols(rownames(top_degs_counts_scaled), species = opt$species)
+
+      # Define file path for the heatmap
+      # Ensure the subdirectory exists (it should have been created in the summary loop)
+      comparison_heatmap_dir_specific <- file.path(comp_heatmap_dir, comparison_name)
+      if (!dir.exists(comparison_heatmap_dir_specific)) { dir.create(comparison_heatmap_dir_specific, recursive = TRUE) }
+      comp_heatmap_file_pdf <- file.path(comparison_heatmap_dir_specific, paste0(comparison_name, "_top_unique_degs_heatmap.pdf"))
+      comp_heatmap_file_png <- file.path(comparison_heatmap_dir_specific, paste0(comparison_name, "_top_unique_degs_heatmap.png"))
+
+      # Define color scale and breaks for the TOP DEGs heatmap (dynamic)
+      # lim <- 2 # Set a fixed limit for the Z-score scale (e.g., -2 to +2) (Commented out)
+      lim <- max(abs(top_degs_counts_scaled), na.rm = TRUE) # Use dynamic calculation based on top DEGs
+      lim <- ceiling(lim * 10) / 10 # Round up slightly for better breaks
+      if (lim == 0) lim <- 1 # Avoid zero range if data is flat
+      my_colors <- colorRampPalette(rev(brewer.pal(n = 9, name = "RdBu")))(100)
+      my_breaks <- seq(-lim, lim, length.out = 101) # Breaks based on dynamic lim
+
+      # Generate heatmap using subsetted data and save as PDF
+      pdf(comp_heatmap_file_pdf, width = opt$top_degs_width, height = opt$top_degs_height)
+      pheatmap(top_degs_counts_scaled,
+                 annotation_col = annotation_col_subset, # Use subsetted annotation
+                 annotation_colors = ann_colors_subset,  # Use subset of annotation colors
+                 labels_row = heatmap_rownames,
+                 show_rownames = TRUE,
+                 clustering_method = "ward.D2",
+                 main = paste("Top Unique DEGs -", comparison_name), # Updated title
+                 fontsize = 10,
+                 fontsize_row = max(4, 10 - length(top_degs_current_comp_present) / 10),
+                 color = my_colors,             # Apply custom color palette
+                 breaks = my_breaks,            # Apply custom breaks
+                 border_color = NA)             # Remove cell borders
+      dev.off()
+      log_message(paste("Heatmap of unique top DEGs for", comparison_name, "saved to:", comp_heatmap_file_pdf))
+
+      # Generate heatmap using subsetted data and save as PNG
+      png(comp_heatmap_file_png, width = opt$top_degs_width, height = opt$top_degs_height, units = "in", res = 300)
+      pheatmap(top_degs_counts_scaled,
+                 annotation_col = annotation_col_subset, # Use subsetted annotation
+                 annotation_colors = ann_colors_subset,  # Use subset of annotation colors
+                 labels_row = heatmap_rownames,
+                 show_rownames = TRUE,
+                 clustering_method = "ward.D2",
+                 main = paste("Top Unique DEGs -", comparison_name), # Updated title
+                 fontsize = 10,
+                 fontsize_row = max(4, 10 - length(top_degs_current_comp_present) / 10),
+                 color = my_colors,             # Apply custom color palette
+                 breaks = my_breaks,            # Apply custom breaks
+                 border_color = NA)             # Remove cell borders
+      dev.off()
+      log_message(paste("Heatmap of unique top DEGs for", comparison_name, "saved to:", comp_heatmap_file_png))
+
+        # --- START: Add heatmap for all significant DEGs ---
+
+        log_message(paste("Creating heatmap of ALL significant DEGs for:", comparison_name))
+
+        # Get results again for this comparison to find all significant genes
+        res_all <- results(dds_comparison)
+        res_all_df <- as.data.frame(res_all) %>% filter(!is.na(padj))
+
+        # Filter for significant genes (using volcano cutoffs for consistency in counts)
+        sig_genes_all <- res_all_df %>% filter(padj < opt$volcano_pval_cutoff)
+        sig_gene_ids_all <- rownames(sig_genes_all)
+
+        # Count up and down regulated among significant based on fold change cutoff
+        up_regulated_count <- sum(sig_genes_all$log2FoldChange > opt$volcano_fc_cutoff, na.rm = TRUE)
+        down_regulated_count <- sum(sig_genes_all$log2FoldChange < -opt$volcano_fc_cutoff, na.rm = TRUE)
+        log_message(paste("Found", length(sig_gene_ids_all), "total significant genes (padj <", opt$volcano_pval_cutoff, ").",
+                          up_regulated_count, "up (LFC >", opt$volcano_fc_cutoff,"),",
+                          down_regulated_count, "down (LFC < -", opt$volcano_fc_cutoff,")."))
+
+        # Ensure these genes are present in the VST data
+        sig_gene_ids_all_present <- intersect(sig_gene_ids_all, rownames(assay(vst_full)))
+        log_message(paste("Found", length(sig_gene_ids_all_present), "significant DEGs present in VST data."))
+
+        if (length(sig_gene_ids_all_present) > 1 && length(relevant_samples) > 1) {
+            # Subset VST data for all significant genes and relevant samples
+            all_sig_counts_subset <- assay(vst_full)[sig_gene_ids_all_present, relevant_samples, drop=FALSE]
+
+            # Scale the subsetted counts
+            all_sig_counts_scaled <- t(scale(t(all_sig_counts_subset)))
+            all_sig_counts_scaled[is.nan(all_sig_counts_scaled)] <- 0 # Handle NaNs
+
+            # Create title with unicode arrows
+            heatmap_title_all_sig <- paste0("Heatmap of All Significant DEGs (p.adj < ", opt$volcano_pval_cutoff, ")\n",
+                                           comparison_name, "\n",
+                                           up_regulated_count, " \u2191 and ", down_regulated_count, " \u2193",
+                                           " (LFC cutoff: ", opt$volcano_fc_cutoff, ")")
+
+            # Define file paths
+            all_sig_heatmap_file_pdf <- file.path(comparison_heatmap_dir_specific, paste0(comparison_name, "_all_significant_degs_heatmap.pdf"))
+            all_sig_heatmap_file_png <- file.path(comparison_heatmap_dir_specific, paste0(comparison_name, "_all_significant_degs_heatmap.png"))
+
+            # Define a FIXED color scale and breaks for the ALL significant DEGs heatmap
+            lim_fixed <- 2 # Set the fixed limit
+            if (lim_fixed == 0) lim_fixed <- 1 # Avoid zero range
+            # Reuse the same color palette function if desired, or define a new one
+            my_colors_fixed <- colorRampPalette(rev(brewer.pal(n = 9, name = "RdBu")))(100)
+            my_breaks_fixed <- seq(-lim_fixed, lim_fixed, length.out = 101) # Breaks based on fixed lim
+
+            # Generate heatmap (PDF) - No row names as there are too many
+            # Adjust height/width if needed, maybe make height larger for many genes? Using same for now.
+            pdf(all_sig_heatmap_file_pdf, width = opt$top_degs_width, height = opt$top_degs_height)
+             pheatmap(all_sig_counts_scaled,
+                     annotation_col = annotation_col_subset,
+                     annotation_colors = ann_colors_subset,
+                     color = my_colors_fixed,   # Use fixed colors
+                     breaks = my_breaks_fixed,  # Use fixed breaks
+                     border_color = NA,
+                     main = heatmap_title_all_sig,
+                     show_rownames = FALSE, # Hide row names for clarity
+                     show_colnames = TRUE,
+                     clustering_method = "ward.D2",
+                     fontsize = 10,
+                     fontsize_title = 12) # Slightly larger title font
+            dev.off()
+            log_message(paste("Heatmap of all significant DEGs for", comparison_name, "saved to:", all_sig_heatmap_file_pdf))
+
+            # Generate heatmap (PNG) - No row names
+            png(all_sig_heatmap_file_png, width = opt$top_degs_width, height = opt$top_degs_height, units = "in", res = 300)
+             pheatmap(all_sig_counts_scaled,
+                     annotation_col = annotation_col_subset,
+                     annotation_colors = ann_colors_subset,
+                     color = my_colors_fixed,   # Use fixed colors
+                     breaks = my_breaks_fixed,  # Use fixed breaks
+                     border_color = NA,
+                     main = heatmap_title_all_sig,
+                     show_rownames = FALSE, # Hide row names for clarity
+                     show_colnames = TRUE,
+                     clustering_method = "ward.D2",
+                     fontsize = 10,
+                     fontsize_title = 12) # Slightly larger title font
+            dev.off()
+            log_message(paste("Heatmap of all significant DEGs for", comparison_name, "saved to:", all_sig_heatmap_file_png))
+
+        } else {
+            log_message(paste("Skipping heatmap of all significant DEGs for", comparison_name, ": Not enough significant genes (", length(sig_gene_ids_all_present), ") or samples (", length(relevant_samples), ") found."))
+        }
+
+        # --- END: Add heatmap for all significant DEGs ---
+
+      # Removed the redundant 'else' block that logged "DESeq2 object not found"
     } else {
       log_message(paste("Skipping unique top DEGs heatmap for", comparison_name, ": Not enough unique top DEGs found in VST data."))
     }

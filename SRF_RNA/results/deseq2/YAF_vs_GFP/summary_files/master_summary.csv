@@ -1,0 +1,2 @@
+"comparison","total_genes","up_regulated","down_regulated","significant_genes","max_log2fc","min_log2fc","top_up_gene","top_down_gene"
+"YAF_vs_GFP",37665,3371,1843,8649,12.5958908053392,-8.77638259013804,"S100A9","ENSG00000288774.1"

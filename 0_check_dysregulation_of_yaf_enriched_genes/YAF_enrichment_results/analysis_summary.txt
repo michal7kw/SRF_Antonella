@@ -12,7 +12,7 @@ Wilcoxon rank sum test for difference in YAF/GFP enrichment:
 	Wilcoxon rank sum test with continuity correction
 
 data:  log2FC_binding by regulation
-W = 4987878, p-value < 2.2e-16
+W = 4987879, p-value < 2.2e-16
 alternative hypothesis: true location shift is not equal to 0
 
 

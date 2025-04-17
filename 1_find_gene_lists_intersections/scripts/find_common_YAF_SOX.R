@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # Script to identify genes that have at least one peak of both YAF and SOX in their promoter regions
-# This is a more efficient R implementation using GenomicRanges
+# Processes both standard and strict YAF peak calling results and compares them.
 
 # Load required libraries
 suppressPackageStartupMessages({
@@ -84,41 +84,19 @@ find_genes_with_peaks_in_promoter <- function(peaks, promoters) {
   return(genes_with_peaks)
 }
 
-# Main function
-main <- function() {
-  output_dir <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output"
-  
-  # File paths
-  # yaf_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF.broadPeak"
-  # output_file <- paste0(output_dir, "/YAF_SOX_strict.csv")
-
-  yaf_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF.broadPeak"
-  output_file <- paste0(output_dir, "/YAF_SOX.csv")
-  
-  SOX_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SOX2.broadPeak"
-  gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
-  
-  # Parse peak files
-  yaf_peaks <- read_broadpeak(yaf_peak_file)
-  SOX_peaks <- read_broadpeak(SOX_peak_file)
-  
-  # Extract gene information from GTF
-  genes <- extract_genes_from_gtf(gtf_file)
-  
-  # Get promoter regions
-  promoters <- get_promoters(genes)
-  
+# Process data and save results function
+process_data_and_save_results <- function(YAF_peaks, SOX_peaks, promoters, output_file) {
   # Find genes with peaks in promoter regions
   cat("Finding genes with YAF peaks in promoter regions\n")
-  yaf_genes <- find_genes_with_peaks_in_promoter(yaf_peaks, promoters)
-  cat("Found", length(yaf_genes), "genes with YAF peaks in promoter regions\n")
+  YAF_genes <- find_genes_with_peaks_in_promoter(YAF_peaks, promoters)
+  cat("Found", length(YAF_genes), "genes with YAF peaks in promoter regions\n")
   
   cat("Finding genes with SOX peaks in promoter regions\n")
   SOX_genes <- find_genes_with_peaks_in_promoter(SOX_peaks, promoters)
   cat("Found", length(SOX_genes), "genes with SOX peaks in promoter regions\n")
   
   # Find genes with both YAF and SOX peaks in promoter regions
-  common_genes <- intersect(yaf_genes, SOX_genes)
+  common_genes <- intersect(YAF_genes, SOX_genes)
   cat("Found", length(common_genes), "genes with both YAF and SOX peaks in promoter regions\n")
   
   # Get gene information for common genes
@@ -152,76 +130,65 @@ main <- function() {
   write.table(bed_data, bed_output_file, sep="\t", quote=FALSE, 
               row.names=FALSE, col.names=FALSE)
   cat("Promoter regions saved to", bed_output_file, "for visualization\n")
+  
+  return(common_gene_info)
 }
 
-# Alternative implementation using TxDb package (faster for large GTF files)
-main_txdb <- function() {
-  cat("Using TxDb approach (alternative implementation)\n")
-  
-  # File paths
+# Main function
+main <- function() {
+  # Define base output directory
+  output_dir_base <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output"
 
-  # yaf_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF.broadPeak"
-  # output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/YAF_SOX_strict.csv"
-
-  yaf_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF.broadPeak"
-  output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/YAF_SOX.csv"
-  
-  SOX_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SOX2.broadPeak"
+  # File paths for inputs
+  YAF_peak_file_standard <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF.broadPeak" # Adjust if needed
+  YAF_peak_file_strict <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/YAF.broadPeak" # Adjust if needed
+  SOX_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SOX2.broadPeak" # Ensure this path is correct for SOX2
   gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
+
+  # File paths for outputs
+  output_file_standard <- file.path(output_dir_base, "YAF_SOX_standard.csv")
+  output_file_strict <- file.path(output_dir_base, "YAF_SOX_strict.csv")
+  comparison_output <- file.path(output_dir_base, "YAF_SOX_comparison.csv")
   
-  # Parse peak files
-  yaf_peaks <- read_broadpeak(yaf_peak_file)
+  # Ensure output directory exists
+  if (!dir.exists(output_dir_base)) {
+    dir.create(output_dir_base, recursive = TRUE)
+    cat("Created output directory:", output_dir_base, "\n")
+  }
+
+  # Extract gene information from GTF and get promoter regions (done once for all analyses)
+  genes <- extract_genes_from_gtf(gtf_file)
+  promoters <- get_promoters(genes)
+  
+  # Parse SOX peak file (done once for all analyses)
   SOX_peaks <- read_broadpeak(SOX_peak_file)
   
-  # Create TxDb object from GTF file
-  cat("Creating TxDb from GTF file...\n")
-  txdb <- makeTxDbFromGFF(gtf_file, format="gtf")
+  # Process standard peaks
+  cat("\n=== Processing Standard YAF vs SOX Peak Calling ===\n")
+  YAF_peaks_standard <- read_broadpeak(YAF_peak_file_standard)
+  standard_results <- process_data_and_save_results(YAF_peaks_standard, SOX_peaks, promoters, output_file_standard)
   
-  # Get gene information
-  cat("Extracting gene information...\n")
-  genes <- genes(txdb)
+  # Process strict peaks
+  cat("\n=== Processing Strict YAF vs SOX Peak Calling ===\n")
+  YAF_peaks_strict <- read_broadpeak(YAF_peak_file_strict)
+  strict_results <- process_data_and_save_results(YAF_peaks_strict, SOX_peaks, promoters, output_file_strict)
   
-  # Add gene names from GTF (since TxDb doesn't store gene names)
-  gtf_genes <- import(gtf_file, feature.type="gene")
-  gene_names <- gtf_genes$gene_name
-  names(gene_names) <- gtf_genes$gene_id
+  # Find common genes between standard and strict YAF vs SOX analyses
+  common_genes_comparison <- intersect(standard_results$gene_id, strict_results$gene_id)
+  cat("\nFound", length(common_genes_comparison), "genes common to both standard and strict YAF vs SOX analyses\n")
   
-  # Create promoter regions
-  cat("Creating promoter regions...\n")
-  promoters <- promoters(genes, upstream=2000, downstream=0)
+  # Create a comparison file
+  comparison_df <- data.frame(
+    gene_id = common_genes_comparison,
+    gene_name = standard_results$gene_name[match(common_genes_comparison, standard_results$gene_id)]
+  ) %>% arrange(gene_name)
   
-  # Find genes with peaks in promoter regions
-  cat("Finding genes with YAF peaks in promoter regions\n")
-  yaf_overlaps <- findOverlaps(yaf_peaks, promoters)
-  yaf_genes <- unique(names(genes)[subjectHits(yaf_overlaps)])
-  cat("Found", length(yaf_genes), "genes with YAF peaks in promoter regions\n")
-  
-  cat("Finding genes with SOX peaks in promoter regions\n")
-  SOX_overlaps <- findOverlaps(SOX_peaks, promoters)
-  SOX_genes <- unique(names(genes)[subjectHits(SOX_overlaps)])
-  cat("Found", length(SOX_genes), "genes with SOX peaks in promoter regions\n")
-  
-  # Find genes with both YAF and SOX peaks in promoter regions
-  common_genes <- intersect(yaf_genes, SOX_genes)
-  cat("Found", length(common_genes), "genes with both YAF and SOX peaks in promoter regions\n")
-  
-  # Get gene information for common genes
-  common_gene_info <- data.frame(
-    gene_id = common_genes,
-    gene_name = gene_names[common_genes]
-  )
-  
-  # Sort by gene name
-  common_gene_info <- common_gene_info %>% arrange(gene_name)
-  
-  # Save results to CSV
-  write_csv(common_gene_info, output_file)
-  cat("Results saved to", output_file, "\n")
+  write_csv(comparison_df, comparison_output)
+  cat("Comparison results saved to", comparison_output, "\n")
 }
 
-# Run the main function (choose one implementation)
-# For smaller GTF files, use the standard implementation
+# Run the main function
 main()
 
-# For very large GTF files, uncomment to use the TxDb implementation
-# main_txdb()
+# Remove the old TxDb implementation
+# main_txdb <- function() { ... }

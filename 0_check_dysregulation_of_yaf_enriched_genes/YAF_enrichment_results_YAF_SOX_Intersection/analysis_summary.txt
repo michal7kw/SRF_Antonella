@@ -1,7 +1,7 @@
 YAF Binding Analysis Summary (Filtered for YAF/SOX Intersection Genes)
 ======================================================================
 
-Analysis restricted to genes present in: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output/YAF_SOX.csv
+Analysis restricted to genes present in: D:/Github/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output/YAF_SOX.csv
 Total genes in list: 7354
 Genes from list found in DESeq results: 5869
 

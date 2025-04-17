@@ -84,30 +84,8 @@ find_genes_with_peaks_in_promoter <- function(peaks, promoters) {
   return(genes_with_peaks)
 }
 
-# Main function
-main <- function() {
-  output_dir <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output"
-
-  # File paths
-  GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
-  output_file <- paste0(output_dir, "/GFP_SES.csv")
-
-  # GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/GFP.broadPeak"
-  # output_file <- paste0(output_dir, "/GFP_SES_strict.csv")
-  
-  SES_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak"
-  gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
-  
-  # Parse peak files
-  GFP_peaks <- read_broadpeak(GFP_peak_file)
-  SES_peaks <- read_broadpeak(SES_peak_file)
-  
-  # Extract gene information from GTF
-  genes <- extract_genes_from_gtf(gtf_file)
-  
-  # Get promoter regions
-  promoters <- get_promoters(genes)
-  
+# Process data and save results function
+process_data_and_save_results <- function(GFP_peaks, SES_peaks, promoters, output_file) {
   # Find genes with peaks in promoter regions
   cat("Finding genes with GFP peaks in promoter regions\n")
   GFP_genes <- find_genes_with_peaks_in_promoter(GFP_peaks, promoters)
@@ -152,76 +130,53 @@ main <- function() {
   write.table(bed_data, bed_output_file, sep="\t", quote=FALSE, 
               row.names=FALSE, col.names=FALSE)
   cat("Promoter regions saved to", bed_output_file, "for visualization\n")
+  
+  return(common_gene_info)
 }
 
-# Alternative implementation using TxDb package (faster for large GTF files)
-main_txdb <- function() {
-  cat("Using TxDb approach (alternative implementation)\n")
-  
+# Main function
+main <- function() {
   # File paths
-  # GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/GFP.broadPeak"
-  # output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES.csv"
+  GFP_peak_file_standard <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
+  output_file_standard <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES.csv"
 
-  GFP_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
-  output_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES_strict.csv"
+  GFP_peak_file_strict <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/GFP.broadPeak"
+  output_file_strict <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES_strict.csv"
   
   SES_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak"
   gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
-
   
-  # Parse peak files
-  GFP_peaks <- read_broadpeak(GFP_peak_file)
+  # Extract gene information from GTF and get promoter regions (done once for both analyses)
+  genes <- extract_genes_from_gtf(gtf_file)
+  promoters <- get_promoters(genes)
+  
+  # Parse SES peak file (done once for both analyses)
   SES_peaks <- read_broadpeak(SES_peak_file)
   
-  # Create TxDb object from GTF file
-  cat("Creating TxDb from GTF file...\n")
-  txdb <- makeTxDbFromGFF(gtf_file, format="gtf")
+  # Process standard peaks
+  cat("\n=== Processing Standard Peak Calling ===\n")
+  GFP_peaks_standard <- read_broadpeak(GFP_peak_file_standard)
+  standard_results <- process_data_and_save_results(GFP_peaks_standard, SES_peaks, promoters, output_file_standard)
   
-  # Get gene information
-  cat("Extracting gene information...\n")
-  genes <- genes(txdb)
+  # Process strict peaks
+  cat("\n=== Processing Strict Peak Calling ===\n")
+  GFP_peaks_strict <- read_broadpeak(GFP_peak_file_strict)
+  strict_results <- process_data_and_save_results(GFP_peaks_strict, SES_peaks, promoters, output_file_strict)
   
-  # Add gene names from GTF (since TxDb doesn't store gene names)
-  gtf_genes <- import(gtf_file, feature.type="gene")
-  gene_names <- gtf_genes$gene_name
-  names(gene_names) <- gtf_genes$gene_id
+  # Find common genes between standard and strict analyses
+  common_genes <- intersect(standard_results$gene_id, strict_results$gene_id)
+  cat("\nFound", length(common_genes), "genes common to both standard and strict analyses\n")
   
-  # Create promoter regions
-  cat("Creating promoter regions...\n")
-  promoters <- promoters(genes, upstream=2000, downstream=0)
-  
-  # Find genes with peaks in promoter regions
-  cat("Finding genes with GFP peaks in promoter regions\n")
-  GFP_overlaps <- findOverlaps(GFP_peaks, promoters)
-  GFP_genes <- unique(names(genes)[subjectHits(GFP_overlaps)])
-  cat("Found", length(GFP_genes), "genes with GFP peaks in promoter regions\n")
-  
-  cat("Finding genes with SES peaks in promoter regions\n")
-  SES_overlaps <- findOverlaps(SES_peaks, promoters)
-  SES_genes <- unique(names(genes)[subjectHits(SES_overlaps)])
-  cat("Found", length(SES_genes), "genes with SES peaks in promoter regions\n")
-  
-  # Find genes with both GFP and SES peaks in promoter regions
-  common_genes <- intersect(GFP_genes, SES_genes)
-  cat("Found", length(common_genes), "genes with both GFP and SES peaks in promoter regions\n")
-  
-  # Get gene information for common genes
-  common_gene_info <- data.frame(
+  # Create a comparison file
+  comparison_output <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES_comparison.csv"
+  comparison_df <- data.frame(
     gene_id = common_genes,
-    gene_name = gene_names[common_genes]
-  )
+    gene_name = standard_results$gene_name[match(common_genes, standard_results$gene_id)]
+  ) %>% arrange(gene_name)
   
-  # Sort by gene name
-  common_gene_info <- common_gene_info %>% arrange(gene_name)
-  
-  # Save results to CSV
-  write_csv(common_gene_info, output_file)
-  cat("Results saved to", output_file, "\n")
+  write_csv(comparison_df, comparison_output)
+  cat("Comparison results saved to", comparison_output, "\n")
 }
 
-# Run the main function (choose one implementation)
-# For smaller GTF files, use the standard implementation
+# Run the main function
 main()
-
-# For very large GTF files, uncomment to use the TxDb implementation
-# main_txdb()
