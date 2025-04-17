@@ -94,4 +94,5 @@ SRF_SES_V5/data_from_ncbi_corrected/logs/
 .Rhistory
 
 git_image_results/
-git_pdf_results
+git_pdf_results/
+COMMON/
