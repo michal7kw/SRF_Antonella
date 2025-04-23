@@ -15,24 +15,3 @@ data:  log2FC_binding by regulation
 W = 4987879, p-value < 2.2e-16
 alternative hypothesis: true location shift is not equal to 0
 
-
-Conclusion:
-YAF binding is significantly higher at promoters of downregulated genes compared to upregulated genes.
-This supports the hypothesis that YAF binding to promoters may cause gene downregulation, suggesting a repressive function.
-
-Correlation between YAF binding and gene expression:
-
-	Pearson's product-moment correlation
-
-data:  all_signal$log2FC_binding and all_signal$log2FC_expr
-t = -34.638, df = 5212, p-value < 2.2e-16
-alternative hypothesis: true correlation is not equal to 0
-95 percent confidence interval:
- -0.4543832 -0.4102468
-sample estimates:
-       cor 
--0.4325741 
-
-
-There is a significant negative correlation between YAF binding and gene expression,
-suggesting that stronger YAF binding is associated with lower gene expression.

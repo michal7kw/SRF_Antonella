@@ -4,18 +4,18 @@
 # This script analyzes the enrichment of YAF vs GFP Cut&Tag data at promoters of 
 # differentially expressed genes.
 
-# Load required libraries
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+# # Load required libraries
+# if (!requireNamespace("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
 
-required_packages <- c("DESeq2", "rtracklayer", "GenomicRanges", "ggplot2", 
-                      "dplyr", "tidyr", "pheatmap", "RColorBrewer", "gridExtra",
-                      "ggpubr", "scales", "viridis", "tibble")
+# required_packages <- c("DESeq2", "rtracklayer", "GenomicRanges", "ggplot2", 
+#                       "dplyr", "tidyr", "pheatmap", "RColorBrewer", "gridExtra",
+#                       "ggpubr", "scales", "viridis", "tibble")
 
-for (pkg in required_packages) {
-    if (!requireNamespace(pkg, quietly = TRUE))
-        BiocManager::install(pkg)
-}
+# for (pkg in required_packages) {
+#     if (!requireNamespace(pkg, quietly = TRUE))
+#         BiocManager::install(pkg)
+# }
 
 library(DESeq2)
 library(rtracklayer)
@@ -36,10 +36,12 @@ BASE_PATH <- "D:/Github/SRF_H2AK119Ub_cross_V5"
 
 # Set paths
 deseq_results_file <- file.path(BASE_PATH, "SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv")
+
 gtf_file <- "D:/Github/SRF_H2AK119Ub_cross_V5/COMMON/gencode.v43.basic.annotation.gtf"
-bigwig_dir <- "F:/SRF_data/Antonella/Ub/6_bigwig"
-# Add path for the YAF/SOX gene list
-yaf_sox_gene_list_file <- file.path(BASE_PATH, "1_find_gene_lists_intersections/output/YAF_SOX.csv")
+
+# bigwig_dir <- "F:/SRF_data/Antonella/Ub/6_bigwig"
+bigwig_dir <- "D:/Github/SRF_H2AK119Ub_cross_V5/DATA/6_bigwig"
+
 output_dir <- "YAF_enrichment_results"
 
 # Create output directory if it doesn't exist
@@ -181,8 +183,8 @@ gene_id_to_symbol$gene_id_no_version <- sub("\\.[0-9]+$", "", gene_id_to_symbol$
 significant_degs <- merge(significant_degs, gene_id_to_symbol, 
                          by.x = "gene_id_no_version", by.y = "gene_id_no_version", all.x = TRUE)
 
-# 5. Define promoter regions (2kb upstream of TSS)
-cat("\nDefining promoter regions...\n")
+# 5. Define promoter regions (2kb upstream of TSS) and gene bodies
+cat("\nDefining promoter regions and gene bodies...\n")
 # Get genes with standard chromosomes
 genes_standard <- genes[seqnames(genes) %in% c(standard_chroms_no_chr, standard_chroms_with_chr)]
 
@@ -201,8 +203,22 @@ promoter_df <- data.frame(
   stringsAsFactors = FALSE
 )
 
+# Define gene bodies (the entire gene regions)
+gene_bodies <- genes_standard
+
+# Create a mapping from gene ID to gene body
+gene_body_df <- data.frame(
+  gene_id = gene_bodies$gene_id,
+  seqnames = seqnames(gene_bodies),
+  start = start(gene_bodies),
+  end = end(gene_bodies),
+  strand = strand(gene_bodies),
+  stringsAsFactors = FALSE
+)
+
 # Remove version numbers from gene IDs
 promoter_df$gene_id_no_version <- sub("\\.[0-9]+$", "", promoter_df$gene_id)
+gene_body_df$gene_id_no_version <- sub("\\.[0-9]+$", "", gene_body_df$gene_id)
 
 # 6. Get promoters for significant DEGs
 cat("\nMapping DEGs to promoter regions...\n")
@@ -800,9 +816,10 @@ cat('Wilcoxon rank sum test for difference in YAF/GFP enrichment:\n')
 if (!is.na(wilcox_test$p.value)) {
   print(wilcox_test)
 } else {
-  cat("Could not perform Wilcoxon test due to data issues.\n")
+  cat("Statistical test could not be performed due to data issues.\n")
 }
 
+sink()
 cat('\nConclusion:\n')
 if (!is.na(wilcox_test$p.value) && wilcox_test$p.value < 0.05) {
   if (mean(up_signal$log2FC_binding, na.rm = TRUE) > mean(down_signal$log2FC_binding, na.rm = TRUE)) {
@@ -853,6 +870,142 @@ if (!is.na(correlation$p.value) && correlation$p.value < 0.05) {
   cat('suggesting that the relationship between binding and expression is complex and may involve other factors.\n')
 }
 sink()
+
+# 14. Create lists of H2AK119Ub-YAF2 enriched peaks
+cat("\nCreating lists of H2AK119Ub-YAF2 enriched peaks...\n")
+
+# Define threshold for enrichment (log2FC > 1 means at least 2-fold enrichment)
+enrichment_threshold <- 1
+
+# A. Process gene bodies
+cat("Processing gene bodies...\n")
+
+# Create GRanges object for gene bodies
+gene_body_granges <- GRanges(
+  seqnames = gene_body_df$seqnames,
+  ranges = IRanges(start = gene_body_df$start, end = gene_body_df$end),
+  strand = gene_body_df$strand,
+  gene_id = gene_body_df$gene_id
+)
+
+# Add gene symbols to gene bodies
+gene_body_df <- merge(gene_body_df, gene_id_to_symbol, by = "gene_id", all.x = TRUE)
+
+# Extract signal from YAF and GFP bigWig files for gene bodies
+gene_body_signal <- data.frame(
+  gene_id = gene_body_df$gene_id,
+  gene_name = gene_body_df$gene_name
+)
+
+# Extract YAF signal for gene bodies
+for (i in 1:length(yaf_files)) {
+  cat("  Processing", basename(yaf_files[i]), "for gene bodies...\n")
+  gene_body_signal[paste0("YAF_", i)] <- extract_signal_from_bigwig(yaf_files[i], gene_body_granges)
+}
+
+# Extract GFP signal for gene bodies
+for (i in 1:length(gfp_files)) {
+  cat("  Processing", basename(gfp_files[i]), "for gene bodies...\n")
+  gene_body_signal[paste0("GFP_", i)] <- extract_signal_from_bigwig(gfp_files[i], gene_body_granges)
+}
+
+# Calculate average and log2FC for gene bodies
+gene_body_signal$YAF_avg <- rowMeans(gene_body_signal[, c("YAF_1", "YAF_2", "YAF_3")], na.rm = TRUE)
+gene_body_signal$GFP_avg <- rowMeans(gene_body_signal[, c("GFP_1", "GFP_2", "GFP_3")], na.rm = TRUE)
+gene_body_signal$log2FC_binding <- log2((gene_body_signal$YAF_avg + 0.1) / (gene_body_signal$GFP_avg + 0.1))
+
+# B. Identify enriched gene bodies (log2FC > threshold)
+enriched_gene_bodies <- gene_body_signal[gene_body_signal$log2FC_binding > enrichment_threshold, ]
+
+# Add coordinates to enriched gene bodies
+enriched_gene_bodies <- merge(
+  enriched_gene_bodies,
+  gene_body_df[, c("gene_id", "seqnames", "start", "end", "strand")],
+  by = "gene_id"
+)
+
+# Sort by log2FC
+enriched_gene_bodies <- enriched_gene_bodies[order(enriched_gene_bodies$log2FC_binding, decreasing = TRUE), ]
+
+# Save the list of enriched gene bodies
+write.csv(
+  enriched_gene_bodies,
+  file.path(output_dir, "H2AK119Ub_YAF2_enriched_gene_bodies.csv"),
+  row.names = FALSE
+)
+
+cat(sprintf("Found %d H2AK119Ub-YAF2 enriched gene bodies (log2FC > %g)\n", 
+            nrow(enriched_gene_bodies), enrichment_threshold))
+
+# C. Identify enriched promoters (log2FC > threshold)
+enriched_promoters <- all_signal[all_signal$log2FC_binding > enrichment_threshold, ]
+
+# Add coordinates to enriched promoters
+enriched_promoters <- merge(
+  enriched_promoters,
+  promoter_df[, c("gene_id", "seqnames", "start", "end", "strand")],
+  by = "gene_id"
+)
+
+# Sort by log2FC
+enriched_promoters <- enriched_promoters[order(enriched_promoters$log2FC_binding, decreasing = TRUE), ]
+
+# Save the list of enriched promoters
+write.csv(
+  enriched_promoters,
+  file.path(output_dir, "H2AK119Ub_YAF2_enriched_promoters.csv"),
+  row.names = FALSE
+)
+
+cat(sprintf("Found %d H2AK119Ub-YAF2 enriched promoters (log2FC > %g)\n", 
+            nrow(enriched_promoters), enrichment_threshold))
+
+# D. Create a summary of enriched peaks
+cat("\nSummary of H2AK119Ub-YAF2 enriched peaks:\n")
+cat(sprintf("- %d enriched gene bodies\n", nrow(enriched_gene_bodies)))
+cat(sprintf("- %d enriched promoters\n", nrow(enriched_promoters)))
+
+# E. Compare the overlap between enriched gene bodies and promoters
+common_genes <- intersect(enriched_gene_bodies$gene_id, enriched_promoters$gene_id)
+cat(sprintf("- %d genes are enriched in both gene bodies and promoters\n", length(common_genes)))
+
+# Create a Venn diagram of the overlap if the VennDiagram package is available
+if (requireNamespace("VennDiagram", quietly = TRUE)) {
+  library(VennDiagram)
+  venn_dir <- file.path(plots_dir, "venn")
+  dir.create(venn_dir, showWarnings = FALSE, recursive = TRUE)
+  
+  venn_plot <- venn.diagram(
+    x = list(
+      "Gene Bodies" = enriched_gene_bodies$gene_id,
+      "Promoters" = enriched_promoters$gene_id
+    ),
+    filename = file.path(venn_dir, "gene_body_promoter_overlap.png"),
+    output = TRUE,
+    imagetype = "png",
+    height = 3000,
+    width = 3000,
+    resolution = 300,
+    compression = "lzw",
+    lwd = 2,
+    col = c("#440154FF", "#21908CFF"),
+    fill = c(alpha("#440154FF", 0.5), alpha("#21908CFF", 0.5)),
+    cex = 1.5,
+    fontfamily = "sans",
+    cat.cex = 1.5,
+    cat.default.pos = "outer",
+    cat.pos = c(-27, 27),
+    cat.dist = c(0.055, 0.055),
+    cat.fontfamily = "sans",
+    cat.col = c("#440154FF", "#21908CFF")
+  )
+  
+  cat("Created Venn diagram of overlapping enriched regions\n")
+} else {
+  cat("VennDiagram package not available. Skipping Venn diagram.\n")
+}
+
+cat("\nAnalysis completed. Results saved to", output_dir, "\n")
 
 cat("\nAnalysis complete! Results are in", output_dir, "\n")
 cat("Visualizations are in", plots_dir, "\n") 

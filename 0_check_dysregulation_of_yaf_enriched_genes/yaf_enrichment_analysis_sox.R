@@ -37,7 +37,10 @@ BASE_PATH <- "D:/Github/SRF_H2AK119Ub_cross_V5"
 # Set paths
 deseq_results_file <- file.path(BASE_PATH, "SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv")
 gtf_file <- "D:/Github/SRF_H2AK119Ub_cross_V5/COMMON/gencode.v43.basic.annotation.gtf"
-bigwig_dir <- "F:/SRF_data/Antonella/Ub/6_bigwig"
+
+# bigwig_dir <- "F:/SRF_data/Antonella/Ub/6_bigwig"
+bigwig_dir <- "D:/Github/SRF_H2AK119Ub_cross_V5/DATA/6_bigwig"
+
 # Add path for the YAF/SOX gene list
 yaf_sox_gene_list_file <- file.path(BASE_PATH, "1_find_gene_lists_intersections/output/YAF_SOX.csv")
 output_dir <- "YAF_enrichment_results_YAF_SOX_Intersection" # Updated output dir name

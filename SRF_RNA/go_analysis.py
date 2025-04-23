@@ -37,6 +37,8 @@ def parse_args():
                                 'DisGeNET'
                             ],
                         help="List of Enrichr gene set libraries to use.")
+    parser.add_argument('--human_only', action='store_true',
+                        help="If specified, also perform analysis using only human-specific databases.")
     parser.add_argument('--cache_file', type=str, default="ensembl_symbol_cache.pkl",
                         help="File to cache Ensembl ID to Symbol mappings.")
     parser.add_argument('--figure_width', type=float, default=12.0,
@@ -85,9 +87,24 @@ if __name__ == "__main__":
     figure_width = args.figure_width
     figure_height = args.figure_height
     bubble_scale = args.bubble_scale
+    human_only = args.human_only
+    
+    # Define human-specific libraries
+    human_libraries = [
+        'GO_Biological_Process_2021', 'GO_Cellular_Component_2021', 'GO_Molecular_Function_2021',
+        'KEGG_2021_Human', 'Reactome_2022', 'WikiPathways_2019_Human',
+        'MSigDB_Hallmark_2020', 'Human_Gene_Atlas', 'ARCHS4_Tissues',
+        'DisGeNET', 'GTEx_Tissue_Expression_Up', 'ENCODE_Histone_Modifications_2015', 
+        'ENCODE_TF_ChIP-seq_2015', 'ENCODE_and_ChEA_Consensus_TFs_from_ChIP-X'
+    ]
 
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
+    
+    # Create human-only output directory if needed
+    if human_only:
+        human_output_dir = f"{output_dir}/human_only"
+        os.makedirs(human_output_dir, exist_ok=True)
 
     # Define plot_enrichment function before we use it (with formatting updates)
     def plot_enrichment(df, title, output_file, top_n=20):
@@ -1006,6 +1023,238 @@ if __name__ == "__main__":
         # If an error occurs during the summary creation process, print an error message.
         print(f"Error creating summary: {str(e)}")
 
+    # If human_only flag is set, perform analysis with only human databases
+    if human_only:
+        print("\n\n========================================================")
+        print("Performing additional analysis with human-specific databases only...")
+        print("========================================================\n")
+        
+        human_output_dir = f"{output_dir}/human_only"
+        
+        # For the upregulated genes section with human-specific databases:
+        print("\nPerforming human-specific enrichment analysis for upregulated genes...")
+        if not upregulated_symbols:
+            print("  No significant upregulated genes with symbols found.")
+        else:
+            print(f"  Analyzing {len(upregulated_symbols)} upregulated genes with human-specific databases.")
+            for library in human_libraries:
+                if library not in enrichr_libraries:
+                    continue  # Skip libraries not in the original analysis
+                    
+                try:
+                    print(f"  Running {library} analysis...")
+                    outdir = f"{human_output_dir}/up_{library.replace(' ', '_').replace('/', '_')}"  # Sanitize library name for dir
+
+                    # Use safe_enrichr with human-specific parameters
+                    enr = safe_enrichr(gene_list=upregulated_symbols,
+                                      gene_sets=[library],
+                                      organism='Human',  # Explicitly set to Human
+                                      outdir=outdir,
+                                      no_plot=True)
+                    
+                    if enr and hasattr(enr, 'results') and len(enr.results) > 0:
+                        # Plot top enriched terms - standard bar plot
+                        plot_file = f"{outdir}/enrichment_plot.png"
+                        df = enr.results
+
+                        # Make sure the dataframe has the required columns before plotting
+                        if all(col in df.columns for col in ['Term', 'Adjusted P-value', 'Overlap', 'Genes']):
+                            # Use args.top_n_plots
+                            plot_enrichment(df, f'Top {library}\nUpregulated Genes (Human-specific)', plot_file, top_n=top_n_plots)
+
+                            # Create bubble plot
+                            bubble_plot_file = f"{outdir}/bubble_plot.png"
+                            try:
+                                # Use args.top_n_plots
+                                plot_enrichment_bubble(df, f'Top {library}\nUpregulated Genes (Human-specific)', bubble_plot_file, top_n=top_n_plots)
+                            except Exception as bubble_error:
+                                print(f"  Error creating bubble plot: {str(bubble_error)}")
+                            
+                            print(f"  Found {len(df)} enriched terms")
+                        else:
+                            print(f"  Missing required columns in results dataframe")
+                    else:
+                        print(f"  No significant enrichment found for {library}")
+
+                except Exception as e:
+                    print(f"  Error in {library} analysis for upregulated genes: {str(e)}")
+
+        # Do the same for downregulated genes section with human-specific databases
+        print("\nPerforming human-specific enrichment analysis for downregulated genes...")
+        if not downregulated_symbols:
+             print("  No significant downregulated genes with symbols found.")
+        else:
+            print(f"  Analyzing {len(downregulated_symbols)} downregulated genes with human-specific databases.")
+            for library in human_libraries:
+                if library not in enrichr_libraries:
+                    continue  # Skip libraries not in the original analysis
+                    
+                try:
+                    print(f"  Running {library} analysis...")
+                    outdir = f"{human_output_dir}/down_{library.replace(' ', '_').replace('/', '_')}"  # Sanitize library name for dir
+
+                    # Use safe_enrichr with human-specific parameters
+                    enr = safe_enrichr(gene_list=downregulated_symbols,
+                                      gene_sets=[library],
+                                      organism='Human',  # Explicitly set to Human
+                                      outdir=outdir,
+                                      no_plot=True)
+                    
+                    if enr and hasattr(enr, 'results') and len(enr.results) > 0:
+                        # Plot top enriched terms - standard bar plot
+                        plot_file = f"{outdir}/enrichment_plot.png"
+                        df = enr.results
+
+                        # Make sure the dataframe has the required columns before plotting
+                        if all(col in df.columns for col in ['Term', 'Adjusted P-value', 'Overlap', 'Genes']):
+                             # Use args.top_n_plots
+                            plot_enrichment(df, f'Top {library}\nDownregulated Genes (Human-specific)', plot_file, top_n=top_n_plots)
+
+                            # Create bubble plot
+                            bubble_plot_file = f"{outdir}/bubble_plot.png"
+                            try:
+                                # Use args.top_n_plots
+                                plot_enrichment_bubble(df, f'Top {library}\nDownregulated Genes (Human-specific)', bubble_plot_file, top_n=top_n_plots)
+                            except Exception as bubble_error:
+                                print(f"  Error creating bubble plot: {str(bubble_error)}")
+                            
+                            print(f"  Found {len(df)} enriched terms")
+                        else:
+                            print(f"  Missing required columns in results dataframe")
+                    else:
+                        print(f"  No significant enrichment found for {library}")
+
+                except Exception as e:
+                     print(f"  Error in {library} analysis for downregulated genes: {str(e)}")
+
+        # Create a summary of human-specific analyses
+        print("\nCreating human-specific summary visualization...")
+        try:
+            # Initialize an empty list to collect summary rows
+            human_summary_rows = []
+            
+            # Process up-regulated results from each human-specific library
+            for library in human_libraries:
+                if library not in enrichr_libraries:
+                    continue
+                    
+                try:
+                    # Sanitize the library name for directory creation
+                    sanitized_lib = library.replace(' ', '_').replace('/', '_')
+                    
+                    # Construct result file path for human-specific analysis
+                    result_file = f"{human_output_dir}/up_{sanitized_lib}/{library}.Human.enrichr.reports.txt"
+                    
+                    # Check if the result file exists
+                    if os.path.exists(result_file):
+                        # Read the result file
+                        df = pd.read_csv(result_file, sep='\t')
+                        
+                        # Check if the DataFrame is not empty
+                        if len(df) > 0:
+                            # Sort by adjusted p-value and take top 5 terms
+                            top_terms = df.sort_values('Adjusted P-value').head(5)
+                            
+                            # Add rows to summary
+                            for _, row in top_terms.iterrows():
+                                human_summary_rows.append({
+                                    'Term': row['Term'],
+                                    'P-value': row['Adjusted P-value'],
+                                    'Regulation': 'Up',
+                                    'Category': library,
+                                    'Genes': row['Genes'],
+                                    'Combined_score': row['Combined Score'],
+                                    'Overlap': row['Overlap']
+                                })
+                    else:
+                        print(f"File not found: {result_file}")
+                except Exception as e:
+                    print(f"  Error processing human-specific up-regulated {library} results: {str(e)}")
+            
+            # Process down-regulated results from each human-specific library
+            for library in human_libraries:
+                if library not in enrichr_libraries:
+                    continue
+                    
+                try:
+                    # Sanitize the library name
+                    sanitized_lib = library.replace(' ', '_').replace('/', '_')
+                    
+                    # Construct result file path
+                    result_file = f"{human_output_dir}/down_{sanitized_lib}/{library}.Human.enrichr.reports.txt"
+                    
+                    # Check if the result file exists
+                    if os.path.exists(result_file):
+                        # Read the result file
+                        df = pd.read_csv(result_file, sep='\t')
+                        
+                        # Check if the DataFrame is not empty
+                        if len(df) > 0:
+                            # Sort by adjusted p-value and take top 5 terms
+                            top_terms = df.sort_values('Adjusted P-value').head(5)
+                            
+                            # Add rows to summary
+                            for _, row in top_terms.iterrows():
+                                human_summary_rows.append({
+                                    'Term': row['Term'],
+                                    'P-value': row['Adjusted P-value'],
+                                    'Regulation': 'Down',
+                                    'Category': library,
+                                    'Genes': row['Genes'],
+                                    'Combined_score': row['Combined Score'],
+                                    'Overlap': row['Overlap']
+                                })
+                    else:
+                        print(f"File not found: {result_file}")
+                except Exception as e:
+                    print(f"  Error processing human-specific down-regulated {library} results: {str(e)}")
+            
+            # Create a summary DataFrame from the collected rows
+            if human_summary_rows:
+                # Create DataFrame
+                human_summary_df = pd.DataFrame(human_summary_rows)
+                
+                # Sort by category, regulation, and p-value
+                human_summary_df = human_summary_df.sort_values(['Category', 'Regulation', 'P-value'])
+                
+                # Save summary to CSV
+                human_summary_df.to_csv(f"{human_output_dir}/human_enrichment_summary.csv", index=False)
+                print(f"  Saved human-specific enrichment summary to {human_output_dir}/human_enrichment_summary.csv")
+
+                # Create summary plot
+                plt.figure(figsize=(14, max(8, (top_n_plots + 10) * 0.4)))
+                top_overall = human_summary_df.sort_values('P-value').head(top_n_plots + 10)
+                top_overall['Label'] = top_overall['Term'].str[:60] + '...' + ' (' + top_overall['Regulation'] + ')' if top_overall['Term'].str.len().max() > 60 else top_overall['Term'] + ' (' + top_overall['Regulation'] + ')'
+                top_overall = top_overall.iloc[::-1]  # Reverse for bottom-to-top plotting
+
+                # Use different colors for up/down regulation
+                colors = ['#d62728' if reg == 'Up' else '#1f77b4' for reg in top_overall['Regulation']]
+                plt.barh(top_overall['Label'], -np.log10(top_overall['P-value']), color=colors)
+                plt.xlabel('-log10(Adjusted P-value)', fontsize=12)
+                plt.ylabel('')
+                plt.title('Top Enriched Terms - Human-Specific (Up & Down)', fontsize=14, fontweight='bold')
+                plt.tick_params(axis='y', labelsize=10)
+                plt.tick_params(axis='x', labelsize=10)
+                plt.grid(axis='x', linestyle='--', alpha=0.6)
+                plt.tight_layout(pad=1.5)
+                
+                # Adjust margins for long labels
+                max_label_len = top_overall['Label'].str.len().max()
+                if max_label_len > 60:
+                     plt.subplots_adjust(left=0.4)
+                elif max_label_len > 40:
+                     plt.subplots_adjust(left=0.3)
+
+                plt.savefig(f'{human_output_dir}/human_top_overall_terms.png', dpi=300)
+                plt.close()
+                print(f"  Saved human-specific overall top terms plot to {human_output_dir}/human_top_overall_terms.png")
+            else:
+                print("  No human-specific enrichment results available for summary plot generation.")
+
+        except Exception as e:
+            print(f"Error creating human-specific summary: {str(e)}")
+    
     # Indicate that the analysis is complete and print the output directory.
-    print("\nAnalysis complete.")
-    print(f"Results saved to the '{output_dir}' directory.")
+    print(f"\nAnalysis complete! Results saved to {output_dir}")
+    if human_only:
+        print(f"Human-specific results saved to {output_dir}/human_only")

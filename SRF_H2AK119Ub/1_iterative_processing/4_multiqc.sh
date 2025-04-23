@@ -113,15 +113,13 @@ multiqc \
     --module fastqc \
     --module picard \
     --module samtools \
-    --ignore "*_R1_001_fastqc*" \
-    --ignore "*_R2_001_fastqc*" \
-    --ignore "*_R1_paired_fastqc*" \
-    --ignore "*_R2_paired_fastqc*" \
-    --ignore "*_prefilter_flagstat*" \
-    --ignore "*_prededup_flagstat*" \
+    analysis/2_trimming/fastqc/pre_trim/ \
+    analysis/2_trimming/fastqc/post_trim/ \
     analysis/3_alignment/qc/*_flagstat.txt \
     analysis/3_alignment/qc/*_dup_metrics.txt \
     analysis/3_alignment/qc/*_insert_size_metrics.txt \
+    --ignore "*_prefilter_flagstat*" \
+    --ignore "*_prededup_flagstat*" \
     2> logs/multiqc_final.log
 
 # Create QC summary CSV with header
@@ -132,8 +130,8 @@ for sample in GFP_1 GFP_2 GFP_3 YAF_1 YAF_2 YAF_3; do
     log_message "Processing statistics for ${sample}..."
     
     # Read trimming metrics from JSON
-    if [[ -f analysis/2_quality_control/qc/${sample}_trimming_metrics.json ]]; then
-        trim_metrics=$(cat analysis/2_quality_control/qc/${sample}_trimming_metrics.json)
+    if [[ -f analysis/2_trimming/qc/${sample}_trimming_metrics.json ]]; then
+        trim_metrics=$(cat analysis/2_trimming/qc/${sample}_trimming_metrics.json)
         raw_reads=$(echo $trim_metrics | jq -r '.raw_r1_reads')
         clean_reads=$(echo $trim_metrics | jq -r '.clean_r1_reads')
         trim_retention=$(echo $trim_metrics | jq -r '.retention_rate')
