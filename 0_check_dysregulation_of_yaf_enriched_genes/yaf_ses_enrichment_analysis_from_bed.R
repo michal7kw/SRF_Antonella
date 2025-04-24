@@ -434,7 +434,7 @@ if (nrow(up_signal) > 0 || nrow(down_signal) > 0) {
   
   # Handle cases where one category might be empty
   if(nrow(all_signal) > 0) {
-     all_signal$regulation <- factor(all_signal$regulation, levels = c("Upregulated", "Downregulated"))
+     all_signal$regulation <- factor(all_signal$regulation, levels = c("Downregulated", "Upregulated")) # Reversed levels for plot consistency
   }
 
   # Save processed data
