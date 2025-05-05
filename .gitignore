@@ -96,3 +96,4 @@ SRF_SES_V5/data_from_ncbi_corrected/logs/
 git_image_results/
 git_pdf_results/
 COMMON/
+ensembl_symbol_cache.pkl
