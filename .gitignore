@@ -84,6 +84,8 @@ COMMON_DATA/genome_star/
 *.out
 *.tmp
 *.tmp*
+# Ignore large TSS matrix files
+*.tab
 
 # R and analysis files
 *.json
