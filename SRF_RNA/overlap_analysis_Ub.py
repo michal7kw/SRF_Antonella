@@ -105,7 +105,7 @@ promoter_coords_df.head()
 
 # %%
 # peaks_dir = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_RNA/peaks_Ub"
-peaks_dir = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling"
+peaks_dir = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_v2"
 peak_files = glob.glob(os.path.join(peaks_dir, '*_broad_peaks_final.broadPeak'))
 print(f"Found {len(peak_files)} peak files")
 

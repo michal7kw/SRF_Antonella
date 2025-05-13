@@ -1,3 +1,4 @@
+
 #' This script performs differential binding analysis on H2AK119Ub ChIP-seq data
 #' comparing YAF and GFP samples. It identifies regions with significantly different
 #' H2AK119Ub levels between conditions.
@@ -133,9 +134,16 @@ fix_peak_files <- function(peak_files) {
                 }
             }
             
-            # Ensure chromosome format is consistent (with "chr" prefix)
-            if (!grepl("^chr", fields[1])) {
-                fields[1] <- paste0("chr", fields[1])
+            # Standardize chromosome format: REMOVE "chr" prefix
+            # This assumes BAM files use "1", "2", "MT" etc.
+            if (grepl("^chr", fields[1])) {
+                fields[1] <- sub("^chr", "", fields[1])
+            }
+            
+            # Ensure chromosome name is not empty or NA after 'chr' removal or originally
+            if (is.na(fields[1]) || nchar(trimws(fields[1])) == 0) {
+                log_message(sprintf("Skipping line in %s due to empty or NA chromosome name (original line: '%s')", file, line), "WARNING")
+                next
             }
             
             # Ensure numeric fields are valid numbers
@@ -210,9 +218,10 @@ perform_diffbind <- function(samples) {
     
     # Count reads with less stringent parameters
     log_message("Counting reads with adjusted parameters...")
-    dba_data <- dba.count(dba_data, 
+    dba_data <- dba.count(dba_data,
                           bUseSummarizeOverlaps = TRUE,
-                          minCount = 0,       # Keep this at 0 to include all sites
+                          filter = 0, # Explicitly set filter
+                          minCount = 0,       # Keep for clarity
                           bRemoveDuplicates = TRUE,
                           score = DBA_SCORE_READS,
                           summits = FALSE)
@@ -224,6 +233,8 @@ perform_diffbind <- function(samples) {
     if(sum(count_info$Reads) == 0) {
         stop("No reads were counted across any samples")
     }
+    log_message("Full dba_data object state after dba.count:")
+    print(dba_data)
     
     # Normalize and perform differential analysis with less stringent parameters
     log_message("Performing differential analysis with adjusted parameters...")
@@ -240,99 +251,85 @@ perform_diffbind <- function(samples) {
     print(dba.show(dba_data, bContrasts = TRUE))
 
     # Add this before dba.analyze
-    log_message("Binding site statistics before filtering:")
-    print(summary(dba.count(dba_data)))
+    log_message("Binding site statistics before dba.analyze (summary of DBA object):")
+    print(summary(dba_data)) # Changed from dba.count(dba_data)
 
     # Save a baseline count report for debugging
     write.csv(dba.peakset(dba_data, bRetrieve=TRUE), 
             file.path(OUTPUT_DIR, "pre_analysis_binding_sites.csv"))
     
+    log_message("Inspecting dba_data object just before primary dba.analyze call:")
+    if(is.null(dba_data$binding) || nrow(dba_data$binding) == 0) {
+        log_message("ERROR: dba_data$binding (counts) is null or has 0 rows before dba.analyze!")
+    } else {
+        log_message(sprintf("Number of sites (rows in count table) in dba_data: %d", nrow(dba_data$binding)))
+        log_message(sprintf("Number of samples (cols in count table) in dba_data: %d", ncol(dba_data$binding)))
+    }
+    if (!is.null(dba_data$DESeq2$object)) {
+        log_message("DESeq2 object already exists in dba_data, which is unexpected here.")
+    } else {
+        log_message("DESeq2 object does not exist yet in dba_data (expected).")
+    }
+    
     tryCatch({
-        log_message("Starting DESeq2 analysis with adjusted parameters...")
+        log_message("Starting DESeq2 analysis with default DiffBind settings...")
         
-        # Before analysis, inspect count distribution
-        count_matrix <- dba.peakset(dba_data, bRetrieve=TRUE, DataType=DBA_DATA_FRAME)
-        log_message(sprintf("Count matrix dimensions: %d rows x %d columns", nrow(count_matrix), ncol(count_matrix)))
+        # Before analysis, inspect count distribution from the DBA object
+        # This reflects the matrix that will be used by dba.analyze
+        if(!is.null(dba_data$binding) && nrow(dba_data$binding) > 0 && ncol(dba_data$binding) > 0) {
+            log_message(sprintf("Internal count matrix (dba_data$binding) dimensions: %d sites x %d samples",
+                                nrow(dba_data$binding), ncol(dba_data$binding)))
+            # Save this internal count matrix for troubleshooting if needed
+            write.csv(as.data.frame(dba_data$binding), file.path(OUTPUT_DIR, "internal_raw_count_matrix_before_analyze.csv"), row.names = TRUE)
+        } else {
+            log_message("WARNING: dba_data$binding is NULL or empty before dba.analyze call.")
+        }
+
+        # Simplest dba.analyze call for DESeq2
+        # This allows DESeq2 to use its own default filtering mechanisms
+        dba_data_analyzed <- dba.analyze(dba_data, method = DBA_DESEQ2)
         
-        # Save count data for troubleshooting
-        write.csv(count_matrix, file.path(OUTPUT_DIR, "raw_count_matrix.csv"), row.names = FALSE)
-        
-        # Try a completely different approach if normal analysis fails
-        log_message("Attempting alternative analysis approach...")
-        
-        # First try the standard approach with completely disabled filtering
-        tryCatch({
-            dba_data <- dba.analyze(dba_data, 
-                           method = DBA_DESEQ2,
-                           bSubControl = FALSE,
-                           bFullLibrarySize = TRUE,
-                           bReduceObjects = FALSE,
-                           filter = FALSE,
-                           bTagwise = TRUE)
-            
-            log_message("Primary DESeq2 analysis completed successfully")
-        }, error = function(e) {
-            log_message(sprintf("Primary analysis failed: %s. Trying fallback approach.", e$message), "WARNING")
-            
-            # FALLBACK: Create a simpler DiffBind object and try again with minimal options
-            log_message("Re-creating DiffBind object with minimal configuration...")
-            dba_data <<- dba(sampleSheet = samples,
-                          minOverlap = 1,
-                          peakCaller = "broad")
-            
-            dba_data <<- dba.count(dba_data, 
-                               bParallel = TRUE,
-                               bUseSummarizeOverlaps = TRUE,
-                               minCount = 0)
-            
-            log_message("Re-normalizing with minimal parameters...")
-            dba_data <<- dba.normalize(dba_data, normalize = DBA_NORM_LIB)
-            
-            log_message("Setting up minimal contrasts...")
-            dba_data <<- dba.contrast(dba_data, 
-                                  categories = DBA_CONDITION, 
-                                  minMembers = 1)
-            
-            log_message("Attempting fallback analysis with minimal parameters...")
-            dba_data <<- dba.analyze(dba_data, 
-                                method = DBA_DESEQ2,
-                                bTagwise = FALSE,
-                                bFullLibrarySize = TRUE,
-                                filter = 1,
-                                bReduceObjects = TRUE)
-        })
-        
-        # After analysis complete
-        log_message("DESeq2 analysis completed successfully")
+        log_message("DESeq2 analysis (dba.analyze) completed successfully.")
         
         # Get detailed statistics about the analysis
-        analysis_stats <- dba.show(dba_data, bContrasts = TRUE)
+        analysis_stats <- dba.show(dba_data_analyzed, bContrasts = TRUE)
         log_message("Analysis statistics:")
         print(analysis_stats)
         
-        # Plot dispersion estimates
-        pdf(file.path(OUTPUT_DIR, "dispersion_plots.pdf"))
+        # Plot dispersion estimates using the analyzed object
+        pdf(file.path(OUTPUT_DIR, "differential_analysis_plots.pdf"))
         tryCatch({
-            dba.plotHeatmap(dba_data)
-            title("Sample correlation heatmap")
+            log_message("Plotting Heatmap...")
+            dba.plotHeatmap(dba_data_analyzed, contrast=1) # Plot for the first contrast
+            title("Sample Correlation Heatmap (Post-Analysis)")
             
-            dba.plotPCA(dba_data, DBA_CONDITION, label=DBA_ID)
-            title("PCA plot of samples")
+            log_message("Plotting PCA...")
+            dba.plotPCA(dba_data_analyzed, contrast=1, label=DBA_ID)
+            title("PCA Plot (Post-Analysis)")
             
-            dba.plotMA(dba_data)
-            title("MA plot of differential binding")
+            log_message("Plotting MA Plot...")
+            dba.plotMA(dba_data_analyzed, contrast=1)
+            title("MA Plot (Post-Analysis)")
             
-            dba.plotVolcano(dba_data)
-            title("Volcano plot of differential binding")
-        }, error = function(e) {
-            log_message(sprintf("Warning: Could not generate some plots: %s", e$message), "WARNING")
+            log_message("Plotting Volcano Plot...")
+            dba.plotVolcano(dba_data_analyzed, contrast=1)
+            title("Volcano Plot (Post-Analysis)")
+            
+        }, error = function(e_plot) {
+            log_message(sprintf("Warning: Could not generate some post-analysis plots: %s", e_plot$message), "WARNING")
         }, finally = {
-            dev.off()
+            if(length(dev.list()) > 0) dev.off() # Ensure device is closed if plots were attempted
         })
         
-    }, error = function(e) {
-        log_message(sprintf("Error in differential analysis: %s", e$message), "ERROR")
-        stop(sprintf("Differential analysis failed: %s", e$message))
+        # Assign the analyzed object back to dba_data for reporting
+        dba_data <- dba_data_analyzed
+        
+    }, error = function(e_analyze) {
+        log_message(sprintf("Error in differential analysis (dba.analyze): %s", e_analyze$message), "ERROR")
+        # Save the DBA object *before* the error for inspection
+        saveRDS(dba_data, file.path(OUTPUT_DIR, "dba_object_before_analyze_error.rds"))
+        log_message("Saved dba_data object (pre-analysis attempt) to dba_object_before_analyze_error.rds for inspection.")
+        stop(sprintf("Differential analysis (dba.analyze) failed: %s", e_analyze$message))
     })
     
     log_message("Extracting results with less stringent threshold...")
@@ -386,3 +383,4 @@ sample_sheet_file <- file.path(OUTPUT_DIR, "complete_sample_sheet.csv")
 write.csv(samples, sample_sheet_file, row.names = FALSE)
 
 log_message("Successfully completed differential binding analysis")
+

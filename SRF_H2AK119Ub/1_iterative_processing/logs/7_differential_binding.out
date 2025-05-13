@@ -1,41 +1,45 @@
-[2025-03-18 22:16:53] INFO: Starting differential binding analysis for broad peaks
-[2025-03-18 22:16:53] INFO: Standardizing chromosome names in analysis/5_peak_calling/GFP_1_broad_peaks_final.broadPeak
-[2025-03-18 22:16:53] INFO: Detected chromosome format: numeric
-[2025-03-18 22:18:37] INFO: Successfully processed 156254 peaks in analysis/5_peak_calling/GFP_1_broad_peaks_final.broadPeak
-[2025-03-18 22:18:37] INFO: Standardizing chromosome names in analysis/5_peak_calling/GFP_3_broad_peaks_final.broadPeak
-[2025-03-18 22:18:37] INFO: Detected chromosome format: numeric
-[2025-03-18 22:20:05] INFO: Successfully processed 142889 peaks in analysis/5_peak_calling/GFP_3_broad_peaks_final.broadPeak
-[2025-03-18 22:20:05] INFO: Standardizing chromosome names in analysis/5_peak_calling/YAF_2_broad_peaks_final.broadPeak
-[2025-03-18 22:20:06] INFO: Detected chromosome format: numeric
-[2025-03-18 22:22:47] INFO: Successfully processed 192175 peaks in analysis/5_peak_calling/YAF_2_broad_peaks_final.broadPeak
-[2025-03-18 22:22:47] INFO: Standardizing chromosome names in analysis/5_peak_calling/YAF_3_broad_peaks_final.broadPeak
-[2025-03-18 22:22:47] INFO: Detected chromosome format: numeric
-[2025-03-18 22:25:35] INFO: Successfully processed 195022 peaks in analysis/5_peak_calling/YAF_3_broad_peaks_final.broadPeak
-[2025-03-18 22:25:35] INFO: Creating DiffBind object...
-[2025-03-18 22:25:46] INFO: Initial peak counts per sample:
+[2025-05-07 14:12:47] INFO: Starting differential binding analysis for broad peaks
+[2025-05-07 14:12:47] INFO: Standardizing chromosome names in analysis/5_peak_calling_v2/GFP_1_broad_peaks_final.broadPeak
+[2025-05-07 14:12:48] INFO: Detected chromosome format: numeric
+[2025-05-07 14:14:01] INFO: Successfully processed 136654 peaks in analysis/5_peak_calling_v2/GFP_1_broad_peaks_final.broadPeak
+[2025-05-07 14:14:01] INFO: Standardizing chromosome names in analysis/5_peak_calling_v2/GFP_3_broad_peaks_final.broadPeak
+[2025-05-07 14:14:02] INFO: Detected chromosome format: numeric
+[2025-05-07 14:15:01] INFO: Successfully processed 126135 peaks in analysis/5_peak_calling_v2/GFP_3_broad_peaks_final.broadPeak
+[2025-05-07 14:15:01] INFO: Standardizing chromosome names in analysis/5_peak_calling_v2/YAF_2_broad_peaks_final.broadPeak
+[2025-05-07 14:15:02] INFO: Detected chromosome format: numeric
+[2025-05-07 14:18:50] INFO: Successfully processed 211646 peaks in analysis/5_peak_calling_v2/YAF_2_broad_peaks_final.broadPeak
+[2025-05-07 14:18:50] INFO: Standardizing chromosome names in analysis/5_peak_calling_v2/YAF_3_broad_peaks_final.broadPeak
+[2025-05-07 14:18:51] INFO: Detected chromosome format: numeric
+[2025-05-07 14:21:32] INFO: Successfully processed 188947 peaks in analysis/5_peak_calling_v2/YAF_3_broad_peaks_final.broadPeak
+[2025-05-07 14:21:32] INFO: Creating DiffBind object...
+[2025-05-07 14:21:41] INFO: Initial peak counts per sample:
      ID    Factor Condition Replicate Caller Intervals
-1 GFP_1 H2AK119Ub       GFP         1  broad    156254
-2 GFP_3 H2AK119Ub       GFP         3  broad    142889
-3 YAF_2 H2AK119Ub       YAF         2  broad    192175
-4 YAF_3 H2AK119Ub       YAF         3  broad    195022
-[2025-03-18 22:25:46] INFO: Counting reads...
-[2025-03-18 22:34:06] INFO: After counting - sample statistics:
+1 GFP_1 H2AK119Ub       GFP         1  broad    136654
+2 GFP_3 H2AK119Ub       GFP         3  broad    126135
+3 YAF_2 H2AK119Ub       YAF         2  broad    211646
+4 YAF_3 H2AK119Ub       YAF         3  broad    188947
+[2025-05-07 14:21:41] INFO: Counting reads...
+[2025-05-07 14:32:29] INFO: dba.count completed. After counting - sample statistics:
      ID    Factor Condition Replicate Caller Intervals    Reads FRiP
-1 GFP_1 H2AK119Ub       GFP         1 counts    108819 28384290 0.35
-2 GFP_3 H2AK119Ub       GFP         3 counts    108819 26365047 0.35
-3 YAF_2 H2AK119Ub       YAF         2 counts    108819 48095918 0.30
-4 YAF_3 H2AK119Ub       YAF         3 counts    108819 34552500 0.29
-[2025-03-18 22:34:06] INFO: Performing differential analysis...
-[2025-03-18 22:34:06] INFO: Setting up contrasts...
-[2025-03-18 22:34:08] INFO: Contrast information:
+1 GFP_1 H2AK119Ub       GFP         1 counts    149631 28384290 0.64
+2 GFP_3 H2AK119Ub       GFP         3 counts    149631 26365047 0.65
+3 YAF_2 H2AK119Ub       YAF         2 counts    149631 48095918 0.56
+4 YAF_3 H2AK119Ub       YAF         3 counts    149631 34552500 0.53
+[2025-05-07 14:32:29] INFO: Full dba_data object state after dba.count:
+4 Samples, 149631 sites in matrix:
+     ID    Factor Condition Replicate    Reads FRiP
+1 GFP_1 H2AK119Ub       GFP         1 28384290 0.64
+2 GFP_3 H2AK119Ub       GFP         3 26365047 0.65
+3 YAF_2 H2AK119Ub       YAF         2 48095918 0.56
+4 YAF_3 H2AK119Ub       YAF         3 34552500 0.53
+[2025-05-07 14:32:29] INFO: Performing differential analysis...
+[2025-05-07 14:32:29] INFO: Setting up contrasts...
+[2025-05-07 14:32:30] INFO: Contrast information:
      Factor Group Samples Group2 Samples2
 1 Condition   YAF       2    GFP        2
-[2025-03-18 22:34:08] INFO: Starting DESeq2 analysis with dispersion estimation...
-[2025-03-18 22:34:29] INFO: DESeq2 analysis completed successfully
-[2025-03-18 22:34:29] INFO: Analysis statistics:
-     Factor Group Samples Group2 Samples2 DB.DESeq2
-1 Condition   YAF       2    GFP        2     44347
-[2025-03-18 22:34:38] INFO: Extracting results...
-[2025-03-18 22:34:40] INFO: Saving results...
-[2025-03-18 22:34:47] INFO: Found 108785 differential binding sites
-[2025-03-18 22:34:47] INFO: Successfully completed differential binding analysis
+[2025-05-07 14:32:30] INFO: Inspecting dba_data object just before dba.analyze call:
+[2025-05-07 14:32:30] INFO: Number of sites (rows in count table) in dba_data: 149631
+[2025-05-07 14:32:30] INFO: Number of samples (cols in count table) in dba_data: 7
+[2025-05-07 14:32:30] INFO: DESeq2 object does not exist yet in dba_data (expected).
+[2025-05-07 14:32:30] INFO: Starting DESeq2 analysis with dispersion estimation...
+[2025-05-07 14:32:30] ERROR: Error in differential analysis: unused argument (filter = 0)

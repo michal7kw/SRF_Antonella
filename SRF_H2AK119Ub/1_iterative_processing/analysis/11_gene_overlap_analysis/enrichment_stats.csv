@@ -1,3 +1,2 @@
 is_sox2_target,mean,std,count
-False,0.369,0.944,5698
-True,0.563,0.903,3638
+False,0.444,0.933,9336

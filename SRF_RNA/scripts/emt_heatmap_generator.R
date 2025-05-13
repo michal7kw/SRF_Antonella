@@ -16,11 +16,34 @@ suppressPackageStartupMessages({
 
 # --- EMT Gene List ---
 # Provided list of EMT-associated genes
+# emt_gene_list <- unique(c(
+#     "CDH1", "CDH2", "VIM", "ZEB1", "SNAI1", "SNAI2", "TWIST1", "TGFB1", # Corrected TGF-beta1
+#     "SMAD3", "ILK", "HIF1A", "EGFR", "CTNNB1", "FOXC2", "CCN2", "EPCAM",
+#     "CLDN4", "SERPINE1", "ESRP1", "MMP2", "MMP9", "FZD7", "LRP6", "AKT1",
+#     "RHOA", "RAC1", "GSK3B", "VEGFA", "NFKB1" # Corrected VEGF to VEGFA assuming common symbol
+# ))
 emt_gene_list <- unique(c(
-    "CDH1", "CDH2", "VIM", "ZEB1", "SNAI1", "SNAI2", "TWIST1", "TGFB1", # Corrected TGF-beta1
-    "SMAD3", "ILK", "HIF1A", "EGFR", "CTNNB1", "FOXC2", "CCN2", "EPCAM",
-    "CLDN4", "SERPINE1", "ESRP1", "MMP2", "MMP9", "FZD7", "LRP6", "AKT1",
-    "RHOA", "RAC1", "GSK3B", "VEGFA", "NFKB1" # Corrected VEGF to VEGFA assuming common symbol
+    "ZEB1",
+    "ZEB2",
+    "SNAI1",
+    "SNAI2",
+    "TWIST1",
+    "VIM",
+    "CDH1",
+    "CDH2",
+    "TGFB-1",
+    "HF1-alfa",
+    "NFKB1",
+    "SMAD2",
+    "SMAD3",
+    "CLDN4",
+    "CCN2",
+    "SERPINE1",
+    "LRP6",
+    "CTNNB1",
+    "SLUG",
+    "AKT1",
+    "EpCAM"
 ))
 # Note: Duplicates like ILK, HIF1A, EGFR, ESRP1 were removed by unique().
 # Note: Corrected TGF-beta1 to TGFB1 and VEGF to VEGFA (common gene symbols). Adjust if needed.

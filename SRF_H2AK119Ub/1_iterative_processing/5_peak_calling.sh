@@ -1,19 +1,8 @@
 #!/bin/bash
 
-# Usage: sbatch 5_peak_calling.sh
+# Usage: bash 5_peak_calling.sh <sample_index>
+# Example: bash 5_peak_calling.sh 0  (for GFP_1)
 # Note: This script processes one sample at a time. Run multiple instances for parallel processing.
-
-#SBATCH --job-name=5_peak_calling
-#SBATCH --account=kubacki.michal
-#SBATCH --mem=32GB
-#SBATCH --time=72:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=8
-#SBATCH --array=0-5
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/5_peak_calling.err"
-#SBATCH --output="logs/5_peak_calling.out"
 
 # Documentation:
 # This script performs peak calling and filtering on CUT&Tag data using MACS2
@@ -31,21 +20,26 @@
 # - ../COMMON_DATA/hg38-blacklist.v2.bed - ENCODE blacklist regions
 
 # Output files (per sample):
-# - analysis/5_peak_calling/{sample}_broad_peaks.broadPeak - Raw MACS2 peaks
-# - analysis/5_peak_calling/{sample}_broad_peaks_filtered.broadPeak - Quality filtered peaks
-# - analysis/5_peak_calling/{sample}_broad_peaks_final.broadPeak - Blacklist filtered peaks
-# - analysis/5_peak_calling/{sample}_broad_peaks_viz.broadPeak - Visualization-optimized peaks
-# - analysis/5_peak_calling/{sample}_metrics.csv - Peak calling QC metrics
-# - analysis/5_peak_calling/{sample}_peak_stats.txt - Peak statistics
+# - {sample}_broad_peaks.broadPeak - Raw MACS2 peaks
+# - {sample}_broad_peaks_filtered.broadPeak - Quality filtered peaks
+# - {sample}_broad_peaks_final.broadPeak - Blacklist filtered peaks
+# - {sample}_broad_peaks_viz.broadPeak - Visualization-optimized peaks
+# - {sample}_metrics.csv - Peak calling QC metrics
+# - {sample}_peak_stats.txt - Peak statistics
 
 set -e  # Exit on error
 set -u  # Exit on undefined variable
 
-# Add trap for cleanup
-trap 'echo "Cleaning up temporary directory: $TMPDIR"; rm -rf "$TMPDIR"' EXIT
+# Add trap for cleanup (Commented out for local execution)
+# trap 'echo "Cleaning up temporary directory: $TMPDIR"; rm -rf "$TMPDIR"' EXIT
 
-# Use SLURM_ARRAY_TASK_ID directly instead of command-line argument
-SAMPLE_INDEX=$SLURM_ARRAY_TASK_ID
+# Check for command-line argument
+if [ -z "$1" ]; then
+    echo "Usage: $0 <sample_index>"
+    echo "Provide the index (0-5) of the sample to process."
+    exit 1
+fi
+SAMPLE_INDEX=$1
 
 # Activate conda environment with required tools
 # Ensure the 'snakemake' conda environment is active before running this script
@@ -98,7 +92,7 @@ sample=${samples[$SAMPLE_INDEX]}
 # Verify input files exist
 INPUT_BAM="analysis/3_alignment/${sample}.dedup.bam"
 INPUT_BAI="analysis/3_alignment/${sample}.dedup.bam.bai"
-BLACKLIST_BED="../COMMON_DATA/hg38-blacklist.v2.bed" # Relative path
+BLACKLIST_BED="../../COMMON_DATA/hg38-blacklist.v2.bed" # Relative path
 
 if [[ ! -f $INPUT_BAM ]]; then
     echo "Error: Input BAM not found: $INPUT_BAM"
@@ -318,9 +312,24 @@ echo "FRiP score: $frip"
 echo "Output files are in ${OUTPUT_DIR}"
 echo "Temporary files are in ${SAMPLE_TMP}"
 
-# Clean up temporary files at the very end
-# echo "Cleaning up temporary directory: ${SAMPLE_TMP}"
-# rm -rf "${SAMPLE_TMP}"
-echo "Note: Temporary directory ${SAMPLE_TMP} was not removed."
+# Clean up temporary files at the very end (Commented out for local execution)
+echo "Cleaning up temporary directory: ${SAMPLE_TMP}"
+rm -rf "${SAMPLE_TMP}"
+# echo "Note: Temporary directory ${SAMPLE_TMP} was not removed."
 
 echo "Script finished successfully for ${sample}."
+
+## To Run ##
+# bash 5_peak_calling.sh 0
+
+# for i in {0..5}; do
+#     bash 5_peak_calling.sh $i
+# done
+
+# Set N to the max number of parallel jobs
+# N=6
+# seq 0 5 | parallel -j $N bash 5_peak_calling.sh {}
+
+# Set N to the max number of parallel jobs
+# N=6
+# printf "%s\n" {0..5} | xargs -I {} -P $N bash 5_peak_calling.sh {}

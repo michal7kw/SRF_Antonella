@@ -4,18 +4,6 @@
 # Example: bash 5_peak_calling_strict.sh 0  (for GFP_1)
 # Note: This script processes one sample at a time. Run multiple instances for parallel processing.
 
-#SBATCH --job-name=5_peak_calling
-#SBATCH --account=kubacki.michal
-#SBATCH --mem=32GB
-#SBATCH --time=72:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=8
-#SBATCH --array=0-5
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/5_peak_calling.err"
-#SBATCH --output="logs/5_peak_calling.out"
-
 # Documentation:
 # This script performs peak calling and filtering on CUT&Tag data using MACS2
 # It processes multiple samples sequentially based on command-line input.
@@ -102,7 +90,7 @@ sample=${samples[$SAMPLE_INDEX]}
 # Verify input files exist
 INPUT_BAM="analysis/3_alignment/${sample}.dedup.bam"
 INPUT_BAI="analysis/3_alignment/${sample}.dedup.bam.bai"
-BLACKLIST_BED="../COMMON_DATA/hg38-blacklist.v2.bed" # Relative path
+BLACKLIST_BED="../../COMMON_DATA/hg38-blacklist.v2.bed" # Relative path
 
 if [[ ! -f $INPUT_BAM ]]; then
     echo "Error: Input BAM not found: $INPUT_BAM"
@@ -336,9 +324,24 @@ echo "Temporary files are in ${SAMPLE_TMP}"
 
 
 # Clean up temporary files at the very end
-# echo "Cleaning up temporary directory: ${SAMPLE_TMP}"
-# rm -rf "${SAMPLE_TMP}"
+echo "Cleaning up temporary directory: ${SAMPLE_TMP}"
+rm -rf "${SAMPLE_TMP}"
 # Consider leaving tmp dir for debugging or add option to keep/remove
-echo "Note: Temporary directory ${SAMPLE_TMP} was not removed."
+# echo "Note: Temporary directory ${SAMPLE_TMP} was not removed."
 
 echo "Script finished successfully for ${sample}."
+
+## To Run ##
+# bash 5_peak_calling_strict.sh 0
+
+# for i in {0..5}; do
+#     bash 5_peak_calling_strict.sh $i
+# done
+
+# Set N to the max number of parallel jobs
+# N=6
+# seq 0 5 | parallel -j $N bash 5_peak_calling_strict.sh {}
+
+# Set N to the max number of parallel jobs
+# N=6
+# printf "%s\n" {0..5} | xargs -I {} -P $N bash 5_peak_calling_strict.sh {}

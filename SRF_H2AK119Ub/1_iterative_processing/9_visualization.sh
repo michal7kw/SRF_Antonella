@@ -1,16 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=9_visualization
-#SBATCH --account=kubacki.michal
-#SBATCH --mem=64GB
-#SBATCH --time=6:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=16
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/9_visualization.err"
-#SBATCH --output="logs/9_visualization.out"
-
 # Documentation:
+# This version is adapted for local execution.
 # This script creates visualizations for ChIP-seq peak analysis results.
 # It generates plots and statistics to help interpret the differential binding analysis
 # between YAF and GFP samples.
@@ -47,21 +37,24 @@ log_message() {
 }
 
 # Activate conda environment
-source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate snakemake
+# Ensure the correct conda environment (e.g., 'snakemake' or one with R and required packages like ggplot2)
+# is active before running this script.
+# Example: conda activate your_r_env
+# source /opt/common/tools/ric.cosr/miniconda3/bin/activate # Removed cluster-specific path
+# conda activate snakemake # Assuming environment is already active
 
 # Define working directory
-WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
-cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exit 1; }
+WORKDIR="."
+cd $WORKDIR || { log_message "ERROR: Failed to change to working directory $WORKDIR"; exit 1; }
 
 # Define output directory
-OUTPUT_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/9_visualization"
-mkdir -p logs
+OUTPUT_DIR="analysis/9_visualization"
+mkdir -p logs ${OUTPUT_DIR}/{peak_analysis,gene_analysis,summary_statistics}
 
 # Check for required input files
 log_message "Checking input files..."
 files=(
-    "analysis/7_differential_binding/significant_peaks.rds"
+    "analysis/7_differential_binding_copy/significant_peaks.rds"
     "analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_full.csv"
 )
 for file in "${files[@]}"; do

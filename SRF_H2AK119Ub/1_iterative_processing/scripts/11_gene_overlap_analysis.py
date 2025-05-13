@@ -43,8 +43,12 @@ import sys
 
 # Define file paths and create output directory
 OUTPUT_DIR = sys.argv[1]
-YAF_PROMOTERS_FILE = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists/YAF_enriched_genes_broad_promoters.csv"
-SOX2_GENES_FILE = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/sox2_binding.csv"
+
+# BASE_PATH = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
+BASE_PATH = "D:/Github/SRF_H2AK119Ub_cross_V5"
+
+YAF_PROMOTERS_FILE = os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists/YAF_enriched_genes_broad_promoters.csv")
+SOX2_GENES_FILE = os.path.join(BASE_PATH, "COMMON_DATA/sox2_binding.csv")
 
 if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
@@ -52,7 +56,7 @@ if not os.path.exists(OUTPUT_DIR):
 def read_gene_list(file_path):
     """Read a list of genes from a file, one gene per line"""
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='latin-1') as f:
             return set(line.strip() for line in f if line.strip())
     except FileNotFoundError:
         print(f"Error: The file {file_path} was not found.")

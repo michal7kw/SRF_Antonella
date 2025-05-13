@@ -1,14 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=11_gene_overlap_analysis
-#SBATCH --account=kubacki.michal
-#SBATCH --mem=16GB
-#SBATCH --time=6:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=8
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/11_gene_overlap_analysis.err"
-#SBATCH --output="logs/11_gene_overlap_analysis.out"
+# This version is adapted for local execution.
 
 #### Input files: ####
 # - analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt:
@@ -43,7 +34,7 @@
 # AANAT
 # ---------------------------------------------------------------------------------------------------------
 
-#### Output files (in /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/11_gene_overlap_analysis/): ####
+#### Output files (in ./analysis/11_gene_overlap_analysis/ relative to script execution): ####
 # 1. venn_diagrams.png:
 #     - Two Venn diagrams showing overlap between YAF and SOX2 genes
 #     - One for all genes, one for genes in regulatory regions only
@@ -67,15 +58,18 @@ log_message() {
 }
 
 # Activate conda environment
-source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate snakemake
+# Ensure the correct conda environment (e.g., 'snakemake' or one with Python and required packages like pandas, matplotlib, matplotlib_venn)
+# is active before running this script.
+# Example: conda activate your_python_env
+# source /opt/common/tools/ric.cosr/miniconda3/bin/activate # Removed cluster-specific path
+# conda activate snakemake # Assuming environment is already active
 
 # Define working directory
-WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
-cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exit 1; }
+WORKDIR="."
+cd $WORKDIR || { log_message "ERROR: Failed to change to working directory $WORKDIR"; exit 1; }
 
 # Define output directory
-OUTPUT_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/11_gene_overlap_analysis"
+OUTPUT_DIR="analysis/11_gene_overlap_analysis"
 
 # Create necessary directories
 log_message "Creating output directories..."

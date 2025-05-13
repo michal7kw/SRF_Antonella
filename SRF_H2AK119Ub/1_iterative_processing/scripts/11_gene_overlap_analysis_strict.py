@@ -57,9 +57,12 @@ import sys
 
 # Define file paths and create output directory
 OUTPUT_DIR = sys.argv[1]
-YAF_GENES_FILE = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt"
-YAF_FULL_FILE = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict/gene_lists_broad/YAF_enriched_genes_broad_full.csv"
-SOX2_GENES_FILE = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/sox2_binding.csv"
+# BASE_PATH = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
+BASE_PATH = "D:/Github/SRF_H2AK119Ub_cross_V5"
+
+YAF_GENES_FILE =  os.file.path(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt")
+YAF_FULL_FILE =  os.file.path(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict/gene_lists_broad/YAF_enriched_genes_broad_full.csv")
+SOX2_GENES_FILE =  os.file.path(BASE_PATH, "COMMON_DATA/sox2_binding.csv")
 
 if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)

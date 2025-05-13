@@ -40,7 +40,7 @@ def merge_broadpeak_files(input_files, output_file):
 
 def main():
     # Directory containing the broadPeak files
-    directory = os.path.dirname(os.path.abspath(__file__))
+    directory ="D:/Github/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/data_from_ncbi_corrected/peaks"
     
     # Pattern for SES broadPeak files
     pattern = os.path.join(directory, "*SES_*_broadPeak.bed")

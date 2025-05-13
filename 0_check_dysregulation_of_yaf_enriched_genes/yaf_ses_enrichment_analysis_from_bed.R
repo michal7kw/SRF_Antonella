@@ -37,14 +37,14 @@ BASE_PATH <- "D:/Github/SRF_H2AK119Ub_cross_V5"
 
 # Set paths
 deseq_results_file <- file.path(BASE_PATH, "SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv")
-gtf_file <- file.path(BASE_PATH, "COMMON/gencode.v43.basic.annotation.gtf") # Use relative path within project if possible
+gtf_file <- file.path(BASE_PATH, "COMMON/gencode.v43.basic.annotation.gtf")
 
 # bigwig_dir <- "F:/SRF_data/Antonella/Ub/6_bigwig"
 bigwig_dir <- file.path(BASE_PATH, "DATA/6_bigwig")
 
 # Peak file paths
-yaf_peak_dir <- file.path(BASE_PATH, "DATA/5_peak_calling")
-ses_peak_dir <- file.path(BASE_PATH, "SRF_SES_V5/data_from_ncbi_corrected/peaks") # Updated path for BED files
+yaf_peak_dir <- file.path(BASE_PATH, "SRF_H2AK119Ub", "1_iterative_processing", "analysis", "5_peak_calling_v2")
+ses_peak_dir <- file.path(BASE_PATH, "SRF_SES_V5/data_from_ncbi_corrected/peaks")
 
 output_dir <- "YAF_SES_enrichment_results_bed" # Updated output dir name
 

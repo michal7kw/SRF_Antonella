@@ -256,20 +256,37 @@ perform_diffbind <- function(samples) {
     
     # Count reads (using parameters optimized for broad peaks)
     log_message("Counting reads...")
-    dba_data <- dba.count(dba_data, 
-                          bUseSummarizeOverlaps = TRUE,
-                          minCount = 0,       
-                          bRemoveDuplicates = TRUE,
-                          score = DBA_SCORE_READS,
-                          summits = FALSE)
-    
-    log_message("After counting - sample statistics:")
-    count_info <- dba.show(dba_data)
-    print(count_info)
-    
-    if(sum(count_info$Reads) == 0) {
-        stop("No reads were counted across any samples")
-    }
+    tryCatch({
+        dba_data <- dba.count(dba_data,
+                              bUseSummarizeOverlaps = TRUE,
+                              filter = 0, # Explicitly set filter
+                              minCount = 0, # Keep for clarity, though filter=0 should cover it
+                              bRemoveDuplicates = TRUE,
+                              score = DBA_SCORE_READS,
+                              summits = FALSE)
+        
+        log_message("dba.count completed. After counting - sample statistics:")
+        count_info <- dba.show(dba_data)
+        print(count_info)
+        
+        if(is.null(count_info) || sum(count_info$Reads) == 0) {
+             log_message("WARNING: No reads were counted across any samples, or count_info is NULL.")
+        }
+        
+        log_message("Full dba_data object state after dba.count:")
+        print(dba_data)
+        
+        if (is.null(dba_data$binding) || nrow(dba_data$binding) == 0) {
+            log_message("CRITICAL: dba_data$binding (counts table) is NULL or has 0 rows immediately after dba.count. This is the primary issue.")
+            stop("CRITICAL: Counts table (dba_data$binding) is empty after dba.count.")
+        }
+
+    }, error = function(e) {
+        log_message(sprintf("ERROR during dba.count: %s", e$message), level = "ERROR")
+        log_message("Printing dba_data object state before dba.count error:", level = "ERROR")
+        print(dba_data) # Print the state of dba_data before the error
+        stop(sprintf("Failed during dba.count: %s", e$message))
+    })
     
     # Normalize and perform differential analysis
     log_message("Performing differential analysis...")
@@ -286,11 +303,25 @@ perform_diffbind <- function(samples) {
     print(dba.show(dba_data, bContrasts = TRUE))
     
     tryCatch({
+        log_message("Inspecting dba_data object just before dba.analyze call:")
+        if(is.null(dba_data$binding) || nrow(dba_data$binding) == 0) {
+            log_message("ERROR: dba_data$binding (counts) is null or has 0 rows before dba.analyze!")
+        } else {
+            log_message(sprintf("Number of sites (rows in count table) in dba_data: %d", nrow(dba_data$binding)))
+            log_message(sprintf("Number of samples (cols in count table) in dba_data: %d", ncol(dba_data$binding)))
+        }
+        if (!is.null(dba_data$DESeq2$object)) {
+            log_message("DESeq2 object already exists in dba_data, which is unexpected here.")
+        } else {
+            log_message("DESeq2 object does not exist yet in dba_data (expected).")
+        }
+        
         log_message("Starting DESeq2 analysis with dispersion estimation...")
         
         # Analyze with DESeq2 method with correct parameters
-        dba_data <- dba.analyze(dba_data, 
-                       method = DBA_DESEQ2)
+        dba_data <- dba.analyze(dba_data,
+                       method = DBA_DESEQ2,
+                       filter = 0) # Attempt to disable sum-based pre-filtering
         
         log_message("DESeq2 analysis completed successfully")
         

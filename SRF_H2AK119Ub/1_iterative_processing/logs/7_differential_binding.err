@@ -1,39 +1,9 @@
-WARNING: overwriting environment variables set in the machine
-overwriting variable ['TMPDIR']
-[2025-03-18 22:15:59] Creating output directories...
-[2025-03-18 22:15:59] Using selected samples with similar peak counts: GFP_1 GFP_2 GFP_3 YAF_1 YAF_2 YAF_3
-[2025-03-18 22:15:59] Validating input files for all samples...
-[2025-03-18 22:16:00] Created backup of peak file for GFP_1
-[2025-03-18 22:16:00] Created backup of peak file for GFP_2
-[2025-03-18 22:16:00] Created backup of peak file for GFP_3
-[2025-03-18 22:16:00] Created backup of peak file for YAF_1
-[2025-03-18 22:16:00] Created backup of peak file for YAF_2
-[2025-03-18 22:16:00] Created backup of peak file for YAF_3
-[2025-03-18 22:16:00] Validating peak file format for GFP_1...
-[2025-03-18 22:16:01] Peak file validation completed for analysis/5_peak_calling/GFP_1_broad_peaks_final.broadPeak
-[2025-03-18 22:16:01] See analysis/5_peak_calling/GFP_1_broad_peaks_final.broadPeak.errors for validation report
-[2025-03-18 22:16:01] Peak validation completed for GFP_1
-[2025-03-18 22:16:01] Validating peak file format for GFP_2...
-[2025-03-18 22:16:01] Peak file validation completed for analysis/5_peak_calling/GFP_2_broad_peaks_final.broadPeak
-[2025-03-18 22:16:01] See analysis/5_peak_calling/GFP_2_broad_peaks_final.broadPeak.errors for validation report
-[2025-03-18 22:16:01] Peak validation completed for GFP_2
-[2025-03-18 22:16:01] Validating peak file format for GFP_3...
-[2025-03-18 22:16:02] Peak file validation completed for analysis/5_peak_calling/GFP_3_broad_peaks_final.broadPeak
-[2025-03-18 22:16:02] See analysis/5_peak_calling/GFP_3_broad_peaks_final.broadPeak.errors for validation report
-[2025-03-18 22:16:02] Peak validation completed for GFP_3
-[2025-03-18 22:16:02] Validating peak file format for YAF_1...
-[2025-03-18 22:16:02] Peak file validation completed for analysis/5_peak_calling/YAF_1_broad_peaks_final.broadPeak
-[2025-03-18 22:16:02] See analysis/5_peak_calling/YAF_1_broad_peaks_final.broadPeak.errors for validation report
-[2025-03-18 22:16:02] Peak validation completed for YAF_1
-[2025-03-18 22:16:02] Validating peak file format for YAF_2...
-[2025-03-18 22:16:02] Peak file validation completed for analysis/5_peak_calling/YAF_2_broad_peaks_final.broadPeak
-[2025-03-18 22:16:02] See analysis/5_peak_calling/YAF_2_broad_peaks_final.broadPeak.errors for validation report
-[2025-03-18 22:16:02] Peak validation completed for YAF_2
-[2025-03-18 22:16:02] Validating peak file format for YAF_3...
-[2025-03-18 22:16:03] Peak file validation completed for analysis/5_peak_calling/YAF_3_broad_peaks_final.broadPeak
-[2025-03-18 22:16:03] See analysis/5_peak_calling/YAF_3_broad_peaks_final.broadPeak.errors for validation report
-[2025-03-18 22:16:03] Peak validation completed for YAF_3
-[2025-03-18 22:16:03] Running differential binding analysis...
+Warning messages:
+1: package ‘GenomicRanges’ was built under R version 4.2.3 
+2: package ‘S4Vectors’ was built under R version 4.2.3 
+3: package ‘IRanges’ was built under R version 4.2.3 
+4: package ‘GenomeInfoDb’ was built under R version 4.2.3 
+5: package ‘Biobase’ was built under R version 4.2.3 
 GFP_1  H2AK119Ub GFP  1 broad
 GFP_3  H2AK119Ub GFP  3 broad
 YAF_2  H2AK119Ub YAF  2 broad
@@ -43,14 +13,7 @@ Reads will be counted as Paired-end.
 Reads will be counted as Paired-end.
 Reads will be counted as Paired-end.
 Computing results names...
-Applying Blacklist/Greylists...
-Genome detected: Hsapiens.NCBI.GRCh38
-Applying blacklist...
-Removed: 34 of 108819 intervals.
-Re-normalizing...
-Removed 34 (of 108819) consensus peaks.
-Analyzing...
-gene-wise dispersion estimates
-mean-dispersion relationship
-final dispersion estimates
-[2025-03-18 22:34:47] Differential binding analysis completed successfully
+Error in value[[3L]](cond) : 
+  Differential analysis failed: unused argument (filter = 0)
+Calls: perform_diffbind ... tryCatch -> tryCatchList -> tryCatchOne -> <Anonymous>
+Execution halted

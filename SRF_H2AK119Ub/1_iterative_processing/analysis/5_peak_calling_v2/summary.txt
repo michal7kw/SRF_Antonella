@@ -1,0 +1,7 @@
+Sample	Peak_Count
+GFP_1	MetricFileNotFound
+GFP_2	MetricFileNotFound
+GFP_3	MetricFileNotFound
+YAF_1	MetricFileNotFound
+YAF_2	MetricFileNotFound
+YAF_3	MetricFileNotFound

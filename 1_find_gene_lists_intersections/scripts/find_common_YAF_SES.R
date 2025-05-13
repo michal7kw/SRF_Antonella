@@ -12,6 +12,9 @@ suppressPackageStartupMessages({
   library(GenomicFeatures)
 })
 
+# BASE_PATH <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
+BASE_PATH <- "D:/Github/SRF_H2AK119Ub_cross_V5"
+
 # Function to read broadPeak files
 read_broadpeak <- function(file_path) {
   cat("Parsing", file_path, "\n")
@@ -137,13 +140,13 @@ process_data_and_save_results <- function(YAF_peaks, SES_peaks, promoters, outpu
 # Main function
 main <- function() {
   # Define base output directory
-  output_dir_base <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/1_find_gene_lists_intersections/output"
+  output_dir_base <- file.path(BASE_PATH, "1_find_gene_lists_intersections/output")
 
   # File paths for inputs
-  YAF_peak_file_standard <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/YAF.broadPeak" # Adjust path if needed
-  YAF_peak_file_strict <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/YAF.broadPeak" # Adjust path if needed
-  SES_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak"
-  gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
+  YAF_peak_file_standard <- file.path(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_v2/YAF.broadPeak")
+  YAF_peak_file_strict <- file.path(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict_v2/YAF.broadPeak")
+  SES_peak_file <- file.path(BASE_PATH, "SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak")
+  gtf_file <- file.path(BASE_PATH, "COMMON_DATA/gencode.v43.basic.annotation.gtf")
 
   # File paths for outputs
   output_file_standard <- file.path(output_dir_base, "YAF_SES_standard.csv")

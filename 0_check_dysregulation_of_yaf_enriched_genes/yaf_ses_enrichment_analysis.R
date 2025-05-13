@@ -43,7 +43,7 @@ gtf_file <- file.path(BASE_PATH, "COMMON/gencode.v43.basic.annotation.gtf") # Us
 bigwig_dir <- file.path(BASE_PATH, "DATA/6_bigwig")
 
 # Peak file paths
-yaf_peak_dir <- file.path(BASE_PATH, "DATA/5_peak_calling")
+yaf_peak_dir <- file.path(BASE_PATH, "SRF_H2AK119Ub", "1_iterative_processing", "analysis", "5_peak_calling_v2")
 ses_peak_dir <- file.path(BASE_PATH, "SRF_SES_V5/data_from_ncbi_corrected/peaks/SES")
 
 output_dir <- "YAF_SES_enrichment_results" # Updated output dir name

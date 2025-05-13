@@ -12,6 +12,9 @@ suppressPackageStartupMessages({
   library(GenomicFeatures)
 })
 
+# BASE_PATH <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
+BASE_PATH <- "D:/Github/SRF_H2AK119Ub_cross_V5"
+
 # Function to read broadPeak files
 read_broadpeak <- function(file_path) {
   cat("Parsing", file_path, "\n")
@@ -137,14 +140,14 @@ process_data_and_save_results <- function(GFP_peaks, SES_peaks, promoters, outpu
 # Main function
 main <- function() {
   # File paths
-  GFP_peak_file_standard <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling/GFP.broadPeak"
-  output_file_standard <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES.csv"
+  GFP_peak_file_standard <- file.path(BASE_PATH, "SRF_H2AK119Ub", "1_iterative_processing", "analysis", "5_peak_calling_v2", "GFP.broadPeak")
+  output_file_standard <- file.path(BASE_PATH, "GFP_SES.csv")
 
-  GFP_peak_file_strict <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict/GFP.broadPeak"
-  output_file_strict <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES_strict.csv"
+  GFP_peak_file_strict <- file.path(BASE_PATH, "SRF_H2AK119Ub", "1_iterative_processing", "analysis", "5_peak_calling_strict_v2", "GFP.broadPeak")
+  output_file_strict <- file.path(BASE_PATH, "GFP_SES_strict.csv")
   
-  SES_peak_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak"
-  gtf_file <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
+  SES_peak_file <- file.path(BASE_PATH, "SRF_SES_V5/results_data_from_ncbi_corrected/SES.broadPeak")
+  gtf_file <- file.path(BASE_PATH, "COMMON_DATA/gencode.v43.basic.annotation.gtf")
   
   # Extract gene information from GTF and get promoter regions (done once for both analyses)
   genes <- extract_genes_from_gtf(gtf_file)
@@ -168,7 +171,7 @@ main <- function() {
   cat("\nFound", length(common_genes), "genes common to both standard and strict analyses\n")
   
   # Create a comparison file
-  comparison_output <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/GFP_SES_comparison.csv"
+  comparison_output <- file.path(BASE_PATH, "1_find_gene_lists_intersections/output" "GFP_SES_comparison.csv")
   comparison_df <- data.frame(
     gene_id = common_genes,
     gene_name = standard_results$gene_name[match(common_genes, standard_results$gene_id)]

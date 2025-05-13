@@ -28,12 +28,12 @@
 # - hg38-blacklist.v2.bed - ENCODE blacklist regions
 
 # Output files (per sample):
-# - analysis/5_peak_calling/{sample}_broad_peaks.broadPeak - Raw MACS2 peaks
-# - analysis/5_peak_calling/{sample}_broad_peaks_filtered.broadPeak - Quality filtered peaks
-# - analysis/5_peak_calling/{sample}_broad_peaks_final.broadPeak - Blacklist filtered peaks
-# - analysis/5_peak_calling/{sample}_broad_peaks_viz.broadPeak - Visualization-optimized peaks
-# - analysis/5_peak_calling/{sample}_metrics.csv - Peak calling QC metrics
-# - analysis/5_peak_calling/{sample}_peak_stats.txt - Peak statistics
+# - {sample}_broad_peaks.broadPeak - Raw MACS2 peaks
+# - {sample}_broad_peaks_filtered.broadPeak - Quality filtered peaks
+# - {sample}_broad_peaks_final.broadPeak - Blacklist filtered peaks
+# - {sample}_broad_peaks_viz.broadPeak - Visualization-optimized peaks
+# - {sample}_metrics.csv - Peak calling QC metrics
+# - {sample}_peak_stats.txt - Peak statistics
 
 set -e  # Exit on error
 set -u  # Exit on undefined variable
