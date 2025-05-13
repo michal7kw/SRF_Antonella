@@ -85,6 +85,7 @@ COMMON_DATA/genome_star/
 *.tmp
 *.tmp*
 # Ignore large TSS matrix files
+SRF_H2AK119Ub/1_iterative_processing/analysis/6_metaprofile_tss/*/*_tss_matrix.tab
 *.tab
 
 # R and analysis files
