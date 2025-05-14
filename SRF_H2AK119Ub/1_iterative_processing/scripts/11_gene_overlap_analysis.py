@@ -40,6 +40,8 @@ from matplotlib_venn import venn2
 import seaborn as sns
 import numpy as np
 import sys
+import matplotlib
+matplotlib.use('Agg')
 
 # Define file paths and create output directory
 OUTPUT_DIR = sys.argv[1]

@@ -374,7 +374,7 @@ main() {
         # Count read pairs where *both* ends overlap the same peak by at least 50% (-f 0.5 -F 0.5 -e)
         # Note: -u reports each read pair once if it overlaps *any* peak.
         #       If using single-end reads, adjust intersect options.
-        reads_in_peaks=$(bedtools intersect -u -a "$chr_bam" -b "$final_peaks" -f 0.5 -F 0.5 -e -bedpe 2> "$frip_log" | samtools view -c -)
+        reads_in_peaks=$(bedtools intersect -u -a "$chr_bam" -b "$final_peaks" -f 0.5 -F 0.5 -e 2> "$frip_log" | samtools view -c -)
 
         if [[ $? -ne 0 ]]; then
              log "Warning: bedtools intersect failed during FRiP calculation for ${sample_name}. Check log: $frip_log"

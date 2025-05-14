@@ -123,13 +123,11 @@ main() {
     # Define output_dir and final plot paths early for the check
     local output_dir="${BASE_OUTPUT_DIR}/${sample_group_prefix}"
     local final_profile_plot_png="${output_dir}/${sample_group_prefix}_tss_profile.png"
-    local final_profile_plot_pdf="${output_dir}/${sample_group_prefix}_tss_profile.pdf"
 
     # Check if final plot outputs already exist
-    if [[ -f "${final_profile_plot_png}" && -s "${final_profile_plot_png}" && -f "${final_profile_plot_pdf}" && -s "${final_profile_plot_pdf}" ]]; then
-        log "Final profile PNG and PDF already exist for ${sample_group_prefix}:"
+    if [[ -f "${final_profile_plot_png}" && -s "${final_profile_plot_png}" ]]; then
+        log "Final profile PNG already exists for ${sample_group_prefix}:"
         log "  - ${final_profile_plot_png}"
-        log "  - ${final_profile_plot_pdf}"
         log "Skipping processing for this group."
         exit 0
     fi
@@ -181,7 +179,6 @@ main() {
     local matrix_tab="${output_dir}/${sample_group_prefix}_tss_matrix.tab"
     local matrix_bed="${output_dir}/${sample_group_prefix}_tss_matrix.bed"
     local profile_plot_png="${output_dir}/${sample_group_prefix}_tss_profile.png"
-    local profile_plot_pdf="${output_dir}/${sample_group_prefix}_tss_profile.pdf"
 
     # --- Verify Input Files/Placeholders ---
     [[ -f "$GENE_ANNOTATION_GTF" ]] || die "Gene annotation file not found: $GENE_ANNOTATION_GTF"
@@ -319,23 +316,7 @@ main() {
         >& "${plotProfile_log}" \
         || die "plotProfile (PNG) failed for ${sample_group_prefix}. Check log: ${plotProfile_log}"
 
-    # Plot PDF (reuse log, append)
-    plotProfile \
-        -m "${matrix_gz}" \
-        --plotType lines \
-        # --samplesLabel "${sample_group_prefix}" # Rely on label embedded in matrix by computeMatrix
-        -out "${profile_plot_pdf}" \
-        --colors "${plot_profile_color}" \
-        --plotHeight ${PLOT_PROFILE_HEIGHT} \
-        --plotWidth ${PLOT_PROFILE_WIDTH} \
-        --yAxisLabel "Average Signal" \
-        --plotTitle "${plot_title}" \
-        --verbose \
-        >> "${plotProfile_log}" 2>&1 \
-        || die "plotProfile (PDF) failed for ${sample_group_prefix}. Check log: ${plotProfile_log}"
-
     [[ -s "$profile_plot_png" ]] || die "plotProfile failed to produce PNG output file: $profile_plot_png. Check log: ${plotProfile_log}"
-    [[ -s "$profile_plot_pdf" ]] || die "plotProfile failed to produce PDF output file: $profile_plot_pdf. Check log: ${plotProfile_log}"
     log "plotProfile complete for ${sample_group_prefix}."
 
     # --- Final Summary ---
@@ -347,7 +328,6 @@ main() {
     log "Output Directory: ${output_dir}"
     log "Matrix File: ${matrix_gz}"
     log "Profile Plot (PNG): ${profile_plot_png}"
-    log "Profile Plot (PDF): ${profile_plot_pdf}"
     log "Temporary files were in: ${SAMPLE_GROUP_TMP_DIR}"
     log "--- Processing Complete for ${sample_group_prefix} ---"
 
