@@ -1,25 +1,16 @@
 #!/bin/bash
-#SBATCH --job-name=8_annotation_and_enrichment_strict
-#SBATCH --account=kubacki.michal
-#SBATCH --mem=64GB
-#SBATCH --time=12:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=16
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=kubacki.michal@hsr.it
-#SBATCH --error="logs/8_annotation_and_enrichment_strict.err"
-#SBATCH --output="logs/8_annotation_and_enrichment_strict.out"
 
 # Documentation:
+# This version is adapted for local execution.
 # This script performs annotation and enrichment analysis on peaks identified from
 # differential binding analysis. It takes the peaks, annotates them relative to genes,
 # performs GO enrichment analysis, and generates various visualizations.
 #
 # Input files:
-# - analysis/7_differential_binding_strict/significant_peaks.rds: GRanges object with significant differential peaks
+# - analysis/7_differential_binding/significant_peaks.rds: GRanges object with significant differential peaks
 #
 # Output files:
-# In analysis/8_annotation_and_enrichment_strict/annotation_strict/:
+# In analysis/8_annotation_and_enrichment/annotation/:
 #   figures/
 #     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
 #     - detailed_pie_chart.pdf: Detailed pie chart with genomic feature distribution
@@ -29,7 +20,7 @@
 #     - go_enrichment.csv: GO enrichment analysis results
 #   peak_annotation.rds: R object with full annotation data
 #
-# In analysis/8_annotation_and_enrichment_strict/gene_list/:
+# In analysis/8_annotation_and_enrichment/gene_lists/:
 #   - YAF_enriched_genes_full.csv: All enriched genes with details
 #   - YAF_enriched_genes_symbols.txt: List of gene symbols only
 #   - YAF_enriched_genes_promoters.txt: Genes associated with promoter regions
@@ -55,15 +46,18 @@ log_message() {
 }
 
 # Activate conda environment
-source /opt/common/tools/ric.cosr/miniconda3/bin/activate
-conda activate snakemake
+# Ensure the correct conda environment (e.g., 'snakemake' or one with R and required packages)
+# is active before running this script.
+# Example: conda activate your_r_env
+# source /opt/common/tools/ric.cosr/miniconda3/bin/activate # Removed cluster-specific path
+# conda activate snakemake # Assuming environment is already active
 
 # Define working directory
-WORKDIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing"
-cd $WORKDIR || { log_message "ERROR: Failed to change to working directory"; exit 1; }
+WORKDIR="."
+cd $WORKDIR || { log_message "ERROR: Failed to change to working directory $WORKDIR"; exit 1; }
 
 # Define directories
-INPUT_DIR="${WORKDIR}/analysis/7_differential_binding_strict"  # Input directory containing significant_peaks.rds
+INPUT_DIR="${WORKDIR}/analysis/7_differential_binding_strict_v2"  # Input directory containing significant_peaks.rds
 OUTPUT_DIR="${WORKDIR}/analysis/8_annotation_and_enrichment_strict"
 
 # Create necessary directories
@@ -89,3 +83,6 @@ log_message "Running annotation and enrichment analysis..."
 Rscript scripts/8_annotation_and_enrichment.R "${OUTPUT_DIR}" "${INPUT_DIR}"
 
 log_message "Annotation and enrichment analysis completed"
+
+# dos2unix SRF_H2AK119Ub/1_iterative_processing/8_annotation_and_enrichment.sh
+

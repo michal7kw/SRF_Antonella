@@ -1,7 +1,7 @@
 Sample	Peak_Count
-GFP_1	MetricFileNotFound
-GFP_2	MetricFileNotFound
-GFP_3	MetricFileNotFound
-YAF_1	MetricFileNotFound
-YAF_2	MetricFileNotFound
-YAF_3	MetricFileNotFound
+GFP_1	136655
+GFP_2	125773
+GFP_3	126138
+YAF_1	137730
+YAF_2	211650
+YAF_3	188948

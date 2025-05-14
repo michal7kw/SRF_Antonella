@@ -5,15 +5,25 @@ Warning messages:
 4: package ‘GenomeInfoDb’ was built under R version 4.2.3 
 5: package ‘Biobase’ was built under R version 4.2.3 
 GFP_1  H2AK119Ub GFP  1 broad
+GFP_2  H2AK119Ub GFP  2 broad
 GFP_3  H2AK119Ub GFP  3 broad
+YAF_1  H2AK119Ub YAF  1 broad
 YAF_2  H2AK119Ub YAF  2 broad
 YAF_3  H2AK119Ub YAF  3 broad
 Reads will be counted as Paired-end.
 Reads will be counted as Paired-end.
 Reads will be counted as Paired-end.
 Reads will be counted as Paired-end.
+Reads will be counted as Paired-end.
+Reads will be counted as Paired-end.
 Computing results names...
-Error in value[[3L]](cond) : 
-  Differential analysis failed: unused argument (filter = 0)
-Calls: perform_diffbind ... tryCatch -> tryCatchList -> tryCatchOne -> <Anonymous>
-Execution halted
+Applying Blacklist/Greylists...
+Genome detected: Hsapiens.NCBI.GRCh38
+Applying blacklist...
+Removed: 101 of 162748 intervals.
+Re-normalizing...
+Removed 101 (of 162748) consensus peaks.
+Analyzing...
+gene-wise dispersion estimates
+mean-dispersion relationship
+final dispersion estimates

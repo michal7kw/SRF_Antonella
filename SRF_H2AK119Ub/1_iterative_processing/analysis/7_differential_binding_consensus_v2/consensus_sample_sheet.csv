@@ -1,0 +1,5 @@
+"SampleID","Factor","Condition","Replicate","bamReads","Peaks","PeakCaller"
+"GFP_1","H2AK119Ub","GFP",1,"analysis/3_alignment/GFP_1.dedup.bam","analysis/6_consensus_peaks/GFP_consensus_peaks.bed","bed"
+"GFP_3","H2AK119Ub","GFP",3,"analysis/3_alignment/GFP_3.dedup.bam","analysis/6_consensus_peaks/GFP_consensus_peaks.bed","bed"
+"YAF_2","H2AK119Ub","YAF",2,"analysis/3_alignment/YAF_2.dedup.bam","analysis/6_consensus_peaks/YAF_consensus_peaks.bed","bed"
+"YAF_3","H2AK119Ub","YAF",3,"analysis/3_alignment/YAF_3.dedup.bam","analysis/6_consensus_peaks/YAF_consensus_peaks.bed","bed"

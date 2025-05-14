@@ -51,7 +51,7 @@ ALIGNMENT_DIR="${SCRIPT_DIR}/analysis/3_alignment"
 # Output directory (relative to SCRIPT_DIR, assuming it's inside 1_iterative_processing)
 BASE_OUTPUT_DIR="${SCRIPT_DIR}/analysis/5_peak_calling_strict_v2"
 LOG_DIR="${SCRIPT_DIR}/logs/5_peak_calling_strict_v2"
-TMP_BASE_DIR="${SCRIPT_DIR}/tmp_strict_v2" # Base for temporary files
+TMP_BASE_DIR="/tmp/srf_h2ak_strict_peak_processing_tmp" # Base for temporary files, moved to Linux /tmp for better I/O
 
 # Blacklist file path (relative to SCRIPT_DIR or absolute)
 # Assuming COMMON_DATA is two levels up from 1_iterative_processing
@@ -165,6 +165,7 @@ main() {
     local input_bai="${ALIGNMENT_DIR}/${sample_name}.dedup.bam.bai"
     local chr_bam="${SAMPLE_TMP_DIR}/${sample_name}.chr.bam"
     local chr_header="${SAMPLE_TMP_DIR}/${sample_name}_header.sam"
+    local raw_header_intermediate="${SAMPLE_TMP_DIR}/${sample_name}_raw_header_intermediate.sam" # For decoupling samtools and sed
     local macs2_tmp="${SAMPLE_TMP_DIR}/macs2_tmp_${RANDOM}" # MACS2 specific temp within sample temp
 
     local raw_peaks="${output_dir}/${sample_name}_broad_peaks.broadPeak"
@@ -195,8 +196,18 @@ main() {
 
     # Step 1: Standardize Chromosome Names (Add 'chr' prefix)
     log "Step 1: Standardizing chromosome names for ${sample_name}..."
-    samtools view -H "$input_bam" | \
-        sed -e 's/SN:\([0-9XY]\)/SN:chr\1/' -e 's/SN:MT/SN:chrM/' > "$chr_header" || die "Failed to create chr header for $sample_name"
+    # Step 1a: Dump raw BAM header to an intermediate file
+    log "Step 1a: Dumping raw BAM header for ${sample_name} to ${raw_header_intermediate}..."
+    samtools view -H "$input_bam" > "$raw_header_intermediate" \
+        || die "Failed to dump raw BAM header for $sample_name to $raw_header_intermediate. samtools exit code: $?"
+
+    # Step 1b: Process the header using sed from the intermediate file
+    log "Step 1b: Processing header with sed for ${sample_name} from ${raw_header_intermediate}..."
+    sed -e 's/SN:\([0-9XY]\)/SN:chr\1/' -e 's/SN:MT/SN:chrM/' "$raw_header_intermediate" > "$chr_header" \
+        || die "Failed to process header with sed for $sample_name from $raw_header_intermediate. sed exit code: $?"
+
+    # Clean up the intermediate header file
+    rm "$raw_header_intermediate"
     samtools reheader "$chr_header" "$input_bam" > "$chr_bam" || die "Failed to reheader BAM for $sample_name"
     samtools index "$chr_bam" || die "Failed to index chr-prefixed BAM for $sample_name"
     log "Chromosome standardization complete for ${sample_name}."
@@ -239,7 +250,13 @@ main() {
             if ($1 ~ /^[0-9XY]+$/) { $1 = "chr" $1 }
             else if ($1 == "MT") { $1 = "chrM" }
             else if ($1 ~ /^(GL|KI|JH|ML|NC_|NW_|NT_)/) { next } # Skip common contigs/patches/unplaced
-            else { print "Warning: Skipping unexpected chromosome format: " $1 " at line " NR > "/dev/stderr"; next }
+            else { print "Warning: Skipping unexpected chromosome format (pre-chr check): " $1 " at line " NR > "/dev/stderr"; next }
+        }
+        # At this point, $1 should start with "chr" or have been skipped.
+        # Add a check for $1 being *only* "chr"
+        if ($1 == "chr") {
+            print "Warning: Skipping line with standalone '\''chr'\'' chromosome: " $1 " at line " NR > "/dev/stderr";
+            next;
         }
         print $0
     }' "$raw_peaks" > "$fixed_chrom_bed" || die "Failed to fix chromosome names in peak file for $sample_name"

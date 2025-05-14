@@ -57,14 +57,12 @@ WORKDIR="."
 cd $WORKDIR || { log_message "ERROR: Failed to change to working directory $WORKDIR"; exit 1; }
 
 # Define directories
-INPUT_DIR="${WORKDIR}/analysis/7_differential_binding_copy"  # Input directory containing significant_peaks.rds
+INPUT_DIR="${WORKDIR}/analysis/7_differential_binding_v2"  # Input directory containing significant_peaks.rds
 OUTPUT_DIR="${WORKDIR}/analysis/8_annotation_and_enrichment"
 
 # Create necessary directories
 log_message "Creating output directories..."
 mkdir -p logs
-mkdir -p ${OUTPUT_DIR}/annotation/{figures,tables}
-mkdir -p ${OUTPUT_DIR}/gene_lists
 
 # Check for required input files
 log_message "Checking input files..."

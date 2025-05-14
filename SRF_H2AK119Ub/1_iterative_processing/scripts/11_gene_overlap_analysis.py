@@ -45,9 +45,10 @@ import sys
 OUTPUT_DIR = sys.argv[1]
 
 # BASE_PATH = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
-BASE_PATH = "D:/Github/SRF_H2AK119Ub_cross_V5"
+# BASE_PATH = "D:/Github/SRF_H2AK119Ub_cross_V5"
+BASE_PATH = "/mnt/d/Github/SRF_H2AK119Ub_cross_V5"
 
-YAF_PROMOTERS_FILE = os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists/YAF_enriched_genes_broad_promoters.csv")
+YAF_PROMOTERS_FILE = os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_promoters.csv")
 SOX2_GENES_FILE = os.path.join(BASE_PATH, "COMMON_DATA/sox2_binding.csv")
 
 if not os.path.exists(OUTPUT_DIR):
