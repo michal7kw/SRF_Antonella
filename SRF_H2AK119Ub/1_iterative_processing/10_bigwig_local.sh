@@ -54,7 +54,7 @@ TMP_BASE_DIR="${SCRIPT_DIR}/tmp_bigwig" # Base for temporary files
 SAMPLES=(GFP_1 GFP_2 GFP_3 YAF_1 YAF_2 YAF_3)
 
 # Number of processors for bamCoverage (adjust based on local machine)
-NUM_PROCESSORS=8
+NUM_PROCESSORS=20
 
 # --- Helper Functions ---
 log() {

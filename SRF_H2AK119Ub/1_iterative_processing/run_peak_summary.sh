@@ -33,8 +33,8 @@ set -u  # Exit on undefined variable
 # set -x # Uncomment for debugging
 
 # --- Argument Handling ---
-# DEFAULT_DATA_DIR="analysis/5_peak_calling_strict_v2"
-DEFAULT_DATA_DIR="analysis/5_peak_calling_v2"
+DEFAULT_DATA_DIR="analysis/5_peak_calling_strict_v2"
+# DEFAULT_DATA_DIR="analysis/5_peak_calling_v2"
 DATA_DIR=""
 
 if [ "$#" -eq 0 ]; then

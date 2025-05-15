@@ -1,17 +1,16 @@
 #!/bin/bash
-# shellcheck disable=SC2086,SC2046
 
 # ==============================================================================
-# Script: Peak Calling (Strict) for CUT&Tag Data
+# Script: Peak Calling for CUT&Tag Data
 #
 # Description:
-#   Performs strict broad peak calling and filtering on CUT&Tag data using MACS2.
+#   Performs broad peak calling and filtering on CUT&Tag data using MACS2.
 #   Processes one sample at a time based on a command-line index.
 #
 # Pipeline Steps:
 #   1. Setup environment, variables, and temporary directories.
 #   2. Standardize chromosome names in the input BAM file.
-#   3. Call broad peaks using MACS2 with strict parameters.
+#   3. Call broad peaks using MACS2.
 #   4. Filter raw peaks based on fold enrichment and length.
 #   5. Validate filtered BED file format.
 #   6. Remove peaks overlapping blacklisted regions.
@@ -45,16 +44,15 @@ set -euo pipefail
 # Script directory for relative paths
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
-# --- Parameters & Paths (Modify as needed) ---
-# Input data directory structure (relative to SCRIPT_DIR, assuming it's inside 1_iterative_processing)
+# --- Parameters & Paths ---
+# Input data directory structure
 ALIGNMENT_DIR="${SCRIPT_DIR}/analysis/3_alignment"
-# Output directory (relative to SCRIPT_DIR, assuming it's inside 1_iterative_processing)
+# Output directory
 BASE_OUTPUT_DIR="${SCRIPT_DIR}/analysis/5_peak_calling_strict_v2"
 LOG_DIR="${SCRIPT_DIR}/logs/5_peak_calling_strict_v2"
-TMP_BASE_DIR="/tmp/srf_h2ak_strict_peak_processing_tmp" # Base for temporary files, moved to Linux /tmp for better I/O
+TMP_BASE_DIR="/tmp/srf_h2ak_strict_peak_processing_tmp"
 
 # Blacklist file path (relative to SCRIPT_DIR or absolute)
-# Assuming COMMON_DATA is two levels up from 1_iterative_processing
 BLACKLIST_BED="${SCRIPT_DIR}/../../COMMON_DATA/hg38-blacklist.v2.bed"
 
 # Sample names array
@@ -142,7 +140,7 @@ main() {
 
     # --- Setup Directories & Paths ---
     local output_dir="${BASE_OUTPUT_DIR}"
-    local log_dir="${LOG_DIR}/${sample_name}" # Sample-specific log dir (optional)
+    local log_dir="${LOG_DIR}/${sample_name}" # Sample-specific log dir
     local timestamp=$(date +%Y%m%d%H%M%S%N) # Added nanoseconds for higher uniqueness
     # Define SAMPLE_TMP_DIR globally for trap cleanup
     # Ensure TMP_BASE_DIR exists before creating sample temp dir

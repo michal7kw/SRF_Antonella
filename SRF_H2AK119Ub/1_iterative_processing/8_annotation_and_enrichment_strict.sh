@@ -45,13 +45,6 @@ log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >&2
 }
 
-# Activate conda environment
-# Ensure the correct conda environment (e.g., 'snakemake' or one with R and required packages)
-# is active before running this script.
-# Example: conda activate your_r_env
-# source /opt/common/tools/ric.cosr/miniconda3/bin/activate # Removed cluster-specific path
-# conda activate snakemake # Assuming environment is already active
-
 # Define working directory
 WORKDIR="."
 cd $WORKDIR || { log_message "ERROR: Failed to change to working directory $WORKDIR"; exit 1; }
@@ -63,8 +56,6 @@ OUTPUT_DIR="${WORKDIR}/analysis/8_annotation_and_enrichment_strict"
 # Create necessary directories
 log_message "Creating output directories..."
 mkdir -p logs
-mkdir -p ${OUTPUT_DIR}/annotation/{figures,tables}
-mkdir -p ${OUTPUT_DIR}/gene_lists
 
 # Check for required input files
 log_message "Checking input files..."

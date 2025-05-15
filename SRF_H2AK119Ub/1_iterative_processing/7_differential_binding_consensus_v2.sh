@@ -74,10 +74,8 @@ mkdir -p ${LOG_DIR}
 mkdir -p ${OUTPUT_DIR}
 
 # Define sample information for selected samples
-# Using samples with comparable peak counts (example from v2 script)
 # This list determines which BAM files are used.
-declare -a samples_to_process=("GFP_1" "GFP_3" "YAF_2" "YAF_3")
-# samples_to_process=("GFP_1" "GFP_2" "GFP_3" "YAF_1" "YAF_2" "YAF_3") # Uncomment to use all samples
+samples_to_process=("GFP_1" "GFP_2" "GFP_3" "YAF_1" "YAF_2" "YAF_3")
 
 log_message "Using selected samples for BAM files: ${samples_to_process[*]}"
 

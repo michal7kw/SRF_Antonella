@@ -57,13 +57,6 @@ log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >&2
 }
 
-# Activate conda environment
-# Ensure the correct conda environment (e.g., 'snakemake' or one with Python and required packages like pandas, matplotlib, matplotlib_venn)
-# is active before running this script.
-# Example: conda activate your_python_env
-# source /opt/common/tools/ric.cosr/miniconda3/bin/activate # Removed cluster-specific path
-# conda activate snakemake # Assuming environment is already active
-
 # Define working directory
 WORKDIR="."
 cd $WORKDIR || { log_message "ERROR: Failed to change to working directory $WORKDIR"; exit 1; }

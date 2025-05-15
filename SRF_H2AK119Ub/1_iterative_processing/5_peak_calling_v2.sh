@@ -2,7 +2,7 @@
 # shellcheck disable=SC2086,SC2046
 
 # ==============================================================================
-# Script: Peak Calling (Lenient) for CUT&Tag Data (e.g., H2AK119Ub)
+# Script: Peak Calling for CUT&Tag Data (e.g., H2AK119Ub)
 #
 # Description:
 #   Performs broad peak calling and filtering on CUT&Tag data using MACS2
@@ -12,8 +12,8 @@
 # Pipeline Steps:
 #   1. Setup environment, variables, and temporary directories.
 #   2. Standardize chromosome names in the input BAM file.
-#   3. Call broad peaks using MACS2 with lenient parameters.
-#   4. Filter raw peaks based on fold enrichment and length (lenient).
+#   3. Call broad peaks using MACS2.
+#   4. Filter raw peaks based on fold enrichment and length.
 #   5. Validate filtered BED file format.
 #   6. Remove peaks overlapping blacklisted regions.
 #   7. Generate a visualization-friendly BED file (normalized scores).
@@ -46,15 +46,14 @@ set -euo pipefail
 # Script directory for relative paths
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
-# --- Parameters & Paths (Modify as needed) ---
-# Input data directory structure (relative to SCRIPT_DIR, assuming it's inside 1_iterative_processing)
+# --- Parameters & Paths ---
+# Input data directory structure
 ALIGNMENT_DIR="${SCRIPT_DIR}/analysis/3_alignment"
-# Output directory (relative to SCRIPT_DIR, assuming it's inside 1_iterative_processing)
-BASE_OUTPUT_DIR="${SCRIPT_DIR}/analysis/5_peak_calling_v2" # Changed from strict
-LOG_DIR="${SCRIPT_DIR}/logs/5_peak_calling_v2" # Changed from strict
-TMP_BASE_DIR="${SCRIPT_DIR}/tmp_v2" # Base for temporary files, changed from strict
+# Output directory
+BASE_OUTPUT_DIR="${SCRIPT_DIR}/analysis/5_peak_calling_v2"
+LOG_DIR="${SCRIPT_DIR}/logs/5_peak_calling_v2"
+TMP_BASE_DIR="${SCRIPT_DIR}/tmp_v2"
 
-# Blacklist file path (relative to SCRIPT_DIR or absolute)
 # Assuming COMMON_DATA is two levels up from 1_iterative_processing
 BLACKLIST_BED="${SCRIPT_DIR}/../../COMMON_DATA/hg38-blacklist.v2.bed"
 
@@ -64,15 +63,15 @@ SAMPLES=(GFP_1 GFP_2 GFP_3 YAF_1 YAF_2 YAF_3)
 # MACS2 Parameters (Lenient for H2AK119Ub)
 MACS2_GENOME="hs"
 MACS2_FORMAT="BAMPE"
-MACS2_QVALUE="0.05"         # More lenient q-value cutoff
-MACS2_BROAD_CUTOFF="0.05"   # More lenient broad cutoff
+MACS2_QVALUE="0.05"
+MACS2_BROAD_CUTOFF="0.05"
 MACS2_EXTSIZE="200"         # Set extension size (adjust based on fragment length if needed)
 MACS2_KEEP_DUP="1"          # Keep duplicates (appropriate for CUT&Tag)
 MACS2_BUFFER_SIZE="1000000"
 # Note: --nomodel and --nolambda are used implicitly when -f BAMPE is set, but explicitly adding them is fine.
 # Note: --slocal and --llocal are removed compared to the strict version.
 
-# Filtering Parameters (Lenient)
+# Filtering Parameters
 MIN_FOLD_ENRICHMENT=2       # Lower fold enrichment threshold
 MIN_PEAK_LEN=500            # Shorter minimum peak length
 MAX_PEAK_LEN=100000         # Larger maximum peak length

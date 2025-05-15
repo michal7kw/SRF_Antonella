@@ -23,13 +23,13 @@ set -o pipefail
 # --- Configuration ---
 # Define the input CSV file containing promoter gene data
 # This file should have 'fold_change', 'FDR', and 'SYMBOL' columns.
-INPUT_CSV="analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_promoters.csv"
+INPUT_CSV="analysis/8_annotation_and_enrichment_strict/gene_lists_broad/YAF_enriched_genes_broad_promoters.csv"
 
 # Define the peak type (e.g., "broad", "narrow"). This is used for naming output paths.
 PEAK_TYPE="broad"
 
 # Define the base output directory for visualizations
-OUTPUT_DIR_BASE="analysis/9_visualization_volcano"
+OUTPUT_DIR_BASE="analysis/9_visualization_volcano_strict"
 
 # Define the R script to be executed
 R_SCRIPT_PATH="scripts/9_visualization_volcano.R"
