@@ -266,34 +266,81 @@ main() {
         -v min_fold="$MIN_FOLD_ENRICHMENT" \
         -v min_len="$MIN_PEAK_LEN" \
         -v max_len="$MAX_PEAK_LEN" \
-        'BEGIN{OFS="\t"; peak_idx=0} {
-        len = $3 - $2;
-        orig_fold = $7;
-        orig_pval = $8; # -log10(pvalue)
-        orig_qval = $9; # -log10(qvalue)
-
-        # Apply filtering criteria
-        if(orig_fold >= min_fold && len >= min_len && len <= max_len) {
-            peak_idx++;
-            # Create standardized BED name
-            name = sprintf("%s_peak_%d", sample, peak_idx);
-            gsub(/[^a-zA-Z0-9_.-]/, "_", name); # Sanitize name further (allow dot, hyphen)
-
-            # Standardize score (0-1000) - Use q-value for score
-            # q-value is -log10(q), so higher is better. Scale linearly.
-            # Cap at e.g. -log10(1e-100) = 100 for scaling purposes if needed, but simple scaling is often fine.
-            score = int(orig_qval * 10);
-            if(score > 1000) score = 1000;
-            if(score < 0) score = 0; # Should not happen with -log10 values
-
-            # Standardize strand
-            strand = ($6 == "+" || $6 == "-") ? $6 : ".";
-
-            # Output BED6 + 3 standard columns (signalValue, pValue, qValue)
-            # Using original fold, pval, qval for these extra columns
-            print $1, $2, $3, name, score, strand, orig_fold, orig_pval, orig_qval;
+        'BEGIN{
+            OFS="\t";
+            peak_idx=0;
         }
-    }' "$fixed_chrom_bed" > "$filtered_peaks" || die "Failed to filter peaks for $sample_name"
+        # Helper function to sanitize numeric values from MACS2 output
+        # MACS2 can output "inf" for -log10 p/q values if they are extremely small.
+        # signalValue should also be numeric. "NaN" can also occur.
+        function sanitize_macs_numeric(val_str, default_if_non_numeric, inf_replacement) {
+            # Convert to lowercase for case-insensitive matching of "inf", "nan"
+            l_val_str = tolower(val_str);
+
+            if (l_val_str == "inf" || l_val_str == "+inf") {
+                return inf_replacement;
+            }
+            if (l_val_str == "-inf") {
+                # For -log10 values, this is unusual. For signal, could be possible.
+                return (inf_replacement > 0 ? -inf_replacement : default_if_non_numeric);
+            }
+            if (l_val_str == "nan") {
+                return default_if_non_numeric;
+            }
+            # Check if it is a valid number (float/integer, allows scientific notation)
+            if (val_str ~ /^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$/) {
+                return val_str + 0; # Force numeric type
+            }
+            # If not "inf", "nan", or a recognizable number, return the default
+            return default_if_non_numeric;
+        }
+        {
+            len = $3 - $2;
+
+            # Sanitize MACS2 output fields ($7, $8, $9)
+            # Default to 0 for signalValue if non-numeric/NaN, cap "inf" at 1000.
+            s_orig_fold = sanitize_macs_numeric($7, 0, 1000);
+            # Default to 0 for -log10(p/qValue) if non-numeric/NaN (means p/q=1), cap "inf" at 300.
+            s_orig_pval = sanitize_macs_numeric($8, 0, 300);
+            s_orig_qval = sanitize_macs_numeric($9, 0, 300);
+
+            # Determine if the peak passes filtering criteria.
+            # Use raw $7 for fold-enrichment comparison to maintain original logic if $7 is "inf",
+            # but ensure it is treated numerically or as "inf" correctly.
+            raw_fold_for_filter_str = $7;
+            numeric_raw_fold = 0; # Default if $7 is not numeric and not "inf"
+            is_inf_fold = 0;
+
+            if (raw_fold_for_filter_str ~ /^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$/) {
+                numeric_raw_fold = raw_fold_for_filter_str + 0;
+            } else if (tolower(raw_fold_for_filter_str) == "inf" || tolower(raw_fold_for_filter_str) == "+inf") {
+                is_inf_fold = 1;
+            }
+
+            filter_pass = 0;
+            if (is_inf_fold) { # "inf" fold enrichment passes any finite min_fold
+                 if (len >= min_len && len <= max_len) filter_pass = 1;
+            } else { # Compare numeric fold enrichment
+                 if (numeric_raw_fold >= min_fold && len >= min_len && len <= max_len) filter_pass = 1;
+            }
+            
+            if(filter_pass) {
+                peak_idx++;
+                name = sprintf("%s_peak_%d", sample, peak_idx);
+                gsub(/[^a-zA-Z0-9_.-]/, "_", name); # Sanitize name
+
+                # Standardize score (0-1000) - Use sanitized q-value (s_orig_qval)
+                # s_orig_qval is now guaranteed to be numeric.
+                score = int(s_orig_qval * 10);
+                if(score > 1000) score = 1000;
+                if(score < 0) score = 0; # s_orig_qval is >=0, so score should be >=0
+
+                strand = ($6 == "+" || $6 == "-") ? $6 : ".";
+
+                # Output BED6 + 3 standard columns using sanitized numeric values
+                print $1, $2, $3, name, score, strand, s_orig_fold, s_orig_pval, s_orig_qval;
+            }
+        }' "$fixed_chrom_bed" > "$filtered_peaks" || die "Failed to filter peaks for $sample_name"
     log "Peak filtering complete for ${sample_name}."
 
     # Step 5: Validate Filtered BED Format
@@ -349,7 +396,8 @@ main() {
 
         # Output standard BED6 + 3 (signalValue, pValue, qValue from original filtered file)
         # Use the calculated viz_score for the 5th column (score)
-        print $1, $2, $3, $4, viz_score, $6, $7, $8, $9;
+        # Explicitly format columns 2 and 3 as integers
+        print $1, sprintf("%d", $2), sprintf("%d", $3), $4, viz_score, $6, $7, $8, $9;
     }' "$final_peaks" > "$viz_peaks" || die "Failed to create visualization peak file for $sample_name"
     log "Visualization file created for ${sample_name}."
 
