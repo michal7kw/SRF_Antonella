@@ -1,3 +1,0 @@
-[2025-02-21 21:05:33,707] multiqc.core.version_check                         [WARNING]  MultiQC Version v1.27 now available!
-[2025-02-21 21:05:33,708] multiqc.core.file_search                           [INFO   ]  Search path: /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results/qc/fastqc
-[2025-02-21 21:05:34,156] multiqc.modules.fastqc.fastqc                      [INFO   ]  Found 6 reports

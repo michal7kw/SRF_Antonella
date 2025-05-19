@@ -1,13 +1,24 @@
 # This script performs overlap analysis between YAF-enriched genes and SOX2 target genes.
 
 #### Input files: ####
-# - YAF_enriched_genes_broad_promoters.csv:
-#     Data for YAF-enriched gene promoters including annotation, fold change, and statistical significance
+# - analysis/gene_lists_broad/YAF_enriched_genes
+#     List of genes enriched in YAF samples (gene symbols)
 # ---------------------------------------------------------------------------------------------------------
-# "ENTREZID","SYMBOL","distanceToTSS","annotation","fold_change","p_value","FDR"
-# "407047","MIR9-2",0,"Promoter (<=1kb)",2.88394266788565,4.62621671744608e-20,4.13738219019504e-15
-# "57142","RTN4",2801,"Promoter (2-3kb)",2.85787059102815,1.23987698289329e-11,5.14809227420024e-09
-# "347689","SOX2-OT",1690,"Promoter (1-2kb)",2.81379453300378,9.30098704665971e-18,1.44543982267268e-13
+# MIR8071-2
+# MIR8071-1
+# TBX4
+# TBC1D3P1-DHX40P1
+# ATP9B
+# MST1L
+# ---------------------------------------------------------------------------------------------------------
+
+# - analysis/gene_lists_broad/YAF_enriched_genes
+#     Full data for YAF-enriched genes including annotation and fold change
+# ---------------------------------------------------------------------------------------------------------
+# "ENTREZID","SYMBOL","distanceToTSS","annotation","fold_change"
+# "102466889","MIR8071-2",6171,"Exon (ENST00000497397.1/ENST00000497397.1, exon 2 of 3)",1.76251149051725
+# "102465871","MIR8071-1",-31123,"Exon (ENST00000497872.4/ENST00000497872.4, exon 1 of 5)",1.63204716725618
+# "9496","TBX4",-7081,"Distal Intergenic",1.6301302738487
 # ---------------------------------------------------------------------------------------------------------
 
 # - sox2_binding.csv:
@@ -24,34 +35,38 @@
 
 #### Output files (in analysis/11_gene_overlap_analysis/): ####
 # 1. venn_diagrams.png:
-#     - Venn diagram showing overlap between YAF promoter binding sites and SOX2 target genes
+#     - Two Venn diagrams showing overlap between YAF and SOX2 genes
+#     - One for all genes, one for genes in regulatory regions only
 # 2. Gene lists for GO analysis:
-#     - overlapping_genes.txt: Genes found in both YAF and SOX2 sets
-#     - yaf_only_genes.txt: Genes unique to YAF set
-# 3. enrichment_stats.csv:
+#     - all_overlapping_genes.txt: Genes found in both YAF and SOX2 sets
+#     - all_yaf_only_genes.txt: Genes unique to YAF set
+#     - regulatory_overlapping_genes.txt: Genes in regulatory regions found in both sets
+#     - regulatory_yaf_only_genes.txt: Genes in regulatory regions unique to YAF
+# 3. regulatory_regions_enrichment_stats.csv:
 #     Statistics comparing fold changes between SOX2 targets and non-targets
-# 4. enrichment_boxplot.png:
-#     Visualization of enrichment scores
+# 4. regulatory_regions_enrichment_boxplot.png:
+#     Visualization of enrichment scores in regulatory regions
 
 import pandas as pd
 import os
+import matplotlib
+matplotlib.use('Agg') # Add this line to use a non-interactive backend
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
 import seaborn as sns
 import numpy as np
 import sys
-import matplotlib
-matplotlib.use('Agg')
 
 # Define file paths and create output directory
 OUTPUT_DIR = sys.argv[1]
-
 # BASE_PATH = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
 # BASE_PATH = "D:/Github/SRF_H2AK119Ub_cross_V5"
 BASE_PATH = "/mnt/d/Github/SRF_H2AK119Ub_cross_V5"
 
-YAF_PROMOTERS_FILE = os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_promoters.csv")
-SOX2_GENES_FILE = os.path.join(BASE_PATH, "COMMON_DATA/sox2_binding.csv")
+YAF_ALL_ENRICHED_GENES_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt")
+YAF_PROMOTER_GENES_FILE = os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_promoters.txt")
+YAF_FULL_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_full.csv") # Still needed for calculate_enrichment_scores
+SOX2_GENES_FILE =  os.path.join(BASE_PATH, "COMMON_DATA/sox2_binding.csv")
 
 if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
@@ -59,7 +74,7 @@ if not os.path.exists(OUTPUT_DIR):
 def read_gene_list(file_path):
     """Read a list of genes from a file, one gene per line"""
     try:
-        with open(file_path, 'r', encoding='latin-1') as f:
+        with open(file_path, 'r', encoding='latin1') as f:
             return set(line.strip() for line in f if line.strip())
     except FileNotFoundError:
         print(f"Error: The file {file_path} was not found.")
@@ -68,20 +83,21 @@ def read_gene_list(file_path):
         print(f"Error reading file {file_path}: {e}")
         sys.exit(1)
 
-def get_significant_promoter_genes(file_path, fdr_threshold=0.05):
+def get_regulatory_region_genes(file_path):
     """
-    Extract genes that have statistically significant enrichment in promoter regions
-    based on the specified FDR threshold.
+    Extract genes that are enriched in regulatory regions for enrichment score calculation:
+    - Promoter regions (up to 3kb upstream)
+    - 5' UTR
+    - First exon
     
-    Returns a set of gene symbols
+    Returns a set of gene symbols. This function is used by calculate_enrichment_scores.
     """
     try:
         df = pd.read_csv(file_path)
-        # Filter for statistically significant sites
-        significant_sites = df[df['FDR'] <= fdr_threshold]
-        
-        # Extract gene symbols
-        return set(significant_sites['SYMBOL'].unique())
+        regulatory_regions = ['Promoter (<=1kb)', 'Promoter (1-2kb)', 'Promoter (2-3kb)', '5\' UTR', 'Exon']
+        first_exon = df['annotation'].str.contains('exon 1 of', na=False)
+        regulatory_mask = df['annotation'].isin(regulatory_regions) | first_exon
+        return set(df[regulatory_mask]['SYMBOL'].unique())
     except FileNotFoundError:
         print(f"Error: The file {file_path} was not found.")
         sys.exit(1)
@@ -89,35 +105,72 @@ def get_significant_promoter_genes(file_path, fdr_threshold=0.05):
         print(f"Error reading file {file_path}: {e}")
         sys.exit(1)
 
-# Read gene lists and find overlaps
+# Read gene lists
+yaf_all_enriched_genes = read_gene_list(YAF_ALL_ENRICHED_GENES_FILE)
+yaf_promoter_genes = read_gene_list(YAF_PROMOTER_GENES_FILE)
 sox2_genes = read_gene_list(SOX2_GENES_FILE)
-yaf_promoter_genes = get_significant_promoter_genes(YAF_PROMOTERS_FILE)
 
-# Find overlapping and unique genes for promoter regions
-overlapping_genes = yaf_promoter_genes.intersection(sox2_genes)
-yaf_only_genes = yaf_promoter_genes.difference(sox2_genes)
+# --- Venn Diagram 1: YAF Promoter Genes vs. SOX2 Target Genes ---
+promoter_overlapping_genes = yaf_promoter_genes.intersection(sox2_genes)
+promoter_yaf_only_genes = yaf_promoter_genes.difference(sox2_genes)
+promoter_sox2_only_genes = sox2_genes.difference(yaf_promoter_genes) # For completeness if needed
+
+# --- Venn Diagram 2: All YAF-Enriched Genes vs. SOX2 Target Genes ---
+all_enriched_overlapping_genes = yaf_all_enriched_genes.intersection(sox2_genes)
+all_enriched_yaf_only_genes = yaf_all_enriched_genes.difference(sox2_genes)
+all_enriched_sox2_only_genes = sox2_genes.difference(yaf_all_enriched_genes) # For completeness
 
 # Print summary statistics
 print(f"\nBasic Statistics:")
-print(f"YAF genes with significant promoter binding: {len(yaf_promoter_genes)}")
+print(f"Total All YAF-Enriched genes: {len(yaf_all_enriched_genes)}")
+print(f"Total YAF Promoter genes: {len(yaf_promoter_genes)}")
 print(f"Total SOX2 target genes: {len(sox2_genes)}")
-print(f"\nOverlap analysis:")
-print(f"Number of overlapping genes: {len(overlapping_genes)}")
-print(f"Number of YAF-only genes: {len(yaf_only_genes)}")
 
-# Create and save Venn diagram
-plt.figure(figsize=(8, 6))
-venn2([yaf_promoter_genes, sox2_genes], ('YAF promoter genes', 'SOX2 target genes'))
-plt.title('Overlap between YAF promoter binding sites and SOX2 targets')
-plt.tight_layout()
-plt.savefig(os.path.join(OUTPUT_DIR, 'venn_diagram.png'))
+print(f"\nOverlap 1: YAF Promoter Genes vs. SOX2 Target Genes")
+print(f"  Number of overlapping genes (YAF Promoter & SOX2): {len(promoter_overlapping_genes)}")
+print(f"  Number of YAF Promoter only genes: {len(promoter_yaf_only_genes)}")
+print(f"  Number of SOX2 only genes (vs YAF Promoter): {len(promoter_sox2_only_genes)}")
+
+print(f"\nOverlap 2: All YAF-Enriched Genes vs. SOX2 Target Genes")
+print(f"  Number of overlapping genes (All YAF-Enriched & SOX2): {len(all_enriched_overlapping_genes)}")
+print(f"  Number of All YAF-Enriched only genes: {len(all_enriched_yaf_only_genes)}")
+print(f"  Number of SOX2 only genes (vs All YAF-Enriched): {len(all_enriched_sox2_only_genes)}")
+
+# Create and save Venn diagrams
+plt.figure(figsize=(16, 8)) # Adjusted figure size
+
+# Diagram 1: YAF Promoter Binding vs. SOX2 Target Genes
+plt.subplot(1, 2, 1)
+venn2_diagram1 = venn2(
+    (len(promoter_yaf_only_genes), len(promoter_sox2_only_genes), len(promoter_overlapping_genes)),
+    set_labels=('YAF Promoter Genes', 'SOX2 Target Genes'),
+    set_colors=('#F9A252', '#64A0C8'), alpha=0.7
+)
+plt.title('YAF Promoter Genes vs. SOX2 Target Genes', fontsize=14)
+
+# Diagram 2: All YAF-Enriched Genes vs. SOX2 Target Genes
+plt.subplot(1, 2, 2)
+venn2_diagram2 = venn2(
+    (len(all_enriched_yaf_only_genes), len(all_enriched_sox2_only_genes), len(all_enriched_overlapping_genes)),
+    set_labels=('All YAF-Enriched Genes', 'SOX2 Target Genes'),
+    set_colors=('#F9A252', '#64A0C8'), alpha=0.7
+)
+plt.title('All YAF-Enriched Genes vs. SOX2 Target Genes', fontsize=14)
+
+plt.tight_layout(rect=(0, 0, 1, 0.96)) # Add rect to make space for suptitle
+plt.suptitle("YAF and SOX2 Gene Overlap Analysis", fontsize=16, y=0.99)
+plt.savefig(os.path.join(OUTPUT_DIR, 'venn_diagrams.png'))
 plt.close()
 
 # Save gene lists for downstream GO analysis
 gene_lists = {
-    'overlapping_genes.txt': overlapping_genes,
-    'yaf_only_genes.txt': yaf_only_genes
+    'promoter_overlapping_genes.txt': promoter_overlapping_genes,
+    'promoter_yaf_only_genes.txt': promoter_yaf_only_genes,
+    'all_overlapping_genes.txt': all_enriched_overlapping_genes, # Corresponds to "all_overlapping_genes.txt" in shell script
+    'all_yaf_only_genes.txt': all_enriched_yaf_only_genes      # Corresponds to "all_yaf_only_genes.txt" in shell script
 }
+# Note: The shell script also mentions regulatory_overlapping_genes.txt and regulatory_yaf_only_genes.txt.
+# These are now promoter_overlapping_genes.txt and promoter_yaf_only_genes.txt.
 
 for filename, gene_set in gene_lists.items():
     filepath = os.path.join(OUTPUT_DIR, filename)
@@ -128,9 +181,9 @@ for filename, gene_set in gene_lists.items():
         print(f"Error writing to file {filepath}: {e}")
         sys.exit(1)
 
-def calculate_enrichment_scores(fdr_threshold=0.05):
+def calculate_enrichment_scores():
     """
-    Calculate and visualize enrichment scores for promoter regions.
+    Calculate and visualize enrichment scores for regulatory regions.
     Compares H2AK119Ub fold changes between SOX2 targets and non-targets.
     
     Outputs:
@@ -138,48 +191,48 @@ def calculate_enrichment_scores(fdr_threshold=0.05):
     - Two boxplots visualization of fold changes (with and without outliers)
     """
     try:
-        df = pd.read_csv(YAF_PROMOTERS_FILE)
+        df = pd.read_csv(YAF_FULL_FILE)
+        regulatory_regions = ['Promoter (<=1kb)', 'Promoter (1-2kb)', 'Promoter (2-3kb)', '5\' UTR', 'Exon']
+        first_exon = df['annotation'].str.contains('exon 1 of', na=False)
+        regulatory_mask = df['annotation'].isin(regulatory_regions) | first_exon
         
-        # Filter for statistically significant sites
-        significant_sites = df[df['FDR'] <= fdr_threshold].copy()
-        
-        # Add SOX2 target information
-        significant_sites['is_sox2_target'] = significant_sites['SYMBOL'].isin(sox2_genes)
+        regulatory_df = df[regulatory_mask].copy()
+        regulatory_df['is_sox2_target'] = regulatory_df['SYMBOL'].isin(sox2_genes)
         
         # Calculate statistics
-        enrichment_stats = significant_sites.groupby('is_sox2_target')['fold_change'].agg(['mean', 'std', 'count']).round(3)
-        enrichment_stats_path = os.path.join(OUTPUT_DIR, 'enrichment_stats.csv')
+        enrichment_stats = regulatory_df.groupby('is_sox2_target')['fold_change'].agg(['mean', 'std', 'count']).round(3)
+        enrichment_stats_path = os.path.join(OUTPUT_DIR, 'regulatory_regions_enrichment_stats.csv')
         enrichment_stats.to_csv(enrichment_stats_path)
-        print("\nEnrichment statistics for promoter binding sites:")
+        print("\nEnrichment statistics for regulatory regions:")
         print(enrichment_stats)
         
         # Create visualization with two subplots
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
         
         # First plot - with outliers
-        sns.boxplot(data=significant_sites, x='is_sox2_target', y='fold_change', ax=ax1)
+        sns.boxplot(data=regulatory_df, x='is_sox2_target', y='fold_change', ax=ax1)
         ax1.set_title('With outliers')
         ax1.set_xlabel('Is SOX2 target')
         ax1.set_ylabel('Fold change')
         
         # Second plot - without outliers
-        sns.boxplot(data=significant_sites, x='is_sox2_target', y='fold_change', 
+        sns.boxplot(data=regulatory_df, x='is_sox2_target', y='fold_change', 
                     showfliers=False, ax=ax2)
         ax2.set_title('Without outliers')
         ax2.set_xlabel('Is SOX2 target')
         ax2.set_ylabel('Fold change')
         
         # Add overall title
-        plt.suptitle('H2AK119Ub enrichment in promoter regions\nSOX2 targets vs non-targets', 
+        plt.suptitle('H2AK119Ub enrichment in regulatory regions\nSOX2 targets vs non-targets', 
                      y=1.05)
         
         plt.tight_layout()
-        enrichment_boxplot_path = os.path.join(OUTPUT_DIR, 'enrichment_boxplot.png')
+        enrichment_boxplot_path = os.path.join(OUTPUT_DIR, 'regulatory_regions_enrichment_boxplot.png')
         plt.savefig(enrichment_boxplot_path, bbox_inches='tight')
         plt.close()
     
     except FileNotFoundError:
-        print(f"Error: The file {YAF_PROMOTERS_FILE} was not found.")
+        print(f"Error: The file {YAF_FULL_FILE} was not found.")
         sys.exit(1)
     except Exception as e:
         print(f"Error during enrichment score calculation: {e}")
@@ -189,7 +242,7 @@ calculate_enrichment_scores()
 
 # Print summary of generated files
 print("\nAnalysis complete. Files generated in", OUTPUT_DIR + ":")
-print("1. venn_diagram.png - Visualization of gene overlaps")
-print("2. overlapping_genes.txt and yaf_only_genes.txt - Lists of genes (ready for GO analysis)")
-print("3. enrichment_stats.csv - Enrichment statistics for promoter regions")
-print("4. enrichment_boxplot.png - Visualization of enrichment scores")
+print("1. venn_diagrams.png - Visualization of gene overlaps")
+print("2. *_genes.txt - Lists of genes in different categories (ready for GO analysis)")
+print("3. regulatory_regions_enrichment_stats.csv - Enrichment statistics for regulatory regions")
+print("4. regulatory_regions_enrichment_boxplot.png - Visualization of enrichment scores")

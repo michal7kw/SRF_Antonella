@@ -70,6 +70,6 @@ mkdir -p "${OUTPUT_DIR}" logs
 
 # Run python script for gene overlap analysis
 log_message "Running gene overlap analysis..."
-python scripts/11_gene_overlap_analysis_strict_v2.py "${OUTPUT_DIR}"
+python scripts/11_gene_overlap_analysis_strict.py "${OUTPUT_DIR}"
 
 log_message "Gene overlap analysis completed"

@@ -326,6 +326,7 @@ main() {
     local PLOT_HEATMAP_TITLE="Signal Heatmap around TSS (${sample_group_prefix} - Averaged Replicas)" # Define title
 
     # Plot PNG
+    # Rely on label embedded in matrix by computeMatrix instead of using --samplesLabel
     plotHeatmap \
         -m "${matrix_gz}" \
         -out "${heatmap_plot_png}" \
@@ -338,7 +339,6 @@ main() {
         --heatmapHeight ${PLOT_HEATMAP_HEIGHT} \
         --heatmapWidth ${PLOT_HEATMAP_WIDTH} \
         --xAxisLabel "${PLOT_HEATMAP_XAXIS_LABEL}" \
-        # --samplesLabel "${sample_group_prefix}" # Rely on label embedded in matrix by computeMatrix
         --regionsLabel "${PLOT_HEATMAP_REGIONS_LABEL}" \
         --plotTitle "${PLOT_HEATMAP_TITLE}" \
         --verbose \

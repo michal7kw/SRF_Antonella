@@ -302,10 +302,10 @@ main() {
     local plot_title="Signal Profile around TSS (${sample_group_prefix} - Averaged Replicas)"
 
     # Plot PNG
+    # Rely on label embedded in matrix by computeMatrix instead of using --samplesLabel
     plotProfile \
         -m "${matrix_gz}" \
         --plotType lines \
-        # --samplesLabel "${sample_group_prefix}" # Rely on label embedded in matrix by computeMatrix
         -out "${profile_plot_png}" \
         --colors "${plot_profile_color}" \
         --plotHeight ${PLOT_PROFILE_HEIGHT} \

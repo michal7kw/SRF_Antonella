@@ -1,6 +1,7 @@
 # Directories to ignore
 **/logs/
-logs/
+**/logs/
+**/tmp_*
 Archive/
 .snakemake/
 COMMON_DATA/

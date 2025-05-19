@@ -1,4 +1,0 @@
-WARNING: overwriting environment variables set in the machine
-overwriting variable ['TMPDIR']
-!!!!! WARNING: Could not move Log.out file from ./Log.out into /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/COMMON_DATA/genome_star/Log.out. Will keep ./Log.out
-

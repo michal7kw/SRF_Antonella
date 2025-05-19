@@ -1,7 +1,0 @@
-Module	Section	Sample Name	Source
-FastQC	all_sections	SRR18590297_1	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results/qc/fastqc/SRR18590297_1_fastqc.zip
-FastQC	all_sections	SRR18590303_2	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results/qc/fastqc/SRR18590303_2_fastqc.zip
-FastQC	all_sections	SRR18590297_2	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results/qc/fastqc/SRR18590297_2_fastqc.zip
-FastQC	all_sections	SRR18590303_1	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results/qc/fastqc/SRR18590303_1_fastqc.zip
-FastQC	all_sections	SRR18590296_1	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results/qc/fastqc/SRR18590296_1_fastqc.zip
-FastQC	all_sections	SRR18590296_2	/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/results/qc/fastqc/SRR18590296_2_fastqc.zip
