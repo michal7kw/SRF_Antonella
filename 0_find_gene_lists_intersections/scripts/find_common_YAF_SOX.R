@@ -13,8 +13,39 @@ suppressPackageStartupMessages({
 })
 
 # BASE_PATH <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
-BASE_PATH <- "D:/Github/SRF_H2AK119Ub_cross_V5"
+BASE_PATH <- "/mnt/d/Github/SRF_H2AK119Ub_cross_V5"
 
+# Function to read BED files
+read_bed <- function(file_path) {
+  cat("Parsing BED file:", file_path, "\n")
+  
+  # Check if file exists
+  if (!file.exists(file_path)) {
+    stop("Error: File ", file_path, " does not exist")
+  }
+  
+  # Import BED file using rtracklayer
+  gr <- rtracklayer::import(file_path, format = "bed")
+  cat("Successfully parsed", file_path, "- found", length(gr), "regions\n")
+  cat("Original seqnames sample from BED", basename(file_path), ":", paste(head(unique(as.character(seqnames(gr)))), collapse=", "), "\n")
+  tryCatch({
+    current_style <- seqlevelsStyle(gr)
+    # Attempt to set to UCSC if not already a recognized style or if it's NCBI/Ensembl (Gencode GTF is UCSC)
+    if (!("UCSC" %in% current_style)) {
+        cat("Attempting to set seqlevels style to UCSC for", basename(file_path), "(current: ", paste(current_style, collapse="/"), ")\n")
+        seqlevelsStyle(gr) <- "UCSC"
+        cat("New seqnames sample after UCSC attempt:", paste(head(unique(as.character(seqnames(gr)))), collapse=", "), "\n")
+    } else {
+        cat("Seqlevels style for", basename(file_path), "is already UCSC. No change applied.\n")
+    }
+  }, warning = function(w) {
+    cat("Warning while setting/checking seqlevels style to UCSC for", basename(file_path), ":", conditionMessage(w), "\n")
+  }, error = function(e) {
+    cat("Error while setting/checking seqlevels style to UCSC for", basename(file_path), ":", conditionMessage(e), "\n")
+    cat("Proceeding with original seqlevels for", basename(file_path), "\n")
+  })
+  return(gr)
+}
 # Function to read broadPeak files
 read_broadpeak <- function(file_path) {
   cat("Parsing", file_path, "\n")
@@ -37,7 +68,22 @@ read_broadpeak <- function(file_path) {
     score = peaks$score,
     name = peaks$name
   )
-  
+  cat("Original seqnames sample from broadPeak", basename(file_path), ":", paste(head(unique(as.character(seqnames(gr)))), collapse=", "), "\n")
+  tryCatch({
+    current_style <- seqlevelsStyle(gr)
+    if (!("UCSC" %in% current_style)) {
+        cat("Attempting to set seqlevels style to UCSC for", basename(file_path), "(current: ", paste(current_style, collapse="/"), ")\n")
+        seqlevelsStyle(gr) <- "UCSC"
+        cat("New seqnames sample after UCSC attempt:", paste(head(unique(as.character(seqnames(gr)))), collapse=", "), "\n")
+    } else {
+        cat("Seqlevels style for", basename(file_path), "is already UCSC. No change applied.\n")
+    }
+  }, warning = function(w) {
+    cat("Warning while setting/checking seqlevels style to UCSC for", basename(file_path), ":", conditionMessage(w), "\n")
+  }, error = function(e) {
+    cat("Error while setting/checking seqlevels style to UCSC for", basename(file_path), ":", conditionMessage(e), "\n")
+    cat("Proceeding with original seqlevels for", basename(file_path), "\n")
+  })
   return(gr)
 }
 
@@ -52,16 +98,31 @@ extract_genes_from_gtf <- function(gtf_file) {
   
   # Import only gene features from GTF file to save memory
   genes <- import(gtf_file, feature.type="gene")
+  cat("Original seqnames sample from GTF:", paste(head(unique(as.character(seqnames(genes)))), collapse=", "), "\n")
+  tryCatch({
+    current_style <- seqlevelsStyle(genes)
+    if (!("UCSC" %in% current_style)) { # Gencode is UCSC, this ensures it if auto-detection failed
+        cat("Attempting to set seqlevels style to UCSC for GTF genes (current: ", paste(current_style, collapse="/"), ")\n")
+        seqlevelsStyle(genes) <- "UCSC"
+        cat("New seqnames sample for GTF after UCSC attempt:", paste(head(unique(as.character(seqnames(genes)))), collapse=", "), "\n")
+    } else {
+        cat("Seqlevels style for GTF is already UCSC. No change applied.\n")
+    }
+  }, warning = function(w) {
+    cat("Warning while setting/checking seqlevels style to UCSC for GTF genes:", conditionMessage(w), "\n")
+  }, error = function(e) {
+    cat("Error while setting/checking seqlevels style to UCSC for GTF genes:", conditionMessage(e), "\n")
+    cat("Proceeding with original seqlevels for GTF genes\n")
+  })
   
   # Extract essential information
-  gene_info <- GRanges(
+  gene_info <- GRanges( # This will inherit seqinfo from 'genes'
     seqnames = seqnames(genes),
     ranges = ranges(genes),
     strand = strand(genes),
     gene_id = genes$gene_id,
     gene_name = genes$gene_name
   )
-  
   return(gene_info)
 }
 
@@ -119,20 +180,24 @@ process_data_and_save_results <- function(YAF_peaks, SOX_peaks, promoters, outpu
   bed_output_file <- sub("\\.csv$", "_promoters.bed", output_file)
   common_promoters <- promoters[promoters$gene_id %in% common_genes]
   
-  # Convert to data frame for BED format
-  bed_data <- data.frame(
-    chrom = seqnames(common_promoters),
-    start = start(common_promoters) - 1,  # Convert to 0-based for BED
-    end = end(common_promoters),
-    name = paste0(common_promoters$gene_name, "_", common_promoters$gene_id),
-    score = 1000,
-    strand = strand(common_promoters)
-  )
-  
-  # Write BED file
-  write.table(bed_data, bed_output_file, sep="\t", quote=FALSE, 
-              row.names=FALSE, col.names=FALSE)
-  cat("Promoter regions saved to", bed_output_file, "for visualization\n")
+  if (length(common_promoters) > 0) {
+    # Convert to data frame for BED format
+    bed_data <- data.frame(
+      chrom = as.character(seqnames(common_promoters)), # Ensure character to avoid factor issues
+      start = start(common_promoters) - 1,  # Convert to 0-based for BED
+      end = end(common_promoters),
+      name = paste0(common_promoters$gene_name, "_", common_promoters$gene_id),
+      score = 1000, # Or some other relevant score
+      strand = as.character(strand(common_promoters)) # Ensure character
+    )
+    
+    # Write BED file
+    write.table(bed_data, bed_output_file, sep="\t", quote=FALSE,
+                row.names=FALSE, col.names=FALSE)
+    cat("Promoter regions saved to", bed_output_file, "for visualization\n")
+  } else {
+    cat("No common promoter regions to save to BED file for", basename(output_file), "(0 common genes found)\n")
+  }
   
   return(common_gene_info)
 }
@@ -140,12 +205,12 @@ process_data_and_save_results <- function(YAF_peaks, SOX_peaks, promoters, outpu
 # Main function
 main <- function() {
   # Define base output directory
-  output_dir_base <- file.path(BASE_PATH, "1_find_gene_lists_intersections/output")
+  output_dir_base <- file.path(BASE_PATH, "0_find_gene_lists_intersections/output") # Corrected base path
 
   # File paths for inputs
-  YAF_peak_file_standard <- file.path(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_v2/YAF.broadPeak")
-  YAF_peak_file_strict <- file.path(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_strict_v2/YAF.broadPeak")
-  SOX_peak_file <- file.path(BASE_PATH, "SRF_SES_V5/results_data_from_ncbi_corrected/SOX2.broadPeak")
+  YAF_peak_file_standard <- file.path(BASE_PATH, "SRF_H2AK119Ub", "1_iterative_processing", "analysis", "6_consensus_peaks", "YAF_consensus_peaks.bed")
+  YAF_peak_file_strict <- file.path(BASE_PATH, "SRF_H2AK119Ub", "1_iterative_processing", "analysis", "6_consensus_peaks_strict", "YAF_consensus_peaks.bed") # Assuming strict YAF BED path
+  SOX_peak_file <- file.path(BASE_PATH, "SRF_SES_V5/results_data_from_ncbi_corrected/SOX2.broadPeak") # SOX remains broadPeak
   gtf_file <- file.path(BASE_PATH, "COMMON_DATA/gencode.v43.basic.annotation.gtf")
 
   # File paths for outputs
@@ -164,16 +229,16 @@ main <- function() {
   promoters <- get_promoters(genes)
   
   # Parse SOX peak file (done once for all analyses)
-  SOX_peaks <- read_broadpeak(SOX_peak_file)
+  SOX_peaks <- read_broadpeak(SOX_peak_file) # SOX uses read_broadpeak
   
   # Process standard peaks
   cat("\n=== Processing Standard YAF vs SOX Peak Calling ===\n")
-  YAF_peaks_standard <- read_broadpeak(YAF_peak_file_standard)
+  YAF_peaks_standard <- read_bed(YAF_peak_file_standard) # YAF uses read_bed
   standard_results <- process_data_and_save_results(YAF_peaks_standard, SOX_peaks, promoters, output_file_standard)
   
   # Process strict peaks
   cat("\n=== Processing Strict YAF vs SOX Peak Calling ===\n")
-  YAF_peaks_strict <- read_broadpeak(YAF_peak_file_strict)
+  YAF_peaks_strict <- read_bed(YAF_peak_file_strict) # YAF uses read_bed
   strict_results <- process_data_and_save_results(YAF_peaks_strict, SOX_peaks, promoters, output_file_strict)
   
   # Find common genes between standard and strict YAF vs SOX analyses

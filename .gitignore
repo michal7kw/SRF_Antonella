@@ -102,3 +102,4 @@ git_pdf_results/
 COMMON/
 ensembl_symbol_cache.pkl
 SRF_H2AK119Ub/1_iterative_processing/Archive
+*.errors

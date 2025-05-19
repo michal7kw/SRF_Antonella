@@ -6,25 +6,27 @@ and YAF_SES_strict.csv by comparing with differential expression results.
 
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg') # Use a non-interactive backend for matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
 # --- Configuration ---
 # BASE_PATH = "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
-BASE_PATH = "D:/Github/SRF_H2AK119Ub_cross_V5"
+BASE_PATH = "/mnt/d/Github/SRF_H2AK119Ub_cross_V5"
 
 diff_expr_file = f'{BASE_PATH}/SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv'
 
 configs = [
     {
         "name": "Non-Strict",
-        "gene_list_path": f'{BASE_PATH}/1_find_gene_lists_intersections/output/YAF_SES.csv',
+        "gene_list_path": f'{BASE_PATH}/0_find_gene_lists_intersections/output/YAF_SES.csv',
         "output_dir": f'{BASE_PATH}/2_check_dysregulation_of_the_intersected_genes/YAF_dysregulation_analysis_SES'
     },
     {
         "name": "Strict",
-        "gene_list_path": f'{BASE_PATH}/1_find_gene_lists_intersections/output/YAF_SES_strict.csv',
+        "gene_list_path": f'{BASE_PATH}/0_find_gene_lists_intersections/output/YAF_SES_strict.csv',
         "output_dir": f'{BASE_PATH}/2_check_dysregulation_of_the_intersected_genes/YAF_dysregulation_analysis_SES_strict'
     }
 ]

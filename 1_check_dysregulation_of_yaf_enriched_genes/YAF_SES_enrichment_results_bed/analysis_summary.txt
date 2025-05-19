@@ -1,28 +1,28 @@
 YAF Binding Analysis Summary (Filtered for Genes with YAF & SES Promoter Peaks)
 ================================================================================
 
-Analysis restricted to genes whose promoters overlap with both YAF peaks (from D:/Github/SRF_H2AK119Ub_cross_V5/DATA/5_peak_calling) and SES peaks (from D:/Github/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/data_from_ncbi_corrected/peaks).
+Analysis restricted to genes whose promoters overlap with both YAF peaks (from /mnt/d/Github/SRF_H2AK119Ub_cross_V5/SRF_H2AK119Ub/1_iterative_processing/analysis/5_peak_calling_v2) and SES peaks (from /mnt/d/Github/SRF_H2AK119Ub_cross_V5/SRF_SES_V5/data_from_ncbi_corrected/peaks).
 Total promoters defined: 62666
-Promoters overlapping YAF peaks: 35119
+Promoters overlapping YAF peaks: 31693
 Promoters overlapping SES peaks: 19907
-Promoters overlapping BOTH YAF and SES peaks: 13671
-Corresponding unique gene IDs: 13671
+Promoters overlapping BOTH YAF and SES peaks: 13203
+Corresponding unique gene IDs: 13203
 
-Genes from intersection found in DESeq results: 10472
-Significant DEGs (padj<0.05, |log2FC|>1) among these: 1407
+Genes from intersection found in DESeq results: 10707
+Significant DEGs (padj<0.05, |log2FC|>1) among these: 1496
 
-Number of upregulated genes analyzed: 722
-Mean YAF/GFP enrichment (log2FC) for upregulated genes: -0.129 ± 0.628 (mean ± SD)
+Number of upregulated genes analyzed: 795
+Mean YAF/GFP enrichment (log2FC) for upregulated genes: -0.176 ± 0.618 (mean ± SD)
 
-Number of downregulated genes analyzed: 685
-Mean YAF/GFP enrichment (log2FC) for downregulated genes: 0.534 ± 0.647 (mean ± SD)
+Number of downregulated genes analyzed: 701
+Mean YAF/GFP enrichment (log2FC) for downregulated genes: 0.469 ± 0.635 (mean ± SD)
 
 Wilcoxon rank sum test for difference in YAF/GFP enrichment:
 
 	Wilcoxon rank sum test with continuity correction
 
 data:  log2FC_binding by regulation
-W = 380662, p-value < 2.2e-16
+W = 428010, p-value < 2.2e-16
 alternative hypothesis: true location shift is not equal to 0
 
 
@@ -35,13 +35,13 @@ Correlation between YAF binding and gene expression (YAF/SES subset):
 	Pearson's product-moment correlation
 
 data:  log2FC_binding and log2FC_expr
-t = -18.177, df = 1405, p-value < 2.2e-16
+t = -18.54, df = 1494, p-value < 2.2e-16
 alternative hypothesis: true correlation is not equal to 0
 95 percent confidence interval:
- -0.4777067 -0.3930427
+ -0.4728093 -0.3903672
 sample estimates:
-     cor 
--0.43634 
+       cor 
+-0.4324918 
 
 
-There is a significant negative correlation between YAF binding and gene expression (r=-0.436).
+There is a significant negative correlation between YAF binding and gene expression (r=-0.432).

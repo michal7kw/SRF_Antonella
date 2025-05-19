@@ -23,7 +23,7 @@ set -o pipefail
 # --- Configuration ---
 # Define the input CSV file containing promoter gene data
 # This file should have 'fold_change', 'FDR', and 'SYMBOL' columns.
-INPUT_CSV="analysis/8_annotation_and_enrichment_strict/gene_lists_broad/YAF_enriched_genes_broad_promoters.csv"
+INPUT_CSV="analysis/8_annotation_and_enrichment_strict_all/gene_lists_broad/YAF_enriched_genes_broad_promoters.csv"
 
 # Define the peak type (e.g., "broad", "narrow"). This is used for naming output paths.
 PEAK_TYPE="broad"

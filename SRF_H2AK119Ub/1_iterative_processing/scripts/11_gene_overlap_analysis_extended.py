@@ -42,9 +42,9 @@ OUTPUT_DIR = sys.argv[1]
 # BASE_PATH = "D:/Github/SRF_H2AK119Ub_cross_V5"
 BASE_PATH = "/mnt/d/Github/SRF_H2AK119Ub_cross_V5" # Ensure this is correct for your environment
 
-YAF_ALL_ENRICHED_GENES_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt")
-YAF_PROMOTER_GENES_FILE = os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_promoters.txt")
-YAF_FULL_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment/gene_lists_broad/YAF_enriched_genes_broad_full.csv") # Still needed for calculate_enrichment_scores
+YAF_ALL_ENRICHED_GENES_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_significant/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt")
+YAF_PROMOTER_GENES_FILE = os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_significant/gene_lists_broad/YAF_enriched_genes_broad_promoters.txt")
+YAF_FULL_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_significant/gene_lists_broad/YAF_enriched_genes_broad_full.csv") # Still needed for calculate_enrichment_scores
 SOX2_GENES_FILE =  os.path.join(BASE_PATH, "COMMON_DATA/sox2_binding.csv")
 YAF_DOWNREGULATED_GENES_FILE = os.path.join(BASE_PATH, "SRF_RNA/results/deseq2/YAF_vs_GFP/summary_files/YAF_vs_GFP/down_regulated.csv") # New file
 

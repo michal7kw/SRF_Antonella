@@ -52,9 +52,9 @@ ALIGNMENT_DIR="${SCRIPT_DIR}/analysis/3_alignment"
 # Output directory
 BASE_OUTPUT_DIR="${SCRIPT_DIR}/analysis/5_peak_calling_v2"
 LOG_DIR="${SCRIPT_DIR}/logs/5_peak_calling_v2"
-TMP_BASE_DIR="${SCRIPT_DIR}/tmp_v2"
+TMP_BASE_DIR="/tmp/srf_h2ak_peak_processing_tmp"
 
-# Assuming COMMON_DATA is two levels up from 1_iterative_processing
+# Blacklist file path (relative to SCRIPT_DIR or absolute)
 BLACKLIST_BED="${SCRIPT_DIR}/../../COMMON_DATA/hg38-blacklist.v2.bed"
 
 # Sample names array
@@ -165,6 +165,7 @@ main() {
     local input_bai="${ALIGNMENT_DIR}/${sample_name}.dedup.bam.bai"
     local chr_bam="${SAMPLE_TMP_DIR}/${sample_name}.chr.bam"
     local chr_header="${SAMPLE_TMP_DIR}/${sample_name}_header.sam"
+    local raw_header_intermediate="${SAMPLE_TMP_DIR}/${sample_name}_raw_header_intermediate.sam" # For decoupling samtools and sed
     local macs2_tmp="${SAMPLE_TMP_DIR}/macs2_tmp_${RANDOM}" # MACS2 specific temp within sample temp
 
     local raw_peaks="${output_dir}/${sample_name}_broad_peaks.broadPeak"
@@ -195,8 +196,18 @@ main() {
 
     # Step 1: Standardize Chromosome Names (Add 'chr' prefix)
     log "Step 1: Standardizing chromosome names for ${sample_name}..."
-    samtools view -H "$input_bam" | \
-        sed -e 's/SN:\([0-9XY]\)/SN:chr\1/' -e 's/SN:MT/SN:chrM/' > "$chr_header" || die "Failed to create chr header for $sample_name"
+    # Step 1a: Dump raw BAM header to an intermediate file
+    log "Step 1a: Dumping raw BAM header for ${sample_name} to ${raw_header_intermediate}..."
+    samtools view -H "$input_bam" > "$raw_header_intermediate" \
+        || die "Failed to dump raw BAM header for $sample_name to $raw_header_intermediate. samtools exit code: $?"
+
+    # Step 1b: Process the header using sed from the intermediate file
+    log "Step 1b: Processing header with sed for ${sample_name} from ${raw_header_intermediate}..."
+    sed -e 's/SN:\([0-9XY]\)/SN:chr\1/' -e 's/SN:MT/SN:chrM/' "$raw_header_intermediate" > "$chr_header" \
+        || die "Failed to process header with sed for $sample_name from $raw_header_intermediate. sed exit code: $?"
+
+    # Clean up the intermediate header file
+    rm "$raw_header_intermediate"
     samtools reheader "$chr_header" "$input_bam" > "$chr_bam" || die "Failed to reheader BAM for $sample_name"
     samtools index "$chr_bam" || die "Failed to index chr-prefixed BAM for $sample_name"
     log "Chromosome standardization complete for ${sample_name}."
@@ -236,7 +247,13 @@ main() {
             if ($1 ~ /^[0-9XY]+$/) { $1 = "chr" $1 }
             else if ($1 == "MT") { $1 = "chrM" }
             else if ($1 ~ /^(GL|KI|JH|ML|NC_|NW_|NT_)/) { next } # Skip common contigs/patches/unplaced
-            else { print "Warning: Skipping unexpected chromosome format: " $1 " at line " NR > "/dev/stderr"; next }
+            else { print "Warning: Skipping unexpected chromosome format (pre-chr check): " $1 " at line " NR > "/dev/stderr"; next }
+        }
+        # At this point, $1 should start with "chr" or have been skipped.
+        # Add a check for $1 being *only* "chr"
+        if ($1 == "chr") {
+            print "Warning: Skipping line with standalone '\''chr'\'' chromosome: " $1 " at line " NR > "/dev/stderr";
+            next;
         }
         print $0
     }' "$raw_peaks" > "$fixed_chrom_bed" || die "Failed to fix chromosome names in peak file for $sample_name"
@@ -320,8 +337,7 @@ main() {
                 strand = ($6 == "+" || $6 == "-") ? $6 : ".";
 
                 # Output BED6 + 3 standard columns using sanitized numeric values
-                # Explicitly format columns 2 and 3 as integers
-                print $1, sprintf("%d", $2), sprintf("%d", $3), name, score, strand, s_orig_fold, s_orig_pval, s_orig_qval;
+                print $1, $2, $3, name, score, strand, s_orig_fold, s_orig_pval, s_orig_qval;
             }
         }' "$fixed_chrom_bed" > "$filtered_peaks" || die "Failed to filter peaks for $sample_name"
     log "Peak filtering complete for ${sample_name}."
@@ -342,7 +358,7 @@ main() {
         if($6 != "." && $6 != "+" && $6 != "-") {
              print "BED Format Error (Strand): Invalid strand (col 6) at line " NR ": " $0 > "/dev/stderr"; errors++; next
         }
-        # Optional: Check extra columns if they exist
+        # Optional: Check extra columns if they exist (e.g., numeric fold, pval, qval)
         if (NF >= 9) {
              if ($7 !~ /^[0-9.-]+([eE][+-]?[0-9]+)?$/) { print "BED Format Warning (Col 7): Non-numeric signalValue at line " NR ": " $7 > "/dev/stderr"; }
              if ($8 !~ /^[0-9.-]+([eE][+-]?[0-9]+)?$/) { print "BED Format Warning (Col 8): Non-numeric pValue at line " NR ": " $8 > "/dev/stderr"; }
@@ -359,14 +375,18 @@ main() {
     local blacklist_log="${log_dir}/bedtools_intersect_blacklist.log"
     bedtools intersect -v -a "$filtered_peaks" -b "$BLACKLIST_BED" -nonamecheck > "$final_peaks" 2> "$blacklist_log" \
         || die "bedtools intersect failed while removing blacklist regions for ${sample_name}. Check log: $blacklist_log"
+    # Check if bedtools actually produced output, even if exit code was 0
+    # [[ -s "$final_peaks" ]] || log "Warning: Final peak file is empty after blacklist removal for ${sample_name}." # This might be expected
     log "Blacklist removal complete for ${sample_name}."
 
     # Step 7: Create Visualization File (BED6+3 with Scaled Score)
     log "Step 7: Creating visualization file (${viz_peaks})..."
     awk -v max_fold_viz="$VIZ_MAX_FOLD" 'BEGIN{OFS="\t"} {
         # Scale score based on fold enrichment for visualization (0-1000)
+        # Use original fold enrichment (column 7) for scaling
         fold_val = $7;
         scaled_fold = (fold_val > max_fold_viz) ? max_fold_viz : fold_val;
+        # Avoid division by zero if max_fold_viz is 0, though it should be > 0
         if (max_fold_viz <= 0) { viz_score = 0 }
         else { viz_score = int((scaled_fold / max_fold_viz) * 1000); }
 
@@ -374,6 +394,7 @@ main() {
         if(viz_score < 0) viz_score = 0;
 
         # Output standard BED6 + 3 (signalValue, pValue, qValue from original filtered file)
+        # Use the calculated viz_score for the 5th column (score)
         # Explicitly format columns 2 and 3 as integers
         print $1, sprintf("%d", $2), sprintf("%d", $3), $4, viz_score, $6, $7, $8, $9;
     }' "$final_peaks" > "$viz_peaks" || die "Failed to create visualization peak file for $sample_name"
@@ -391,11 +412,13 @@ main() {
     # Get total reads from original BAM
     total_reads=$(samtools view -c "$input_bam") || { log "Warning: Failed to get total read count from $input_bam"; total_reads="NA"; }
 
-    # Calculate FRiP using chr-prefixed BAM and final peaks (Paired-end appropriate method)
+    # Calculate FRiP using chr-prefixed BAM and final peaks
     if [[ -f "$chr_bam" && -s "$final_peaks" ]]; then
-        log "Calculating reads in peaks using bedtools intersect (paired-end method)..."
+        log "Calculating reads in peaks using bedtools intersect..."
         local frip_log="${log_dir}/bedtools_intersect_frip.log"
-        # Count read pairs where *both* ends overlap the same peak by at least 50%
+        # Count read pairs where *both* ends overlap the same peak by at least 50% (-f 0.5 -F 0.5 -e)
+        # Note: -u reports each read pair once if it overlaps *any* peak.
+        #       If using single-end reads, adjust intersect options.
         reads_in_peaks=$(bedtools intersect -u -a "$chr_bam" -b "$final_peaks" -f 0.5 -F 0.5 -e 2> "$frip_log" | samtools view -c -)
 
         if [[ $? -ne 0 ]]; then
@@ -421,6 +444,7 @@ main() {
     if [[ -s "$final_peaks" ]]; then
         peak_count=$(wc -l < "$final_peaks" | awk '{print $1}')
         if [[ "$peak_count" -gt 0 ]]; then
+        # Use awk to calculate mean length and fold enrichment safely
             read mean_length mean_fold < <(awk '
                 BEGIN { sum_len=0; sum_fold=0 }
                 { sum_len += ($3 - $2); sum_fold += $7 }
@@ -438,8 +462,9 @@ main() {
         mean_length=0
         mean_fold=0
     fi
+    
 
-    # Save QC metrics using printf
+    # Save QC metrics using printf for robustness
     log "Saving QC metrics to ${metrics_csv}..."
     {
         printf "Metric,Value\n"

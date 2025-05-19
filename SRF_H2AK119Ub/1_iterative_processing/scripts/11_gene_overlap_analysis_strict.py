@@ -63,8 +63,9 @@ OUTPUT_DIR = sys.argv[1]
 # BASE_PATH = "D:/Github/SRF_H2AK119Ub_cross_V5"
 BASE_PATH = "/mnt/d/Github/SRF_H2AK119Ub_cross_V5"
 
-YAF_GENES_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt")
-YAF_FULL_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict/gene_lists_broad/YAF_enriched_genes_broad_full.csv")
+YAF_ALL_ENRICHED_GENES_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict_significant/gene_lists_broad/YAF_enriched_genes_broad_symbols.txt")
+YAF_PROMOTER_GENES_FILE = os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict_significant/gene_lists_broad/YAF_enriched_genes_broad_promoters.txt")
+YAF_FULL_FILE =  os.path.join(BASE_PATH, "SRF_H2AK119Ub/1_iterative_processing/analysis/8_annotation_and_enrichment_strict_significant/gene_lists_broad/YAF_enriched_genes_broad_full.csv") # Still needed for calculate_enrichment_scores
 SOX2_GENES_FILE =  os.path.join(BASE_PATH, "COMMON_DATA/sox2_binding.csv")
 
 if not os.path.exists(OUTPUT_DIR):
@@ -84,12 +85,12 @@ def read_gene_list(file_path):
 
 def get_regulatory_region_genes(file_path):
     """
-    Extract genes that are enriched in regulatory regions:
+    Extract genes that are enriched in regulatory regions for enrichment score calculation:
     - Promoter regions (up to 3kb upstream)
     - 5' UTR
     - First exon
     
-    Returns a set of gene symbols
+    Returns a set of gene symbols. This function is used by calculate_enrichment_scores.
     """
     try:
         df = pd.read_csv(file_path)
@@ -104,53 +105,72 @@ def get_regulatory_region_genes(file_path):
         print(f"Error reading file {file_path}: {e}")
         sys.exit(1)
 
-# Read gene lists and find overlaps
-yaf_genes = read_gene_list(YAF_GENES_FILE)
+# Read gene lists
+yaf_all_enriched_genes = read_gene_list(YAF_ALL_ENRICHED_GENES_FILE)
+yaf_promoter_genes = read_gene_list(YAF_PROMOTER_GENES_FILE)
 sox2_genes = read_gene_list(SOX2_GENES_FILE)
-yaf_regulatory_genes = get_regulatory_region_genes(YAF_FULL_FILE)
 
-# Find overlapping and unique genes for all regions
-overlapping_genes = yaf_genes.intersection(sox2_genes)
-yaf_only_genes = yaf_genes.difference(sox2_genes)
+# --- Venn Diagram 1: YAF Promoter Genes vs. SOX2 Target Genes ---
+promoter_overlapping_genes = yaf_promoter_genes.intersection(sox2_genes)
+promoter_yaf_only_genes = yaf_promoter_genes.difference(sox2_genes)
+promoter_sox2_only_genes = sox2_genes.difference(yaf_promoter_genes) # For completeness if needed
 
-# Find overlapping and unique genes specifically in regulatory regions
-regulatory_overlapping_genes = yaf_regulatory_genes.intersection(sox2_genes)
-regulatory_yaf_only_genes = yaf_regulatory_genes.difference(sox2_genes)
+# --- Venn Diagram 2: All YAF-Enriched Genes vs. SOX2 Target Genes ---
+all_enriched_overlapping_genes = yaf_all_enriched_genes.intersection(sox2_genes)
+all_enriched_yaf_only_genes = yaf_all_enriched_genes.difference(sox2_genes)
+all_enriched_sox2_only_genes = sox2_genes.difference(yaf_all_enriched_genes) # For completeness
 
 # Print summary statistics
 print(f"\nBasic Statistics:")
-print(f"Total YAF enriched genes: {len(yaf_genes)}")
-print(f"YAF genes in regulatory regions: {len(yaf_regulatory_genes)}")
+print(f"Total All YAF-Enriched genes: {len(yaf_all_enriched_genes)}")
+print(f"Total YAF Promoter genes: {len(yaf_promoter_genes)}")
 print(f"Total SOX2 target genes: {len(sox2_genes)}")
-print(f"\nAll genes overlap:")
-print(f"Number of overlapping genes: {len(overlapping_genes)}")
-print(f"Number of YAF-only genes: {len(yaf_only_genes)}")
-print(f"\nRegulatory regions overlap:")
-print(f"Number of overlapping regulatory genes: {len(regulatory_overlapping_genes)}")
-print(f"Number of YAF-only regulatory genes: {len(regulatory_yaf_only_genes)}")
+
+print(f"\nOverlap 1: YAF Promoter Genes vs. SOX2 Target Genes")
+print(f"  Number of overlapping genes (YAF Promoter & SOX2): {len(promoter_overlapping_genes)}")
+print(f"  Number of YAF Promoter only genes: {len(promoter_yaf_only_genes)}")
+print(f"  Number of SOX2 only genes (vs YAF Promoter): {len(promoter_sox2_only_genes)}")
+
+print(f"\nOverlap 2: All YAF-Enriched Genes vs. SOX2 Target Genes")
+print(f"  Number of overlapping genes (All YAF-Enriched & SOX2): {len(all_enriched_overlapping_genes)}")
+print(f"  Number of All YAF-Enriched only genes: {len(all_enriched_yaf_only_genes)}")
+print(f"  Number of SOX2 only genes (vs All YAF-Enriched): {len(all_enriched_sox2_only_genes)}")
 
 # Create and save Venn diagrams
-plt.figure(figsize=(15, 7))
+plt.figure(figsize=(16, 8)) # Adjusted figure size
 
+# Diagram 1: YAF Promoter Binding vs. SOX2 Target Genes
 plt.subplot(1, 2, 1)
-venn2((yaf_genes, sox2_genes), ('YAF enriched genes', 'SOX2 target genes'))
-plt.title('All genes overlap')
+venn2_diagram1 = venn2(
+    (len(promoter_yaf_only_genes), len(promoter_sox2_only_genes), len(promoter_overlapping_genes)),
+    set_labels=('YAF Promoter Genes', 'SOX2 Target Genes'),
+    set_colors=('#F9A252', '#64A0C8'), alpha=0.7
+)
+plt.title('YAF Promoter Genes vs. SOX2 Target Genes', fontsize=14)
 
+# Diagram 2: All YAF-Enriched Genes vs. SOX2 Target Genes
 plt.subplot(1, 2, 2)
-venn2((yaf_regulatory_genes, sox2_genes), ('YAF regulatory genes', 'SOX2 target genes'))
-plt.title('Regulatory regions overlap')
+venn2_diagram2 = venn2(
+    (len(all_enriched_yaf_only_genes), len(all_enriched_sox2_only_genes), len(all_enriched_overlapping_genes)),
+    set_labels=('All YAF-Enriched Genes', 'SOX2 Target Genes'),
+    set_colors=('#F9A252', '#64A0C8'), alpha=0.7
+)
+plt.title('All YAF-Enriched Genes vs. SOX2 Target Genes', fontsize=14)
 
-plt.tight_layout()
+plt.tight_layout(rect=(0, 0, 1, 0.96)) # Add rect to make space for suptitle
+plt.suptitle("YAF and SOX2 Gene Overlap Analysis", fontsize=16, y=0.99)
 plt.savefig(os.path.join(OUTPUT_DIR, 'venn_diagrams.png'))
 plt.close()
 
 # Save gene lists for downstream GO analysis
 gene_lists = {
-    'all_overlapping_genes.txt': overlapping_genes,
-    'all_yaf_only_genes.txt': yaf_only_genes,
-    'regulatory_overlapping_genes.txt': regulatory_overlapping_genes,
-    'regulatory_yaf_only_genes.txt': regulatory_yaf_only_genes
+    'promoter_overlapping_genes.txt': promoter_overlapping_genes,
+    'promoter_yaf_only_genes.txt': promoter_yaf_only_genes,
+    'all_overlapping_genes.txt': all_enriched_overlapping_genes, # Corresponds to "all_overlapping_genes.txt" in shell script
+    'all_yaf_only_genes.txt': all_enriched_yaf_only_genes      # Corresponds to "all_yaf_only_genes.txt" in shell script
 }
+# Note: The shell script also mentions regulatory_overlapping_genes.txt and regulatory_yaf_only_genes.txt.
+# These are now promoter_overlapping_genes.txt and promoter_yaf_only_genes.txt.
 
 for filename, gene_set in gene_lists.items():
     filepath = os.path.join(OUTPUT_DIR, filename)

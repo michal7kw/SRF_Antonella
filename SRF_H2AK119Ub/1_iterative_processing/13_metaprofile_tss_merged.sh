@@ -299,7 +299,8 @@ main() {
     # Step 2: Plot Profile from the (potentially averaged) Matrix
     log "Step 2: Running plotProfile for ${sample_group_prefix}..."
     local plotProfile_log="${log_file_dir}/plotProfile.log"
-    local plot_title="Signal Profile around TSS (${sample_group_prefix} - Averaged Replicas)"
+    # local plot_title="Signal Profile around TSS (${sample_group_prefix} - Averaged Replicas)"
+    local plot_title="TSS ${sample_group_prefix}" # Define 
 
     # Plot PNG
     # Rely on label embedded in matrix by computeMatrix instead of using --samplesLabel

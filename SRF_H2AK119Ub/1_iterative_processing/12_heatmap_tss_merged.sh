@@ -323,7 +323,8 @@ main() {
     # Step 2: Plot Heatmap from the (potentially averaged) Matrix
     log "Step 2: Running plotHeatmap for ${sample_group_prefix}..."
     local plotHeatmap_log="${log_file_dir}/plotHeatmap.log"
-    local PLOT_HEATMAP_TITLE="Signal Heatmap around TSS (${sample_group_prefix} - Averaged Replicas)" # Define title
+    # local PLOT_HEATMAP_TITLE="Signal Heatmap around TSS (${sample_group_prefix} - Averaged Replicas)" # Define title
+    local PLOT_HEATMAP_TITLE="TSS ${sample_group_prefix}" # Define 
 
     # Plot PNG
     # Rely on label embedded in matrix by computeMatrix instead of using --samplesLabel

@@ -32,15 +32,15 @@ library(viridis)
 library(tibble)  # Added tibble library for column_to_rownames function
 
 # BASE_PATH <- "/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_H2AK119Ub_cross_V5"
-BASE_PATH <- "D:/Github/SRF_H2AK119Ub_cross_V5"
+BASE_PATH <- "/mnt/d/Github/SRF_H2AK119Ub_cross_V5"
 
 # Set paths
 deseq_results_file <- file.path(BASE_PATH, "SRF_RNA/results/deseq2/YAF_vs_GFP/differential_expression.csv")
 
-gtf_file <- "D:/Github/SRF_H2AK119Ub_cross_V5/COMMON/gencode.v43.basic.annotation.gtf"
+gtf_file <- "/mnt/d/Github/SRF_H2AK119Ub_cross_V5/COMMON_DATA/gencode.v43.basic.annotation.gtf"
 
 # bigwig_dir <- "F:/SRF_data/Antonella/Ub/6_bigwig"
-bigwig_dir <- "D:/Github/SRF_H2AK119Ub_cross_V5/DATA/6_bigwig"
+bigwig_dir <- "/mnt/d/Github/SRF_H2AK119Ub_cross_V5/DATA/10_bigwig"
 
 output_dir <- "YAF_enrichment_results"
 
