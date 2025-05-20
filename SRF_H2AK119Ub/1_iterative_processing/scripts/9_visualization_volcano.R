@@ -1,4 +1,4 @@
-# This script creates a volcano plot for ChIP-seq peak analysis results.
+# This script creates a volcano plot for differential peaks analysis results.
 # It helps interpret differential binding analysis, focusing on promoter-associated peaks.
 #
 # Input:
@@ -7,7 +7,7 @@
 #
 # Output:
 #   - A PDF file named 'volcano_plot_promoters.pdf' in a subdirectory:
-#     {output_dir}/{peak_type}_promoters/peak_analysis/volcano_plot_promoters.pdf
+#     {output_dir}/volcano_plot_promoters.pdf
 #
 # Command-line arguments:
 #   1. output_dir: Base directory for output files.
@@ -30,12 +30,10 @@ source("scripts/utils.R")
 #' Create and save a volcano plot for promoter peak analysis.
 #'
 #' @param output_dir Base directory where the plot's subdirectory will be created.
-#' @param peak_type Character string (e.g., "broad") to categorize results.
 #' @param promoter_data A data frame with promoter-associated gene annotations.
 #'                      Must contain 'fold_change', 'FDR', and 'SYMBOL' columns.
 #' @return The ggplot object for the volcano plot.
-create_and_save_volcano_plot <- function(output_dir, peak_type, promoter_data) {
-    log_message(sprintf("Creating volcano plot for %s promoter peaks.", peak_type))
+create_and_save_volcano_plot <- function(output_dir, promoter_data, file_name) {
 
     # Validate input data
     required_cols <- c("fold_change", "FDR", "SYMBOL")
@@ -87,7 +85,7 @@ create_and_save_volcano_plot <- function(output_dir, peak_type, promoter_data) {
         scale_color_manual(
             values = c("TRUE" = "red3", "FALSE" = "grey50"),
             name = "FDR < 0.01",
-            labels = c("TRUE" = "Yes", "FALSE" = "No"), # More descriptive labels
+            labels = c("TRUE" = "Yes", "FALSE" = "No"),
             drop = FALSE # Ensure all levels are shown even if data is filtered
         ) +
         scale_size_continuous(
@@ -118,7 +116,7 @@ create_and_save_volcano_plot <- function(output_dir, peak_type, promoter_data) {
         labs(
             x = "log2 Fold Change (YAF/GFP)",
             y = "-log10(FDR)",
-            title = paste("Volcano Plot:", peak_type, "Promoter Peaks")
+            title = file_name
         ) +
         theme_minimal(base_size = 10) +
         theme(
@@ -131,7 +129,7 @@ create_and_save_volcano_plot <- function(output_dir, peak_type, promoter_data) {
         )
 
     # Save the plot
-    output_file_path <- file.path(plot_subdir, "volcano_plot_promoters.pdf")
+    output_file_path <- file.path(plot_subdir, paste0(file_name, "_volcano_plot.pdf"))
     save_plot(volcano_plot, output_file_path, width = 9, height = 8) # Assumes save_plot is from utils.R
     log_message(sprintf("Volcano plot saved to: %s", output_file_path))
 
@@ -142,14 +140,14 @@ create_and_save_volcano_plot <- function(output_dir, peak_type, promoter_data) {
 main <- function() {
     args <- commandArgs(trailingOnly = TRUE)
     if (length(args) != 3) {
-        stop("Usage: Rscript 9_visualization_volcano.R <output_dir> <input_csv_file> <peak_type>", call. = FALSE)
+        stop("Usage: Rscript 9_visualization_volcano.R <output_dir> <input_csv_file> <file_name>", call. = FALSE)
     }
 
     output_dir_arg <- args[1]
     input_csv_file_arg <- args[2]
-    peak_type_arg <- args[3]
+    file_name <- args[3]
 
-    log_message(sprintf("Starting volcano plot generation for '%s' peaks.", peak_type_arg))
+    log_message(sprintf("Starting volcano plot generation"))
     log_message(sprintf("Output directory: %s", output_dir_arg))
     log_message(sprintf("Input CSV: %s", input_csv_file_arg))
 
@@ -160,7 +158,7 @@ main <- function() {
     promoter_data_df <- read.csv(input_csv_file_arg, stringsAsFactors = FALSE)
 
     # Create and save the volcano plot
-    create_and_save_volcano_plot(output_dir_arg, peak_type_arg, promoter_data_df)
+    create_and_save_volcano_plot(output_dir_arg, promoter_data_df, file_name)
 
     log_message("Volcano plot generation process completed successfully.")
 }

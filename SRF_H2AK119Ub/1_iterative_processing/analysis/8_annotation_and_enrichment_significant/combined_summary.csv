@@ -1,2 +1,2 @@
-"Analysis_Type","Total_Peaks","Unique_Genes","GO_Terms"
-"Broad",1,5853,690
+"Analysis_Type","Total_Peaks","Unique_Genes","GO_Terms_All","GO_Terms_Up","GO_Terms_Down"
+"Broad",1,5853,690,709,0

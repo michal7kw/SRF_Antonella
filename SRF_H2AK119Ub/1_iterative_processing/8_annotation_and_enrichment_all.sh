@@ -50,11 +50,11 @@ WORKDIR="."
 cd $WORKDIR || { log_message "ERROR: Failed to change to working directory $WORKDIR"; exit 1; }
 
 # Define directories
-INPUT_DIR="${WORKDIR}/analysis/7_differential_binding_v2"
-OUTPUT_DIR="${WORKDIR}/analysis/8_annotation_and_enrichment_all"
+# INPUT_DIR="${WORKDIR}/analysis/7_differential_binding_v2"
+# OUTPUT_DIR="${WORKDIR}/analysis/8_annotation_and_enrichment_all"
 
-# INPUT_DIR="${WORKDIR}/analysis/7_differential_binding_strict_v2"
-# OUTPUT_DIR="${WORKDIR}/analysis/8_annotation_and_enrichment_strict_all"
+INPUT_DIR="${WORKDIR}/analysis/7_differential_binding_strict_v2"
+OUTPUT_DIR="${WORKDIR}/analysis/8_annotation_and_enrichment_strict_all"
 
 # Create necessary directories
 log_message "Creating output directories..."

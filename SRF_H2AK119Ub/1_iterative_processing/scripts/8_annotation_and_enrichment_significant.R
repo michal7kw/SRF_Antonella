@@ -11,6 +11,8 @@
 #     - annotation_plots.pdf: Peak annotation visualizations (pie chart, TSS distance)
 #     - detailed_pie_chart.pdf: Detailed pie chart with genomic feature distribution
 #     - go_enrichment_plots.pdf: GO term enrichment plots (dotplot, emap, cnet)
+#     - go_enrichment_plots_upregulated.pdf: GO term enrichment plots for upregulated peaks
+#     - go_enrichment_plots_downregulated.pdf: GO term enrichment plots for downregulated peaks
 #   tables/
 #     - peak_annotation.csv: Detailed peak annotations
 #     - go_enrichment.csv: GO enrichment analysis results
@@ -368,19 +370,89 @@ annotate_and_enrich <- function(output_dir, input_csv_file, peak_type = "broad")
 
         # Generate various GO enrichment visualizations
         go_enrichment_plots_pdf <- file.path(figures_dir, "go_enrichment_plots.pdf")
-        pdf(go_enrichment_plots_pdf)
+        pdf(go_enrichment_plots_pdf, width = 10, height = 8)
 
         # Dotplot showing enriched terms
-        print(dotplot(ego, showCategory = 20))
+        print(dotplot(ego, showCategory = 15, label_format = 30, title = "GO Enrichment - All Peaks"))
 
         dev.off()
+    }
+
+    # Perform GO enrichment analysis for UPREGULATED YAF-enriched genes
+    log_message("Performing GO enrichment analysis for UPREGULATED peaks...")
+    up_genes_df <- gene_list[gene_list$fold_change > 0, ]
+    ego_up <- NULL
+    if (nrow(up_genes_df) > 0 && !is.null(up_genes_df$ENTREZID) && length(unique(up_genes_df$ENTREZID)) > 0) {
+        ego_up <- enrichGO(
+            gene = unique(up_genes_df$ENTREZID),
+            OrgDb = org.Hs.eg.db,
+            ont = "BP", # Biological Process ontology
+            pAdjustMethod = "BH",
+            pvalueCutoff = 0.05,
+            qvalueCutoff = 0.2
+        )
+
+        if (!is.null(ego_up) && nrow(ego_up) > 0) {
+            # Save GO enrichment results
+            go_enrichment_up_csv <- file.path(tables_dir, "go_enrichment_upregulated.csv")
+            write.csv(as.data.frame(ego_up),
+                go_enrichment_up_csv,
+                row.names = FALSE
+            )
+
+            # Generate various GO enrichment visualizations
+            go_enrichment_plots_up_pdf <- file.path(figures_dir, "go_enrichment_plots_upregulated.pdf")
+            pdf(go_enrichment_plots_up_pdf, width = 10, height = 8)
+            print(dotplot(ego_up, showCategory = 15, label_format = 30, title = "GO Enrichment - Upregulated Peaks"))
+            dev.off()
+        } else {
+            log_message("No significant GO terms found for upregulated peaks.", level = "INFO")
+        }
+    } else {
+        log_message("No upregulated genes found for GO analysis.", level = "INFO")
+    }
+
+    # Perform GO enrichment analysis for DOWNREGULATED YAF-enriched genes
+    log_message("Performing GO enrichment analysis for DOWNREGULATED peaks...")
+    down_genes_df <- gene_list[gene_list$fold_change < 0, ]
+    ego_down <- NULL
+    if (nrow(down_genes_df) > 0 && !is.null(down_genes_df$ENTREZID) && length(unique(down_genes_df$ENTREZID)) > 0) {
+        ego_down <- enrichGO(
+            gene = unique(down_genes_df$ENTREZID),
+            OrgDb = org.Hs.eg.db,
+            ont = "BP", # Biological Process ontology
+            pAdjustMethod = "BH",
+            pvalueCutoff = 0.05,
+            qvalueCutoff = 0.2
+        )
+
+        if (!is.null(ego_down) && nrow(ego_down) > 0) {
+            # Save GO enrichment results
+            go_enrichment_down_csv <- file.path(tables_dir, "go_enrichment_downregulated.csv")
+            write.csv(as.data.frame(ego_down),
+                go_enrichment_down_csv,
+                row.names = FALSE
+            )
+
+            # Generate various GO enrichment visualizations
+            go_enrichment_plots_down_pdf <- file.path(figures_dir, "go_enrichment_plots_downregulated.pdf")
+            pdf(go_enrichment_plots_down_pdf, width = 10, height = 8)
+            print(dotplot(ego_down, showCategory = 15, label_format = 30, title = "GO Enrichment - Downregulated Peaks"))
+            dev.off()
+        } else {
+            log_message("No significant GO terms found for downregulated peaks.", level = "INFO")
+        }
+    } else {
+        log_message("No downregulated genes found for GO analysis.", level = "INFO")
     }
 
     log_message(sprintf("Completed annotation and enrichment analysis for %s peaks", peak_type))
     return(list(
         annotation = peak_anno,
         gene_list = gene_list,
-        go_enrichment = ego
+        go_enrichment = ego,
+        go_enrichment_up = ego_up,
+        go_enrichment_down = ego_down
     ))
 }
 
@@ -399,7 +471,9 @@ if (!is.null(broad_results) && !is.null(broad_results$annotation)) {
         Analysis_Type = "Broad",
         Total_Peaks = length(broad_results$annotation), # Get count from the csAnno object
         Unique_Genes = length(unique(broad_results$gene_list$SYMBOL)),
-        GO_Terms = ifelse(!is.null(broad_results$go_enrichment), nrow(broad_results$go_enrichment), 0)
+        GO_Terms_All = ifelse(!is.null(broad_results$go_enrichment) && nrow(broad_results$go_enrichment) > 0, nrow(broad_results$go_enrichment), 0),
+        GO_Terms_Up = ifelse(!is.null(broad_results$go_enrichment_up) && nrow(broad_results$go_enrichment_up) > 0, nrow(broad_results$go_enrichment_up), 0),
+        GO_Terms_Down = ifelse(!is.null(broad_results$go_enrichment_down) && nrow(broad_results$go_enrichment_down) > 0, nrow(broad_results$go_enrichment_down), 0)
     )
 
     combined_summary_file <- file.path(OUTPUT_DIR, "combined_summary.csv")

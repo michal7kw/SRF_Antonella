@@ -69,7 +69,7 @@ SAMPLE_GROUP_COLORS=(blue red green purple orange brown) # Add more colors if mo
 COMPUTE_MATRIX_UPSTREAM=5000      # Base pairs upstream of TSS
 COMPUTE_MATRIX_DOWNSTREAM=5000    # Base pairs downstream of TSS
 COMPUTE_MATRIX_BINSIZE=50         # Bin size for averaging signal
-COMPUTE_MATRIX_THREADS=4          # Number of threads for computeMatrix
+COMPUTE_MATRIX_THREADS=20          # Number of threads for computeMatrix
 PLOT_PROFILE_HEIGHT=15            # Plot height in cm
 PLOT_PROFILE_WIDTH=8              # Plot width in cm
 # PLOT_PROFILE_COLORS will be selected based on sample_group_index

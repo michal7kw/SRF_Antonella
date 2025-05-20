@@ -23,10 +23,11 @@ set -o pipefail
 # --- Configuration ---
 # Define the input CSV file containing promoter gene data
 # This file should have 'fold_change', 'FDR', and 'SYMBOL' columns.
+PLOT_TYPE="Promoters"
 INPUT_CSV="analysis/8_annotation_and_enrichment_all/gene_lists_broad/YAF_enriched_genes_broad_promoters.csv"
 
-# Define the peak type (e.g., "broad", "narrow"). This is used for naming output paths.
-PEAK_TYPE="broad"
+# PLOT_TYPE="All_Peaks"
+# INPUT_CSV="analysis/8_annotation_and_enrichment_all/gene_lists_broad/YAF_enriched_genes_broad_full.csv"
 
 # Define the base output directory for visualizations
 OUTPUT_DIR_BASE="analysis/9_visualization_volcano"
@@ -40,18 +41,13 @@ log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >&2
 }
 
-# Ensure the correct conda environment is active if needed.
-# Example: conda activate your_r_env
-# log_message "Ensure your R environment (e.g., conda) with ggplot2 and ggrepel is active."
-
-# Define working directory (assuming script is run from project root)
+# Define working directory
 WORKDIR="."
 cd "$WORKDIR" || { log_message "ERROR: Failed to change to working directory $WORKDIR"; exit 1; }
 log_message "Working directory: $(pwd)"
 
 # Define the specific output directory for this run
-# The R script will create subdirectories like {PEAK_TYPE}_promoters/peak_analysis within this.
-TARGET_OUTPUT_DIR="${OUTPUT_DIR_BASE}" # R script handles subfolder creation based on peak_type
+TARGET_OUTPUT_DIR="${OUTPUT_DIR_BASE}"
 
 # Create logs directory and the base output directory if they don't exist
 mkdir -p logs "$TARGET_OUTPUT_DIR"
@@ -74,6 +70,6 @@ log_message "Input CSV file found: $INPUT_CSV"
 
 # Run R script for volcano plot visualization
 log_message "Running volcano plot generation..."
-Rscript "${R_SCRIPT_PATH}" "${TARGET_OUTPUT_DIR}" "${INPUT_CSV}" "${PEAK_TYPE}"
+Rscript "${R_SCRIPT_PATH}" "${TARGET_OUTPUT_DIR}" "${INPUT_CSV}" "${PLOT_TYPE}"
 
-log_message "Volcano plot generation completed. Check output in ${TARGET_OUTPUT_DIR}/${PEAK_TYPE}_promoters/peak_analysis/"
+log_message "Volcano plot generation completed. Check output in ${TARGET_OUTPUT_DIR}/${PLOT_TYPE}_promoters/peak_analysis/"
