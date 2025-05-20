@@ -261,6 +261,10 @@ main() {
     done
     
     # Run computeMatrix
+    log "DEBUG: final_bigwigs array: ${final_bigwigs[*]}"
+    log "DEBUG: Number of bigwigs: ${#final_bigwigs[@]}"
+    log "DEBUG: sample_labels array: ${sample_labels[*]}"
+    log "DEBUG: Number of sample labels: ${#sample_labels[@]}"
     log "Running computeMatrix with BigWigs: ${final_bigwigs[*]}"
     log "Using sample labels: ${sample_labels[*]}"
 
@@ -272,10 +276,14 @@ main() {
         -R "${GENE_ANNOTATION_GTF}")
 
     # Add score files (-S arguments)
-    cmd_args+=(${compute_matrix_s_args[@]})
+    # All score files should follow a single -S flag
+    cmd_args+=("-S")
+    for bw_file_path in "${final_bigwigs[@]}"; do
+        cmd_args+=("${bw_file_path}")
+    done
 
-    # Add sample labels
-    cmd_args+=(--samplesLabel)
+    # Add sample labels for computeMatrix to distinguish groups
+    cmd_args+=("--samplesLabel")
     for label in "${sample_labels[@]}"; do
         cmd_args+=("${label}")
     done
@@ -291,7 +299,9 @@ main() {
         --numberOfProcessors "${COMPUTE_MATRIX_THREADS}" \
         --verbose)
     
-    log "Executing computeMatrix with arguments: ${cmd_args[*]}"
+    log "Executing computeMatrix with arguments:"
+    printf "  %s\n" "${cmd_args[@]}" # Print each argument on a new line for clarity
+    
     computeMatrix "${cmd_args[@]}" >& "${computeMatrix_log}" \
         || die "computeMatrix failed. Check log: ${computeMatrix_log}"
     
