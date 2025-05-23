@@ -103,3 +103,4 @@ COMMON/
 ensembl_symbol_cache.pkl
 SRF_H2AK119Ub/1_iterative_processing/Archive
 *.errors
+SRF_SES_V5/qc_reports/
